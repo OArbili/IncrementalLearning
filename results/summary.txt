@@ -1,0 +1,81 @@
+================================================================================
+INCREMENTAL LEARNING EXPERIMENT SUMMARY
+================================================================================
+
+Objective = (combined_with_ext_auc - extended_auc) + (combined_no_ext_auc - base_auc)
+Negative objective = incremental learning approach outperforms combined model.
+
+Models:
+  Base       — trained on all rows, extended features set to NaN
+  Extended   — warm-started from base, trained on rows with extended data only
+  Combined   — trained on all rows with real values (no incremental learning)
+
+================================================================================
+DATASET 1: BankLoanSta (Augmented)
+================================================================================
+Rows: 100,000 | Augmented with artificial nulls (20% sample)
+Augmented features: Current Loan Amount, Installment, Monthly Debt, Home Ownership, Purpose
+Combos: 7 unique | Optuna trials per model: 10
+Label: Credit Score (binary)
+
+#   Combo                Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- -------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   CS+AI+MLD ext        -0.004173    0.6535    0.7899    0.6588    0.7804    2094      17906     Increm
+2   CS+AI ext            -0.006532    0.6515    0.8008    0.6552    0.7906    3831      16169     Increm
+3   MLD+HO ext           -0.000922    0.7486    0.7671    0.7488    0.7659    2231      17769     Increm
+4   HO ext only          -0.001410    0.7596    0.7704    0.7596    0.7690    2654      17346     Increm
+5   MLD+Purp ext         -0.000279    0.7601    0.7668    0.7604    0.7663    2234      17766     Increm
+6   Purp ext only        -0.000430    0.7649    0.7646    0.7650    0.7640    2657      17343     Increm
+7   MLD ext only         -0.000306    0.7662    0.7641    0.7665    0.7636    10628     9372      Increm
+
+Incremental wins: 7/7 (100%)
+Best combo: CS+AI ext (objective: -0.006532)
+
+================================================================================
+DATASET 2: Weather (Natural Nulls)
+================================================================================
+Rows: 25,000 | No augmentation needed (real-world missing data)
+Candidate features (>5% null): Evaporation (62%), Sunshine (73%), Cloud9am (43%),
+  Pressure9am (19%), WindGustSpeed (14%), WindGustDir (14%), WindDir9am (12%)
+Combos: 23 unique (from 128 total -> 39 valid -> 23 after dedup)
+Optuna trials per model: 10 | Label: RainTomorrow (binary)
+
+#   Combo                                         Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- --------------------------------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   Evapor+Sunshi+WindGu+WindGu+Pressu ext         0.004706    0.7658    0.8669    0.7690    0.8684    641       4359      Combined
+2   Evapor+Sunshi+WindGu+WindGu ext                -0.001047    0.7774    0.8485    0.7752    0.8496    657       4343      Increm
+3   Evapor+Sunshi+WindDi ext                       -0.009676    0.8432    0.8448    0.8314    0.8469    578       4422      Increm
+4   Evapor+Sunshi+Pressu ext                        0.006128    0.8035    0.8686    0.8083    0.8699    957       4043      Combined
+5   Evapor+Sunshi+Cloud9 ext                        0.002577    0.8484    0.8487    0.8459    0.8538    2128      2872      Combined
+6   Evapor+Sunshi ext                               0.002486    0.8424    0.8695    0.8419    0.8724    3095      1905      Combined
+7   Evapor+WindGu+WindGu ext                       -0.002004    0.7599    0.8603    0.7568    0.8614    658       4342      Increm
+8   Evapor+WindDi ext                              -0.003243    0.8020    0.8377    0.7979    0.8386    580       4420      Increm
+9   Evapor+Pressu ext                              -0.000550    0.7975    0.8710    0.7962    0.8717    958       4042      Increm
+10  Evapor+Cloud9 ext                               0.003868    0.8517    0.8478    0.8544    0.8490    2130      2870      Combined
+11  Evapor ext                                      0.000901    0.8419    0.8724    0.8423    0.8729    3114      1886      Combined
+12  Sunshi+WindGu+WindGu+Pressu ext                -0.003719    0.7739    0.8653    0.7687    0.8668    643       4357      Increm
+13  Sunshi+WindGu+WindGu ext                        0.000497    0.7528    0.8644    0.7530    0.8647    670       4330      Combined
+14  Sunshi+WindDi ext                               0.006081    0.8232    0.8477    0.8254    0.8516    589       4411      Combined
+15  Sunshi+Pressu ext                              -0.002746    0.7752    0.8649    0.7718    0.8655    963       4037      Increm
+16  Sunshi+Cloud9 ext                               0.002674    0.8507    0.8509    0.8527    0.8516    2169      2831      Combined
+17  Sunshi ext                                      0.001159    0.8323    0.8589    0.8318    0.8606    3667      1333      Combined
+18  WindGu+WindGu+Pressu ext                        0.006009    0.7683    0.8668    0.7744    0.8668    644       4356      Combined
+19  WindGu+WindGu ext                              -0.007482    0.7967    0.8584    0.7881    0.8596    691       4309      Increm
+20  WindGu ext                                     -0.003507    0.7687    0.8625    0.7677    0.8601    692       4308      Increm
+21  WindDi ext                                     -0.000434    0.8265    0.8489    0.8263    0.8487    614       4386      Increm
+22  Pressu ext                                      0.005329    0.7981    0.8732    0.8021    0.8746    966       4034      Combined
+23  Cloud9 ext                                      0.001748    0.8540    0.8500    0.8556    0.8501    2173      2827      Combined
+
+Incremental wins: 10/23 (43%)
+Best combo: Evapor+Sunshi+WindDi ext (objective: -0.009676)
+
+================================================================================
+OVERALL SUMMARY
+================================================================================
+
+Dataset              Rows     Combos   Increm Wins   Best Objective   Augmented?
+-------------------- -------- -------- ------------- ---------------- ----------
+BankLoanSta          100,000  7        7/7 (100%)    -0.006532        Yes
+Weather              25,000   23       10/23 (43%)   -0.009676        No
+
+Total: 17/30 combinations (57%) show incremental learning advantage.
