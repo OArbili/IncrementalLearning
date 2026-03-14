@@ -1,0 +1,159 @@
+import numpy as np
+from sklearn.metrics import roc_auc_score
+import xgboost as xgb
+import optuna
+from sklearn.model_selection import StratifiedKFold
+from seed_utils import SEED, DEVICE
+
+class XGBoostModel:
+    def __init__(self, name="xgb_model"):
+        self.name = name
+        self.model = None
+        self.best_params = None
+        self.used_base_model = True
+        self.seed = SEED
+
+    def objective(self, trial, X, y, base_model_path=None, n_splits=3):
+        params = {
+            'max_depth': trial.suggest_int('max_depth', 3, 10),
+            'learning_rate': trial.suggest_float('learning_rate', 1e-3, 0.1, log=True),
+            'n_estimators': trial.suggest_int('n_estimators', 100, 1000),
+            'min_child_weight': trial.suggest_int('min_child_weight', 1, 7),
+            'subsample': trial.suggest_float('subsample', 0.6, 1.0),
+            'colsample_bytree': trial.suggest_float('colsample_bytree', 0.6, 1.0),
+            'gamma': trial.suggest_float('gamma', 0, 5),
+            'lambda': trial.suggest_float('lambda', 1e-3, 10.0),
+            'alpha': trial.suggest_float('alpha', 1e-3, 10.0),
+            'scale_pos_weight': trial.suggest_float('scale_pos_weight', 1.0, 7.0),
+            "random_state": self.seed,
+            "eval_metric": "auc",
+            'tree_method': 'hist',
+            'device': DEVICE
+        }
+
+        n_trees_keep = None
+        use_base_model = True
+
+        if base_model_path is not None:
+            base_booster = xgb.Booster()
+            base_booster.load_model(base_model_path)
+            total_trees_in_base = len(base_booster.get_dump())
+
+            use_base_model = trial.suggest_categorical('use_base_model', [True, False])
+
+            if use_base_model:
+                n_trees_keep = trial.suggest_int("n_trees_keep", 1, total_trees_in_base)
+
+        kf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=self.seed)
+        auc_scores = []
+
+        for train_index, valid_index in kf.split(X, y):
+            X_train, X_valid = X.iloc[train_index], X.iloc[valid_index]
+            y_train, y_valid = y.iloc[train_index], y.iloc[valid_index]
+
+            if base_model_path is not None and use_base_model and n_trees_keep > 0:
+                fold_booster = xgb.Booster()
+                fold_booster.load_model(base_model_path)
+                fold_booster = fold_booster[:n_trees_keep]
+
+                model = xgb.XGBClassifier(**params)
+                model.fit(X_train, y_train,
+                          xgb_model=fold_booster,
+                          eval_set=[(X_valid, y_valid)],
+                          verbose=False)
+            else:
+                model = xgb.XGBClassifier(**params)
+                model.fit(X_train, y_train,
+                          eval_set=[(X_valid, y_valid)],
+                          verbose=False)
+
+            y_pred_proba = model.predict_proba(X_valid)[:, 1]
+            auc_val = roc_auc_score(y_valid, y_pred_proba)
+            auc_scores.append(auc_val)
+
+        mean_auc = np.mean(auc_scores)
+        return mean_auc
+
+    def train(self, X, y, n_trials=20, base_model_path=None):
+        study = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler(seed=self.seed))
+
+        study.optimize(
+            lambda trial: self.objective(trial, X, y, base_model_path),
+            n_trials=n_trials
+        )
+
+        self.best_params = study.best_params
+        print(f"Best parameters found: {self.best_params}")
+        print(f"Best CV AUC score: {study.best_value:.4f}")
+
+        best_params_clean = {k: v for k, v in self.best_params.items()
+                           if k not in ['n_trees_keep', 'use_base_model']}
+        # Add fixed params not tuned by Optuna
+        best_params_clean['tree_method'] = 'hist'
+        best_params_clean['device'] = DEVICE
+        best_params_clean['eval_metric'] = 'auc'
+        best_params_clean['random_state'] = self.seed
+
+        # Check if we should use base model or fallback
+        use_base_model = self.best_params.get('use_base_model', True)
+        self.used_base_model = use_base_model
+
+        if base_model_path is not None and use_base_model and self.best_params.get('n_trees_keep', 0) > 0:
+            print(f"Using base model with {self.best_params['n_trees_keep']} trees kept")
+            pruned_model = xgb.Booster()
+            pruned_model.load_model(base_model_path)
+            pruned_model = pruned_model[:self.best_params['n_trees_keep']]
+
+            self.model = xgb.XGBClassifier(**best_params_clean)
+            self.model.fit(X, y, xgb_model=pruned_model)
+        else:
+            if base_model_path is not None:
+                print("FALLBACK ACTIVATED: Training from scratch due to potential concept drift")
+
+            self.model = xgb.XGBClassifier(**best_params_clean)
+            self.model.fit(X, y)
+
+        # Print feature importance
+        importance = self.model.feature_importances_
+        feature_importance = []
+        for idx, imp in enumerate(importance):
+            feature_name = X.columns[idx] if hasattr(X, 'columns') else f"Feature {idx}"
+            feature_importance.append((feature_name, imp))
+
+        sorted_importance = sorted(feature_importance, key=lambda x: x[1], reverse=True)
+        print("\nTop 10 features by importance:")
+        for name, imp in sorted_importance[:10]:
+            print(f"{name}: {imp:.4f}")
+
+    def predict(self, X):
+        if self.model is None:
+            raise ValueError("Model not trained yet")
+        return self.model.predict_proba(X)[:, 1]
+
+    def save_model(self):
+        if self.model is None:
+            raise ValueError("Model not trained yet")
+        self.model.save_model(f"{self.name}.json")
+        metadata = {
+            'used_base_model': self.used_base_model,
+            'best_params': self.best_params
+        }
+        import json
+        with open(f"{self.name}_metadata.json", 'w') as f:
+            json.dump(metadata, f)
+
+    @staticmethod
+    def load_model(model_path, metadata_path=None):
+        model = xgb.Booster()
+        model.load_model(model_path)
+
+        if metadata_path:
+            import json
+            try:
+                with open(metadata_path, 'r') as f:
+                    metadata = json.load(f)
+                print(f"Model metadata: {metadata}")
+            except FileNotFoundError:
+                print("Metadata file not found")
+
+        return model
