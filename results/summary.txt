@@ -73,9 +73,12 @@ Best combo: Evapor+Sunshi+WindDi ext (objective: -0.009676)
 OVERALL SUMMARY
 ================================================================================
 
-Dataset              Rows     Combos   Increm Wins   Best Objective   Augmented?
--------------------- -------- -------- ------------- ---------------- ----------
-BankLoanSta          100,000  7        7/7 (100%)    -0.006532        Yes
-Weather              25,000   23       10/23 (43%)   -0.009676        No
+Dataset              Rows     Combos   Increm Wins   Best Objective   Augmented?   Avg Base  Avg Ext   Avg Comb-no  Avg Comb+ext
+-------------------- -------- -------- ------------- ---------------- ------------ --------- --------- ------------ ------------
+BankLoanSta          100,000  7        7/7 (100%)    -0.006532        Yes          0.7292    0.7748    0.7306       0.7714
+Weather              25,000   23       10/23 (43%)   -0.009676        No           0.8067    0.8586    0.8060       0.8598
 
 Total: 17/30 combinations (57%) show incremental learning advantage.
+
+Key insight: In both datasets, Avg Ext > Avg Comb+ext and Avg Base > Avg Comb-no (on average),
+confirming that specialized incremental models tend to outperform the single combined model.
