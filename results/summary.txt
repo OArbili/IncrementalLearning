@@ -177,12 +177,47 @@ Incremental wins: 1/1 (100%)
 Best combo: Offer ext (objective: -0.000341)
 
 ================================================================================
-DATASET 8: Movie (Augmented) — NOT VIABLE
+DATASET 8: Movie (Augmented v1) — NOT VIABLE
 ================================================================================
 Rows: 112,466 | Augmented with artificial nulls (20% random rows)
 Augmented features: rating_count (10%), rating_mean (13%), days_active (10%)
 Note: 0 valid combinations. Extreme class imbalance (1.9% positive) causes
   stratified min group constraint to fail for all feature combinations.
+
+================================================================================
+DATASET 9: Movie (Augmented v2 — Heavy)
+================================================================================
+Rows: 112,466 | Augmented with heavy artificial nulls (50% per feature, independent)
+Augmented features: rating_count (50%), rating_mean (50%), rating_std (50%),
+  days_active (50%), rating_frequency (50%)
+Combos: 20 unique (from 170 valid, after dedup) | Optuna trials per model: 10
+Label: TARGET (binary, above-median future ratings)
+
+#   Combo                                         Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- --------------------------------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   rating+rating ext                              0.003951    0.8845    0.9066    0.8812    0.9138    5617      16877     Combined
+2   rating+rating ext                              0.000317    0.8789    0.8860    0.8754    0.8899    5592      16902     Combined
+3   rating+daysac ext                              0.004928    0.8623    0.9086    0.8604    0.9154    5594      16900     Combined
+4   rating+rating ext                             -0.002898    0.8431    0.8986    0.8389    0.8999    5617      16877     Increm
+5   rating+tagcou+unique+avgtag+tagfre+lastta ext  0.002303    0.8153    0.9169    0.8149    0.9196    10816     11678     Combined
+6   rating ext                                    -0.003813    0.8807    0.9123    0.8791    0.9100    11247     11247     Increm
+7   rating+rating ext                             -0.004046    0.9209    0.8739    0.9199    0.8709    5616      16878     Increm
+8   rating+daysac ext                              0.001982    0.8948    0.9023    0.8965    0.9027    5630      16864     Combined
+9   rating+rating ext                              0.006616    0.8717    0.8922    0.8729    0.8976    5644      16850     Combined
+10  rating+tagcou+unique+avgtag+tagfre+lastta ext  0.000544    0.8393    0.9088    0.8375    0.9112    10830     11664     Combined
+11  rating ext                                     0.001604    0.8841    0.8970    0.8839    0.8988    11247     11247     Combined
+12  rating+daysac ext                              0.004461    0.8635    0.8951    0.8667    0.8963    5641      16853     Combined
+13  rating+rating ext                              0.004951    0.8758    0.9026    0.8752    0.9082    5628      16866     Combined
+14  rating+tagcou+unique+avgtag+tagfre+lastta ext  0.006579    0.8103    0.9200    0.8133    0.9236    10822     11672     Combined
+15  rating ext                                     0.006153    0.9035    0.8905    0.9034    0.8968    11248     11246     Combined
+16  daysac+rating ext                             -0.003511    0.8334    0.8985    0.8255    0.9029    5642      16852     Increm
+17  daysac+tagcou+unique+avgtag+tagfre+lastta ext  0.001303    0.8163    0.9306    0.8156    0.9326    10814     11680     Combined
+18  daysac ext                                     0.000991    0.8682    0.8957    0.8657    0.8991    11247     11247     Combined
+19  rating+tagcou+unique+avgtag+tagfre+lastta ext -0.000784    0.8067    0.9201    0.8026    0.9234    10819     11675     Increm
+20  rating ext                                     0.004781    0.8563    0.8995    0.8544    0.9062    11247     11247     Combined
+
+Incremental wins: 5/20 (25%)
+Best combo: rating+rating ext (combo 7, objective: -0.004046)
 
 ================================================================================
 OVERALL SUMMARY
@@ -197,10 +232,12 @@ HRAnalytics          19,158   5        1/5 (20%)     gender ext                 
 ClientRecord         7,043    1        0/1 (0%)      Offer ext                         0.000560    0.9515    0.9553    0.9518    0.9556    No
 Movie                112,466  0        N/A           N/A (no valid combos)            N/A          N/A       N/A       N/A       N/A       No
 ClientRecord (Aug)   7,043    1        1/1 (100%)    Offer ext                        -0.000341    0.9505    0.9560    0.9503    0.9558    Yes
-Movie (Aug)          112,466  0        N/A           N/A (no valid combos)            N/A          N/A       N/A       N/A       N/A       Yes
+Movie (Aug v1)       112,466  0        N/A           N/A (no valid combos)            N/A          N/A       N/A       N/A       N/A       Yes
+Movie (Aug v2)       112,466  20       5/20 (25%)    rating+rating ext                -0.004046    0.9209    0.8739    0.9199    0.8709    Yes
 
-Total: 30/65 combinations (46%) show incremental learning advantage.
-(Excluding Movie/Movie Aug which had no valid combinations)
+Total: 35/85 combinations (41%) show incremental learning advantage.
+(Excluding Movie/Movie Aug v1 which had no valid combinations: 35/85)
 
 Key insight: Across all datasets, specialized incremental models tend to outperform the single combined model,
 particularly when extended features have high null ratios and the base/extended split is well-separated.
+Heavy augmentation (50% null rate) on Movie dataset enabled valid combinations where lighter augmentation (20%) failed.

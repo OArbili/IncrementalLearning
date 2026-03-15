@@ -1,0 +1,2336 @@
+All random seeds have been set to: 42
+Downloading MovieLens 20M dataset...
+Ratings: (20000263, 4), Tags: (465564, 4)
+Converting timestamps...
+Engineering features...
+Dataset shape (before augmentation): (112466, 11)
+Target distribution:
+TARGET
+0    110339
+1      2127
+Name: count, dtype: int64
+Positive rate: 1.89%
+
+=== Augmentation: 50% null rate per feature ===
+  rating_count: nulled 56233 rows (50.00%)
+  rating_mean: nulled 56233 rows (50.00%)
+  rating_std: nulled 56233 rows (50.00%)
+  days_active: nulled 56233 rows (50.00%)
+  rating_frequency: nulled 56233 rows (50.00%)
+
+=== After Augmentation ===
+Null ratios (features with nulls):
+  rating_count: 50.00%
+  rating_mean: 50.00%
+  rating_std: 50.00%
+  days_active: 50.00%
+  rating_frequency: 50.00%
+  tag_count: 96.21%
+  unique_tags: 96.21%
+  avg_tag_length: 96.21%
+  tag_frequency: 96.21%
+  last_tag: 96.21%
+
+N_TRIALS per model: 10
+Target distribution:
+TARGET
+0    110339
+1      2127
+Name: count, dtype: int64
+  Candidate: rating_count (null: 50.00%)
+  Candidate: rating_mean (null: 50.00%)
+  Candidate: rating_std (null: 50.00%)
+  Candidate: days_active (null: 50.00%)
+  Candidate: rating_frequency (null: 50.00%)
+  Candidate: tag_count (null: 96.21%)
+  Candidate: unique_tags (null: 96.21%)
+  Candidate: avg_tag_length (null: 96.21%)
+  Candidate: tag_frequency (null: 96.21%)
+  Candidate: last_tag (null: 96.21%)
+
+10 candidate features -> 1024 total combinations
+
+Null pattern overlap:
+  tag_count ~ unique_tags: Jaccard=1.0000 (nearly identical!)
+  tag_count ~ avg_tag_length: Jaccard=1.0000 (nearly identical!)
+  tag_count ~ tag_frequency: Jaccard=1.0000 (nearly identical!)
+  tag_count ~ last_tag: Jaccard=1.0000 (nearly identical!)
+  unique_tags ~ avg_tag_length: Jaccard=1.0000 (nearly identical!)
+  unique_tags ~ tag_frequency: Jaccard=1.0000 (nearly identical!)
+  unique_tags ~ last_tag: Jaccard=1.0000 (nearly identical!)
+  avg_tag_length ~ tag_frequency: Jaccard=1.0000 (nearly identical!)
+  avg_tag_length ~ last_tag: Jaccard=1.0000 (nearly identical!)
+  tag_frequency ~ last_tag: Jaccard=1.0000 (nearly identical!)
+
+====================================================================================================
+DRY RUN: Finding valid combinations
+====================================================================================================
+  Dedup: 'rating+tagcou+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+unique+avgtag+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+unique+avgtag+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+unique+avgtag ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+unique+tagfre+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+unique+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+unique+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+unique ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+avgtag+tagfre+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+avgtag+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+avgtag+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+avgtag ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+tagfre+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagcou ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique+avgtag+tagfre+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique+avgtag+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique+avgtag+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique+avgtag ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique+tagfre+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+unique ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+avgtag+tagfre+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+avgtag+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+avgtag+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+avgtag ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagfre+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+tagfre ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'daysac+lastta ext' same population as 'daysac+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagcou ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+unique ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+avgtag ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+tagfre ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+  Dedup: 'rating+lastta ext' same population as 'rating+tagcou+unique+avgtag+tagfre+lastta ext'
+
+Valid: 170 -> Unique: 20
+
+#    Name                                          N_no_ext   N_ext      %ext     Test_no    Test_ext   MinGrp  
+----------------------------------------------------------------------------------------------------
+1    rating+rating ext                             28085      84381      75.0     5617       16877      110     
+2    rating+rating ext                             27961      84505      75.1     5592       16902      108     
+3    rating+daysac ext                             27969      84497      75.1     5594       16900      112     
+4    rating+rating ext                             28085      84381      75.0     5617       16877      107     
+5    rating+tagcou+unique+avgtag+tagfre+lastta ext 54079      58387      51.9     10816      11678      134     
+6    rating ext                                    56233      56233      50.0     11247      11247      209     
+7    rating+rating ext                             28081      84385      75.0     5616       16878      109     
+8    rating+daysac ext                             28150      84316      75.0     5630       16864      111     
+9    rating+rating ext                             28217      84249      74.9     5644       16850      105     
+10   rating+tagcou+unique+avgtag+tagfre+lastta ext 54150      58316      51.9     10830      11664      136     
+11   rating ext                                    56233      56233      50.0     11247      11247      211     
+12   rating+daysac ext                             28202      84264      74.9     5641       16853      112     
+13   rating+rating ext                             28140      84326      75.0     5628       16866      116     
+14   rating+tagcou+unique+avgtag+tagfre+lastta ext 54109      58357      51.9     10822      11672      140     
+15   rating ext                                    56236      56230      50.0     11248      11246      203     
+16   daysac+rating ext                             28207      84259      74.9     5642       16852      111     
+17   daysac+tagcou+unique+avgtag+tagfre+lastta ext 54067      58399      51.9     10814      11680      137     
+18   daysac ext                                    56233      56233      50.0     11247      11247      204     
+19   rating+tagcou+unique+avgtag+tagfre+lastta ext 54095      58371      51.9     10819      11675      127     
+20   rating ext                                    56233      56233      50.0     11247      11247      209     
+
+====================================================================================================
+RUNNING 20 UNIQUE COMBINATIONS (n_trials=10)
+====================================================================================================
+
+================================================================================
+Combo 1/20: rating+rating ext
+Extended: ['rating_count', 'rating_mean']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84381
+0    28085
+Name: count, dtype: int64
+Extended percentage: 75.03 %
+Train set distribution:
+TARGET  has_extended
+0       0               22028
+        1               66243
+1       0                 440
+        1                1261
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5507
+        1               16561
+1       0                 110
+        1                 316
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8621
+
+Top 10 features by importance:
+avg_tag_length: 0.3153
+tag_frequency: 0.2419
+tag_count: 0.1451
+last_tag: 0.0830
+days_active: 0.0792
+rating_frequency: 0.0717
+unique_tags: 0.0484
+rating_std: 0.0153
+rating_count: 0.0000
+rating_mean: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9005
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+avg_tag_length: 0.3004
+tag_frequency: 0.2372
+tag_count: 0.1469
+last_tag: 0.0770
+days_active: 0.0729
+rating_frequency: 0.0648
+unique_tags: 0.0470
+rating_count: 0.0304
+rating_std: 0.0134
+rating_mean: 0.0099
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8892
+
+Top 10 features by importance:
+tag_frequency: 0.2775
+avg_tag_length: 0.2523
+tag_count: 0.1422
+last_tag: 0.0769
+days_active: 0.0625
+rating_frequency: 0.0565
+rating_count: 0.0543
+unique_tags: 0.0469
+rating_std: 0.0128
+rating_mean: 0.0122
+len with ext 16877
+len without ext 5617
+
+Base model (no extended)
+AUC: 0.8845, Accuracy: 0.9742, F1 Score: 0.3498
+
+Extended model (with extended)
+AUC: 0.9066, Accuracy: 0.9755, F1 Score: 0.3845
+
+Combined model (no extended)
+AUC: 0.8812, Accuracy: 0.9745, F1 Score: 0.3644
+
+Combined model (with extended)
+AUC: 0.9138, Accuracy: 0.9749, F1 Score: 0.3977
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                               Base_Features                        Extended_Features
+0        Base model (no extended)  0.884451  0.974186  0.349776  rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_mean, has_extended
+1  Extended model (with extended)  0.906623  0.975529  0.384501  rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_mean, has_extended
+2    Combined model (no extended)  0.881248  0.974542  0.364444  rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_mean, has_extended
+3  Combined model (with extended)  0.913778  0.974877  0.397727  rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_mean, has_extended
+
+>>> RESULT: objective = 0.003951
+    Base AUC: 0.8845 (5617 rows)
+    Extended AUC: 0.9066 (16877 rows)
+    Combined (no ext) AUC: 0.8812
+    Combined (with ext) AUC: 0.9138
+
+================================================================================
+Combo 2/20: rating+rating ext
+Extended: ['rating_count', 'rating_std']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84505
+0    27961
+Name: count, dtype: int64
+Extended percentage: 75.14 %
+Train set distribution:
+TARGET  has_extended
+0       0               21937
+        1               66334
+1       0                 432
+        1                1269
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5484
+        1               16584
+1       0                 108
+        1                 318
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8680
+
+Top 10 features by importance:
+tag_frequency: 0.4545
+avg_tag_length: 0.1298
+tag_count: 0.1224
+days_active: 0.0851
+rating_frequency: 0.0761
+last_tag: 0.0621
+unique_tags: 0.0544
+rating_mean: 0.0157
+rating_count: 0.0000
+rating_std: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9063
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.4394
+avg_tag_length: 0.1294
+tag_count: 0.1175
+days_active: 0.0791
+rating_frequency: 0.0673
+last_tag: 0.0575
+unique_tags: 0.0543
+rating_count: 0.0311
+rating_mean: 0.0138
+rating_std: 0.0107
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8963
+
+Top 10 features by importance:
+tag_frequency: 0.4350
+avg_tag_length: 0.1437
+tag_count: 0.1105
+days_active: 0.0657
+rating_frequency: 0.0570
+rating_count: 0.0545
+last_tag: 0.0509
+unique_tags: 0.0494
+rating_std: 0.0140
+rating_mean: 0.0113
+len with ext 16902
+len without ext 5592
+
+Base model (no extended)
+AUC: 0.8789, Accuracy: 0.9741, F1 Score: 0.3612
+
+Extended model (with extended)
+AUC: 0.8860, Accuracy: 0.9744, F1 Score: 0.3829
+
+Combined model (no extended)
+AUC: 0.8754, Accuracy: 0.9712, F1 Score: 0.3320
+
+Combined model (with extended)
+AUC: 0.8899, Accuracy: 0.9737, F1 Score: 0.3816
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                Base_Features                       Extended_Features
+0        Base model (no extended)  0.878934  0.974070  0.361233  rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_std, has_extended
+1  Extended model (with extended)  0.886034  0.974441  0.382857  rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_std, has_extended
+2    Combined model (no extended)  0.875411  0.971209  0.331950  rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_std, has_extended
+3  Combined model (with extended)  0.889874  0.973731  0.381616  rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_std, has_extended
+
+>>> RESULT: objective = 0.000317
+    Base AUC: 0.8789 (5592 rows)
+    Extended AUC: 0.8860 (16902 rows)
+    Combined (no ext) AUC: 0.8754
+    Combined (with ext) AUC: 0.8899
+
+================================================================================
+Combo 3/20: rating+daysac ext
+Extended: ['rating_count', 'days_active']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84497
+0    27969
+Name: count, dtype: int64
+Extended percentage: 75.13 %
+Train set distribution:
+TARGET  has_extended
+0       0               21925
+        1               66345
+1       0                 450
+        1                1252
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5482
+        1               16587
+1       0                 112
+        1                 313
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 3, 'learning_rate': 0.026698666742744605, 'n_estimators': 785, 'min_child_weight': 4, 'subsample': 0.9083868719818244, 'colsample_bytree': 0.7975182385457563, 'gamma': 2.6136641469099704, 'lambda': 4.275982642567138, 'alpha': 0.2551658483142078, 'scale_pos_weight': 1.6473485619598267}
+Best CV AUC score: 0.8276
+
+Top 10 features by importance:
+avg_tag_length: 0.2973
+tag_frequency: 0.2457
+last_tag: 0.1984
+rating_frequency: 0.1301
+tag_count: 0.0492
+unique_tags: 0.0276
+rating_std: 0.0270
+rating_mean: 0.0247
+rating_count: 0.0000
+days_active: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 641}
+Best CV AUC score: 0.9085
+Using base model with 641 trees kept
+
+Top 10 features by importance:
+avg_tag_length: 0.2353
+tag_frequency: 0.1834
+last_tag: 0.1428
+tag_count: 0.1085
+rating_count: 0.0923
+rating_frequency: 0.0881
+days_active: 0.0729
+unique_tags: 0.0268
+rating_std: 0.0253
+rating_mean: 0.0246
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8912
+
+Top 10 features by importance:
+avg_tag_length: 0.2899
+tag_frequency: 0.2029
+tag_count: 0.1670
+last_tag: 0.0960
+days_active: 0.0683
+rating_count: 0.0495
+rating_frequency: 0.0485
+unique_tags: 0.0281
+has_extended: 0.0264
+rating_std: 0.0124
+len with ext 16900
+len without ext 5594
+
+Base model (no extended)
+AUC: 0.8623, Accuracy: 0.9809, F1 Score: 0.2411
+
+Extended model (with extended)
+AUC: 0.9086, Accuracy: 0.9746, F1 Score: 0.3804
+
+Combined model (no extended)
+AUC: 0.8604, Accuracy: 0.9741, F1 Score: 0.3318
+
+Combined model (with extended)
+AUC: 0.9154, Accuracy: 0.9737, F1 Score: 0.3799
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                               Base_Features                        Extended_Features
+0        Base model (no extended)  0.862277  0.980872  0.241135  rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, days_active, has_extended
+1  Extended model (with extended)  0.908585  0.974556  0.380403  rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, days_active, has_extended
+2    Combined model (no extended)  0.860430  0.974079  0.331797  rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, days_active, has_extended
+3  Combined model (with extended)  0.915360  0.973728  0.379888  rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, days_active, has_extended
+
+>>> RESULT: objective = 0.004928
+    Base AUC: 0.8623 (5594 rows)
+    Extended AUC: 0.9086 (16900 rows)
+    Combined (no ext) AUC: 0.8604
+    Combined (with ext) AUC: 0.9154
+
+================================================================================
+Combo 4/20: rating+rating ext
+Extended: ['rating_count', 'rating_frequency']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84381
+0    28085
+Name: count, dtype: int64
+Extended percentage: 75.03 %
+Train set distribution:
+TARGET  has_extended
+0       0               22039
+        1               66231
+1       0                 429
+        1                1273
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5510
+        1               16559
+1       0                 107
+        1                 318
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8362
+
+Top 10 features by importance:
+tag_frequency: 0.2852
+avg_tag_length: 0.2732
+tag_count: 0.1723
+days_active: 0.1197
+last_tag: 0.0893
+unique_tags: 0.0244
+rating_std: 0.0183
+rating_mean: 0.0175
+rating_count: 0.0000
+rating_frequency: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.9087
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.2559
+avg_tag_length: 0.2360
+tag_count: 0.1415
+days_active: 0.1040
+last_tag: 0.0849
+rating_count: 0.0693
+rating_frequency: 0.0479
+unique_tags: 0.0234
+rating_std: 0.0189
+rating_mean: 0.0183
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 3, 'learning_rate': 0.026698666742744605, 'n_estimators': 785, 'min_child_weight': 4, 'subsample': 0.9083868719818244, 'colsample_bytree': 0.7975182385457563, 'gamma': 2.6136641469099704, 'lambda': 4.275982642567138, 'alpha': 0.2551658483142078, 'scale_pos_weight': 1.6473485619598267}
+Best CV AUC score: 0.8945
+
+Top 10 features by importance:
+tag_frequency: 0.2982
+avg_tag_length: 0.2023
+last_tag: 0.1028
+rating_count: 0.0890
+tag_count: 0.0861
+days_active: 0.0859
+rating_frequency: 0.0684
+has_extended: 0.0207
+rating_std: 0.0195
+rating_mean: 0.0160
+len with ext 16877
+len without ext 5617
+
+Base model (no extended)
+AUC: 0.8431, Accuracy: 0.9770, F1 Score: 0.3175
+
+Extended model (with extended)
+AUC: 0.8986, Accuracy: 0.9753, F1 Score: 0.3895
+
+Combined model (no extended)
+AUC: 0.8389, Accuracy: 0.9806, F1 Score: 0.2044
+
+Combined model (with extended)
+AUC: 0.8999, Accuracy: 0.9819, F1 Score: 0.3177
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                          Base_Features                             Extended_Features
+0        Base model (no extended)  0.843105  0.977034  0.317460  rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_frequency, has_extended
+1  Extended model (with extended)  0.898620  0.975292  0.389458  rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_frequency, has_extended
+2    Combined model (no extended)  0.838913  0.980595  0.204380  rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_frequency, has_extended
+3  Combined model (with extended)  0.899914  0.981928  0.317673  rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, rating_frequency, has_extended
+
+>>> RESULT: objective = -0.002898
+    Base AUC: 0.8431 (5617 rows)
+    Extended AUC: 0.8986 (16877 rows)
+    Combined (no ext) AUC: 0.8389
+    Combined (with ext) AUC: 0.8999
+
+================================================================================
+Combo 5/20: rating+tagcou+unique+avgtag+tagfre+lastta ext
+Extended: ['rating_count', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    58387
+0    54079
+Name: count, dtype: int64
+Extended percentage: 51.92 %
+Train set distribution:
+TARGET  has_extended
+0       0               42726
+        1               45544
+1       0                 537
+        1                1165
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               10682
+        1               11387
+1       0                 134
+        1                 291
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8402
+
+Top 10 features by importance:
+days_active: 0.5001
+rating_frequency: 0.3429
+rating_std: 0.0791
+rating_mean: 0.0779
+rating_count: 0.0000
+tag_count: 0.0000
+unique_tags: 0.0000
+avg_tag_length: 0.0000
+tag_frequency: 0.0000
+last_tag: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9289
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+days_active: 0.2398
+rating_frequency: 0.1692
+last_tag: 0.1387
+avg_tag_length: 0.1077
+tag_count: 0.1042
+rating_count: 0.0880
+tag_frequency: 0.0618
+rating_std: 0.0373
+rating_mean: 0.0365
+unique_tags: 0.0168
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8939
+
+Top 10 features by importance:
+avg_tag_length: 0.3664
+tag_count: 0.1908
+tag_frequency: 0.1416
+days_active: 0.0613
+last_tag: 0.0542
+rating_count: 0.0526
+rating_frequency: 0.0499
+unique_tags: 0.0357
+has_extended: 0.0229
+rating_std: 0.0133
+len with ext 11678
+len without ext 10816
+
+Base model (no extended)
+AUC: 0.8153, Accuracy: 0.9837, F1 Score: 0.1619
+
+Extended model (with extended)
+AUC: 0.9169, Accuracy: 0.9628, F1 Score: 0.4098
+
+Combined model (no extended)
+AUC: 0.8149, Accuracy: 0.9876, F1 Score: 0.0822
+
+Combined model (with extended)
+AUC: 0.9196, Accuracy: 0.9592, F1 Score: 0.4075
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                           Base_Features                                                                            Extended_Features
+0        Base model (no extended)  0.815298  0.983728  0.161905  rating_mean, rating_std, days_active, rating_frequency  rating_count, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+1  Extended model (with extended)  0.916910  0.962750  0.409769  rating_mean, rating_std, days_active, rating_frequency  rating_count, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+2    Combined model (no extended)  0.814862  0.987611  0.082192  rating_mean, rating_std, days_active, rating_frequency  rating_count, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+3  Combined model (with extended)  0.919649  0.959154  0.407453  rating_mean, rating_std, days_active, rating_frequency  rating_count, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+
+>>> RESULT: objective = 0.002303
+    Base AUC: 0.8153 (10816 rows)
+    Extended AUC: 0.9169 (11678 rows)
+    Combined (no ext) AUC: 0.8149
+    Combined (with ext) AUC: 0.9196
+
+================================================================================
+Combo 6/20: rating ext
+Extended: ['rating_count']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    56233
+0    56233
+Name: count, dtype: int64
+Extended percentage: 50.0 %
+Train set distribution:
+TARGET  has_extended
+0       0               44121
+        1               44149
+1       0                 865
+        1                 837
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               11031
+        1               11038
+1       0                 216
+        1                 209
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8684
+
+Top 10 features by importance:
+avg_tag_length: 0.2829
+tag_frequency: 0.2467
+last_tag: 0.1414
+tag_count: 0.1049
+days_active: 0.0856
+rating_frequency: 0.0747
+unique_tags: 0.0303
+rating_mean: 0.0168
+rating_std: 0.0168
+rating_count: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9102
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+avg_tag_length: 0.2800
+tag_frequency: 0.2387
+last_tag: 0.1381
+tag_count: 0.1014
+days_active: 0.0795
+rating_frequency: 0.0701
+rating_count: 0.0332
+unique_tags: 0.0294
+rating_std: 0.0149
+rating_mean: 0.0147
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8932
+
+Top 10 features by importance:
+avg_tag_length: 0.2915
+tag_frequency: 0.2361
+last_tag: 0.1228
+tag_count: 0.0976
+days_active: 0.0676
+rating_count: 0.0661
+rating_frequency: 0.0581
+unique_tags: 0.0273
+rating_std: 0.0138
+rating_mean: 0.0122
+len with ext 11247
+len without ext 11247
+
+Base model (no extended)
+AUC: 0.8807, Accuracy: 0.9735, F1 Score: 0.3632
+
+Extended model (with extended)
+AUC: 0.9123, Accuracy: 0.9739, F1 Score: 0.3926
+
+Combined model (no extended)
+AUC: 0.8791, Accuracy: 0.9731, F1 Score: 0.3484
+
+Combined model (with extended)
+AUC: 0.9100, Accuracy: 0.9711, F1 Score: 0.3689
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                            Base_Features           Extended_Features
+0        Base model (no extended)  0.880689  0.973504  0.363248  rating_mean, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, has_extended
+1  Extended model (with extended)  0.912293  0.973860  0.392562  rating_mean, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, has_extended
+2    Combined model (no extended)  0.879125  0.973059  0.348387  rating_mean, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, has_extended
+3  Combined model (with extended)  0.910044  0.971103  0.368932  rating_mean, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_count, has_extended
+
+>>> RESULT: objective = -0.003813
+    Base AUC: 0.8807 (11247 rows)
+    Extended AUC: 0.9123 (11247 rows)
+    Combined (no ext) AUC: 0.8791
+    Combined (with ext) AUC: 0.9100
+
+================================================================================
+Combo 7/20: rating+rating ext
+Extended: ['rating_mean', 'rating_std']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84385
+0    28081
+Name: count, dtype: int64
+Extended percentage: 75.03 %
+Train set distribution:
+TARGET  has_extended
+0       0               22029
+        1               66242
+1       0                 436
+        1                1265
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5507
+        1               16561
+1       0                 109
+        1                 317
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8921
+
+Top 10 features by importance:
+tag_frequency: 0.3807
+last_tag: 0.1348
+avg_tag_length: 0.1281
+tag_count: 0.1152
+days_active: 0.0848
+rating_count: 0.0726
+rating_frequency: 0.0643
+unique_tags: 0.0195
+rating_mean: 0.0000
+rating_std: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.8997
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.3761
+last_tag: 0.1316
+avg_tag_length: 0.1306
+tag_count: 0.1144
+days_active: 0.0807
+rating_count: 0.0684
+rating_frequency: 0.0604
+unique_tags: 0.0183
+rating_std: 0.0102
+rating_mean: 0.0094
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8947
+
+Top 10 features by importance:
+tag_frequency: 0.3656
+avg_tag_length: 0.1491
+last_tag: 0.1207
+tag_count: 0.1077
+days_active: 0.0781
+rating_count: 0.0654
+rating_frequency: 0.0613
+unique_tags: 0.0187
+rating_std: 0.0147
+rating_mean: 0.0126
+len with ext 16878
+len without ext 5616
+
+Base model (no extended)
+AUC: 0.9209, Accuracy: 0.9712, F1 Score: 0.3817
+
+Extended model (with extended)
+AUC: 0.8739, Accuracy: 0.9735, F1 Score: 0.3526
+
+Combined model (no extended)
+AUC: 0.9199, Accuracy: 0.9704, F1 Score: 0.3897
+
+Combined model (with extended)
+AUC: 0.8709, Accuracy: 0.9742, F1 Score: 0.3607
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                 Base_Features                      Extended_Features
+0        Base model (no extended)  0.920950  0.971154  0.381679  rating_count, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_std, has_extended
+1  Extended model (with extended)  0.873946  0.973457  0.352601  rating_count, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_std, has_extended
+2    Combined model (no extended)  0.919948  0.970442  0.389706  rating_count, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_std, has_extended
+3  Combined model (with extended)  0.870901  0.974168  0.360704  rating_count, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_std, has_extended
+
+>>> RESULT: objective = -0.004046
+    Base AUC: 0.9209 (5616 rows)
+    Extended AUC: 0.8739 (16878 rows)
+    Combined (no ext) AUC: 0.9199
+    Combined (with ext) AUC: 0.8709
+
+================================================================================
+Combo 8/20: rating+daysac ext
+Extended: ['rating_mean', 'days_active']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84316
+0    28150
+Name: count, dtype: int64
+Extended percentage: 74.97 %
+Train set distribution:
+TARGET  has_extended
+0       0               22074
+        1               66196
+1       0                 446
+        1                1256
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5519
+        1               16550
+1       0                 111
+        1                 314
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8671
+
+Top 10 features by importance:
+tag_frequency: 0.2837
+avg_tag_length: 0.2296
+tag_count: 0.1556
+rating_count: 0.0904
+last_tag: 0.0868
+rating_frequency: 0.0856
+unique_tags: 0.0499
+rating_std: 0.0184
+rating_mean: 0.0000
+days_active: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9039
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.2760
+avg_tag_length: 0.2310
+tag_count: 0.1553
+rating_count: 0.0820
+last_tag: 0.0806
+rating_frequency: 0.0768
+unique_tags: 0.0468
+days_active: 0.0254
+rating_std: 0.0163
+rating_mean: 0.0098
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8896
+
+Top 10 features by importance:
+tag_frequency: 0.2671
+avg_tag_length: 0.2406
+tag_count: 0.1585
+days_active: 0.0751
+last_tag: 0.0733
+rating_frequency: 0.0548
+rating_count: 0.0542
+unique_tags: 0.0446
+rating_std: 0.0144
+rating_mean: 0.0118
+len with ext 16864
+len without ext 5630
+
+Base model (no extended)
+AUC: 0.8948, Accuracy: 0.9721, F1 Score: 0.3084
+
+Extended model (with extended)
+AUC: 0.9023, Accuracy: 0.9755, F1 Score: 0.3670
+
+Combined model (no extended)
+AUC: 0.8965, Accuracy: 0.9698, F1 Score: 0.2917
+
+Combined model (with extended)
+AUC: 0.9027, Accuracy: 0.9749, F1 Score: 0.3789
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                Base_Features                       Extended_Features
+0        Base model (no extended)  0.894827  0.972114  0.308370  rating_count, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, days_active, has_extended
+1  Extended model (with extended)  0.902333  0.975451  0.366972  rating_count, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, days_active, has_extended
+2    Combined model (no extended)  0.896463  0.969805  0.291667  rating_count, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, days_active, has_extended
+3  Combined model (with extended)  0.902678  0.974917  0.378855  rating_count, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, days_active, has_extended
+
+>>> RESULT: objective = 0.001982
+    Base AUC: 0.8948 (5630 rows)
+    Extended AUC: 0.9023 (16864 rows)
+    Combined (no ext) AUC: 0.8965
+    Combined (with ext) AUC: 0.9027
+
+================================================================================
+Combo 9/20: rating+rating ext
+Extended: ['rating_mean', 'rating_frequency']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84249
+0    28217
+Name: count, dtype: int64
+Extended percentage: 74.91 %
+Train set distribution:
+TARGET  has_extended
+0       0               22152
+        1               66118
+1       0                 421
+        1                1281
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5539
+        1               16530
+1       0                 105
+        1                 320
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8712
+
+Top 10 features by importance:
+tag_frequency: 0.4377
+avg_tag_length: 0.1788
+days_active: 0.0966
+tag_count: 0.0879
+last_tag: 0.0815
+rating_count: 0.0757
+unique_tags: 0.0237
+rating_std: 0.0180
+rating_mean: 0.0000
+rating_frequency: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.9050
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.3998
+avg_tag_length: 0.1612
+days_active: 0.0910
+tag_count: 0.0807
+last_tag: 0.0802
+rating_count: 0.0738
+rating_frequency: 0.0453
+unique_tags: 0.0253
+rating_mean: 0.0221
+rating_std: 0.0206
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8925
+
+Top 10 features by importance:
+tag_frequency: 0.4071
+avg_tag_length: 0.1804
+last_tag: 0.0950
+tag_count: 0.0714
+days_active: 0.0700
+rating_count: 0.0587
+rating_frequency: 0.0571
+rating_std: 0.0183
+rating_mean: 0.0153
+unique_tags: 0.0136
+len with ext 16850
+len without ext 5644
+
+Base model (no extended)
+AUC: 0.8717, Accuracy: 0.9794, F1 Score: 0.3626
+
+Extended model (with extended)
+AUC: 0.8922, Accuracy: 0.9744, F1 Score: 0.3609
+
+Combined model (no extended)
+AUC: 0.8729, Accuracy: 0.9784, F1 Score: 0.3646
+
+Combined model (with extended)
+AUC: 0.8976, Accuracy: 0.9782, F1 Score: 0.3544
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                           Base_Features                            Extended_Features
+0        Base model (no extended)  0.871678  0.979447  0.362637  rating_count, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_frequency, has_extended
+1  Extended model (with extended)  0.892194  0.974362  0.360947  rating_count, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_frequency, has_extended
+2    Combined model (no extended)  0.872887  0.978384  0.364583  rating_count, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_frequency, has_extended
+3  Combined model (with extended)  0.897601  0.978160  0.354386  rating_count, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, rating_frequency, has_extended
+
+>>> RESULT: objective = 0.006616
+    Base AUC: 0.8717 (5644 rows)
+    Extended AUC: 0.8922 (16850 rows)
+    Combined (no ext) AUC: 0.8729
+    Combined (with ext) AUC: 0.8976
+
+================================================================================
+Combo 10/20: rating+tagcou+unique+avgtag+tagfre+lastta ext
+Extended: ['rating_mean', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    58316
+0    54150
+Name: count, dtype: int64
+Extended percentage: 51.85 %
+Train set distribution:
+TARGET  has_extended
+0       0               42775
+        1               45495
+1       0                 545
+        1                1157
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               10694
+        1               11375
+1       0                 136
+        1                 289
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8689
+
+Top 10 features by importance:
+days_active: 0.4068
+rating_count: 0.2913
+rating_frequency: 0.2371
+rating_std: 0.0649
+rating_mean: 0.0000
+tag_count: 0.0000
+unique_tags: 0.0000
+avg_tag_length: 0.0000
+tag_frequency: 0.0000
+last_tag: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.9180
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+last_tag: 0.1731
+avg_tag_length: 0.1537
+tag_count: 0.1495
+days_active: 0.1424
+rating_count: 0.1063
+tag_frequency: 0.0998
+rating_frequency: 0.0877
+rating_mean: 0.0311
+unique_tags: 0.0305
+rating_std: 0.0261
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8931
+
+Top 10 features by importance:
+tag_frequency: 0.2736
+avg_tag_length: 0.1841
+tag_count: 0.1772
+last_tag: 0.0919
+days_active: 0.0679
+rating_frequency: 0.0546
+rating_count: 0.0545
+unique_tags: 0.0514
+rating_std: 0.0171
+rating_mean: 0.0151
+len with ext 11664
+len without ext 10830
+
+Base model (no extended)
+AUC: 0.8393, Accuracy: 0.9853, F1 Score: 0.2319
+
+Extended model (with extended)
+AUC: 0.9088, Accuracy: 0.9654, F1 Score: 0.3994
+
+Combined model (no extended)
+AUC: 0.8375, Accuracy: 0.9858, F1 Score: 0.2062
+
+Combined model (with extended)
+AUC: 0.9112, Accuracy: 0.9699, F1 Score: 0.3896
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                            Base_Features                                                                           Extended_Features
+0        Base model (no extended)  0.839335  0.985319  0.231884  rating_count, rating_std, days_active, rating_frequency  rating_mean, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+1  Extended model (with extended)  0.908800  0.965449  0.399404  rating_count, rating_std, days_active, rating_frequency  rating_mean, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+2    Combined model (no extended)  0.837510  0.985780  0.206186  rating_count, rating_std, days_active, rating_frequency  rating_mean, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+3  Combined model (with extended)  0.911170  0.969907  0.389565  rating_count, rating_std, days_active, rating_frequency  rating_mean, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+
+>>> RESULT: objective = 0.000544
+    Base AUC: 0.8393 (10830 rows)
+    Extended AUC: 0.9088 (11664 rows)
+    Combined (no ext) AUC: 0.8375
+    Combined (with ext) AUC: 0.9112
+
+================================================================================
+Combo 11/20: rating ext
+Extended: ['rating_mean']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    56233
+0    56233
+Name: count, dtype: int64
+Extended percentage: 50.0 %
+Train set distribution:
+TARGET  has_extended
+0       0               44128
+        1               44143
+1       0                 858
+        1                 843
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               11032
+        1               11036
+1       0                 215
+        1                 211
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8911
+
+Top 10 features by importance:
+avg_tag_length: 0.2423
+tag_frequency: 0.2321
+tag_count: 0.1510
+last_tag: 0.1087
+days_active: 0.0694
+rating_count: 0.0661
+rating_frequency: 0.0591
+unique_tags: 0.0562
+rating_std: 0.0153
+rating_mean: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.8980
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+avg_tag_length: 0.2431
+tag_frequency: 0.2381
+tag_count: 0.1422
+last_tag: 0.1080
+days_active: 0.0668
+rating_count: 0.0641
+rating_frequency: 0.0580
+unique_tags: 0.0575
+rating_std: 0.0142
+rating_mean: 0.0079
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8925
+
+Top 10 features by importance:
+avg_tag_length: 0.2472
+tag_frequency: 0.2326
+tag_count: 0.1428
+last_tag: 0.1036
+days_active: 0.0686
+rating_count: 0.0638
+rating_frequency: 0.0583
+unique_tags: 0.0486
+rating_std: 0.0149
+rating_mean: 0.0126
+len with ext 11247
+len without ext 11247
+
+Base model (no extended)
+AUC: 0.8841, Accuracy: 0.9754, F1 Score: 0.3803
+
+Extended model (with extended)
+AUC: 0.8970, Accuracy: 0.9756, F1 Score: 0.3829
+
+Combined model (no extended)
+AUC: 0.8839, Accuracy: 0.9747, F1 Score: 0.3799
+
+Combined model (with extended)
+AUC: 0.8988, Accuracy: 0.9752, F1 Score: 0.3948
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                             Base_Features          Extended_Features
+0        Base model (no extended)  0.884098  0.975371  0.380313  rating_count, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, has_extended
+1  Extended model (with extended)  0.896961  0.975638  0.382883  rating_count, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, has_extended
+2    Combined model (no extended)  0.883850  0.974749  0.379913  rating_count, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, has_extended
+3  Combined model (with extended)  0.898812  0.975193  0.394794  rating_count, rating_std, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_mean, has_extended
+
+>>> RESULT: objective = 0.001604
+    Base AUC: 0.8841 (11247 rows)
+    Extended AUC: 0.8970 (11247 rows)
+    Combined (no ext) AUC: 0.8839
+    Combined (with ext) AUC: 0.8988
+
+================================================================================
+Combo 12/20: rating+daysac ext
+Extended: ['rating_std', 'days_active']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84264
+0    28202
+Name: count, dtype: int64
+Extended percentage: 74.92 %
+Train set distribution:
+TARGET  has_extended
+0       0               22114
+        1               66156
+1       0                 447
+        1                1255
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5529
+        1               16540
+1       0                 112
+        1                 313
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8699
+
+Top 10 features by importance:
+tag_frequency: 0.3652
+avg_tag_length: 0.2016
+last_tag: 0.1383
+rating_count: 0.0910
+rating_frequency: 0.0854
+tag_count: 0.0819
+unique_tags: 0.0196
+rating_mean: 0.0170
+rating_std: 0.0000
+days_active: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9084
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.3577
+avg_tag_length: 0.2011
+last_tag: 0.1305
+tag_count: 0.0822
+rating_count: 0.0820
+rating_frequency: 0.0760
+days_active: 0.0252
+unique_tags: 0.0185
+rating_mean: 0.0150
+rating_std: 0.0119
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8940
+
+Top 10 features by importance:
+tag_frequency: 0.3793
+last_tag: 0.1608
+avg_tag_length: 0.1556
+days_active: 0.0771
+rating_count: 0.0607
+rating_frequency: 0.0593
+tag_count: 0.0428
+rating_std: 0.0184
+rating_mean: 0.0181
+has_extended: 0.0150
+len with ext 16853
+len without ext 5641
+
+Base model (no extended)
+AUC: 0.8635, Accuracy: 0.9745, F1 Score: 0.3077
+
+Extended model (with extended)
+AUC: 0.8951, Accuracy: 0.9737, F1 Score: 0.3570
+
+Combined model (no extended)
+AUC: 0.8667, Accuracy: 0.9770, F1 Score: 0.2935
+
+Combined model (with extended)
+AUC: 0.8963, Accuracy: 0.9782, F1 Score: 0.3573
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                 Base_Features                      Extended_Features
+0        Base model (no extended)  0.863504  0.974473  0.307692  rating_count, rating_mean, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, days_active, has_extended
+1  Extended model (with extended)  0.895059  0.973714  0.357039  rating_count, rating_mean, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, days_active, has_extended
+2    Combined model (no extended)  0.866688  0.976954  0.293478  rating_count, rating_mean, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, days_active, has_extended
+3  Combined model (with extended)  0.896335  0.978223  0.357268  rating_count, rating_mean, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, days_active, has_extended
+
+>>> RESULT: objective = 0.004461
+    Base AUC: 0.8635 (5641 rows)
+    Extended AUC: 0.8951 (16853 rows)
+    Combined (no ext) AUC: 0.8667
+    Combined (with ext) AUC: 0.8963
+
+================================================================================
+Combo 13/20: rating+rating ext
+Extended: ['rating_std', 'rating_frequency']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84326
+0    28140
+Name: count, dtype: int64
+Extended percentage: 74.98 %
+Train set distribution:
+TARGET  has_extended
+0       0               22047
+        1               66223
+1       0                 465
+        1                1237
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5512
+        1               16557
+1       0                 116
+        1                 309
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 3, 'learning_rate': 0.026698666742744605, 'n_estimators': 785, 'min_child_weight': 4, 'subsample': 0.9083868719818244, 'colsample_bytree': 0.7975182385457563, 'gamma': 2.6136641469099704, 'lambda': 4.275982642567138, 'alpha': 0.2551658483142078, 'scale_pos_weight': 1.6473485619598267}
+Best CV AUC score: 0.8652
+
+Top 10 features by importance:
+tag_frequency: 0.4331
+avg_tag_length: 0.1725
+last_tag: 0.1367
+days_active: 0.1136
+rating_count: 0.0973
+unique_tags: 0.0172
+rating_mean: 0.0155
+tag_count: 0.0140
+rating_std: 0.0000
+rating_frequency: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 641}
+Best CV AUC score: 0.8946
+Using base model with 641 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.3878
+last_tag: 0.1345
+avg_tag_length: 0.1251
+days_active: 0.0956
+rating_count: 0.0821
+rating_frequency: 0.0589
+rating_std: 0.0367
+tag_count: 0.0308
+rating_mean: 0.0263
+unique_tags: 0.0221
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8919
+
+Top 10 features by importance:
+tag_frequency: 0.3510
+avg_tag_length: 0.2132
+tag_count: 0.1117
+last_tag: 0.0895
+days_active: 0.0715
+rating_frequency: 0.0575
+rating_count: 0.0549
+unique_tags: 0.0162
+rating_std: 0.0145
+rating_mean: 0.0122
+len with ext 16866
+len without ext 5628
+
+Base model (no extended)
+AUC: 0.8758, Accuracy: 0.9808, F1 Score: 0.3077
+
+Extended model (with extended)
+AUC: 0.9026, Accuracy: 0.9746, F1 Score: 0.3663
+
+Combined model (no extended)
+AUC: 0.8752, Accuracy: 0.9661, F1 Score: 0.3203
+
+Combined model (with extended)
+AUC: 0.9082, Accuracy: 0.9739, F1 Score: 0.3605
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                            Base_Features                           Extended_Features
+0        Base model (no extended)  0.875814  0.980810  0.307692  rating_count, rating_mean, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, rating_frequency, has_extended
+1  Extended model (with extended)  0.902587  0.974564  0.366322  rating_count, rating_mean, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, rating_frequency, has_extended
+2    Combined model (no extended)  0.875156  0.966063  0.320285  rating_count, rating_mean, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, rating_frequency, has_extended
+3  Combined model (with extended)  0.908195  0.973912  0.360465  rating_count, rating_mean, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, rating_frequency, has_extended
+
+>>> RESULT: objective = 0.004951
+    Base AUC: 0.8758 (5628 rows)
+    Extended AUC: 0.9026 (16866 rows)
+    Combined (no ext) AUC: 0.8752
+    Combined (with ext) AUC: 0.9082
+
+================================================================================
+Combo 14/20: rating+tagcou+unique+avgtag+tagfre+lastta ext
+Extended: ['rating_std', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    58357
+0    54109
+Name: count, dtype: int64
+Extended percentage: 51.89 %
+Train set distribution:
+TARGET  has_extended
+0       0               42728
+        1               45543
+1       0                 559
+        1                1142
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               10682
+        1               11386
+1       0                 140
+        1                 286
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8678
+
+Top 10 features by importance:
+days_active: 0.4113
+rating_count: 0.3034
+rating_frequency: 0.2373
+rating_mean: 0.0480
+rating_std: 0.0000
+tag_count: 0.0000
+unique_tags: 0.0000
+avg_tag_length: 0.0000
+tag_frequency: 0.0000
+last_tag: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9181
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+days_active: 0.2305
+rating_count: 0.1733
+rating_frequency: 0.1368
+last_tag: 0.1241
+tag_frequency: 0.1183
+avg_tag_length: 0.0816
+tag_count: 0.0716
+rating_mean: 0.0261
+rating_std: 0.0210
+unique_tags: 0.0166
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8942
+
+Top 10 features by importance:
+avg_tag_length: 0.2908
+tag_frequency: 0.2615
+last_tag: 0.0982
+tag_count: 0.0849
+days_active: 0.0770
+rating_count: 0.0530
+rating_frequency: 0.0527
+unique_tags: 0.0493
+rating_std: 0.0138
+rating_mean: 0.0120
+len with ext 11672
+len without ext 10822
+
+Base model (no extended)
+AUC: 0.8103, Accuracy: 0.9789, F1 Score: 0.1972
+
+Extended model (with extended)
+AUC: 0.9200, Accuracy: 0.9677, F1 Score: 0.4262
+
+Combined model (no extended)
+AUC: 0.8133, Accuracy: 0.9840, F1 Score: 0.1801
+
+Combined model (with extended)
+AUC: 0.9236, Accuracy: 0.9642, F1 Score: 0.4146
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                             Base_Features                                                                          Extended_Features
+0        Base model (no extended)  0.810327  0.978932  0.197183  rating_count, rating_mean, days_active, rating_frequency  rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+1  Extended model (with extended)  0.920005  0.967700  0.426180  rating_count, rating_mean, days_active, rating_frequency  rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+2    Combined model (no extended)  0.813339  0.984014  0.180095  rating_count, rating_mean, days_active, rating_frequency  rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+3  Combined model (with extended)  0.923572  0.964188  0.414566  rating_count, rating_mean, days_active, rating_frequency  rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+
+>>> RESULT: objective = 0.006579
+    Base AUC: 0.8103 (10822 rows)
+    Extended AUC: 0.9200 (11672 rows)
+    Combined (no ext) AUC: 0.8133
+    Combined (with ext) AUC: 0.9236
+
+================================================================================
+Combo 15/20: rating ext
+Extended: ['rating_std']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+0    56236
+1    56230
+Name: count, dtype: int64
+Extended percentage: 50.0 %
+Train set distribution:
+TARGET  has_extended
+0       0               44099
+        1               44171
+1       0                 889
+        1                 813
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               11026
+        1               11043
+1       0                 222
+        1                 203
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8877
+
+Top 10 features by importance:
+tag_frequency: 0.2440
+avg_tag_length: 0.2247
+last_tag: 0.1800
+tag_count: 0.1016
+days_active: 0.0755
+rating_count: 0.0698
+rating_frequency: 0.0675
+unique_tags: 0.0237
+rating_mean: 0.0133
+rating_std: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9047
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.2419
+avg_tag_length: 0.2276
+last_tag: 0.1800
+tag_count: 0.1008
+days_active: 0.0717
+rating_count: 0.0677
+rating_frequency: 0.0655
+unique_tags: 0.0229
+rating_mean: 0.0122
+rating_std: 0.0098
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8904
+
+Top 10 features by importance:
+tag_frequency: 0.2442
+avg_tag_length: 0.2278
+last_tag: 0.1643
+tag_count: 0.1020
+days_active: 0.0710
+rating_count: 0.0657
+rating_frequency: 0.0639
+unique_tags: 0.0227
+rating_std: 0.0159
+rating_mean: 0.0129
+len with ext 11246
+len without ext 11248
+
+Base model (no extended)
+AUC: 0.9035, Accuracy: 0.9728, F1 Score: 0.3976
+
+Extended model (with extended)
+AUC: 0.8905, Accuracy: 0.9747, F1 Score: 0.3326
+
+Combined model (no extended)
+AUC: 0.9034, Accuracy: 0.9713, F1 Score: 0.3917
+
+Combined model (with extended)
+AUC: 0.8968, Accuracy: 0.9739, F1 Score: 0.3264
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                              Base_Features         Extended_Features
+0        Base model (no extended)  0.903538  0.972795  0.397638  rating_count, rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, has_extended
+1  Extended model (with extended)  0.890479  0.974658  0.332553  rating_count, rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, has_extended
+2    Combined model (no extended)  0.903357  0.971284  0.391714  rating_count, rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, has_extended
+3  Combined model (with extended)  0.896814  0.973946  0.326437  rating_count, rating_mean, days_active, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_std, has_extended
+
+>>> RESULT: objective = 0.006153
+    Base AUC: 0.9035 (11248 rows)
+    Extended AUC: 0.8905 (11246 rows)
+    Combined (no ext) AUC: 0.9034
+    Combined (with ext) AUC: 0.8968
+
+================================================================================
+Combo 16/20: daysac+rating ext
+Extended: ['days_active', 'rating_frequency']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    84259
+0    28207
+Name: count, dtype: int64
+Extended percentage: 74.92 %
+Train set distribution:
+TARGET  has_extended
+0       0               22122
+        1               66148
+1       0                 443
+        1                1259
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0                5531
+        1               16538
+1       0                 111
+        1                 314
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 3, 'learning_rate': 0.026698666742744605, 'n_estimators': 785, 'min_child_weight': 4, 'subsample': 0.9083868719818244, 'colsample_bytree': 0.7975182385457563, 'gamma': 2.6136641469099704, 'lambda': 4.275982642567138, 'alpha': 0.2551658483142078, 'scale_pos_weight': 1.6473485619598267}
+Best CV AUC score: 0.8289
+
+Top 10 features by importance:
+avg_tag_length: 0.3651
+tag_frequency: 0.3148
+last_tag: 0.1362
+rating_count: 0.1115
+rating_std: 0.0214
+unique_tags: 0.0198
+rating_mean: 0.0179
+tag_count: 0.0134
+days_active: 0.0000
+rating_frequency: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 641}
+Best CV AUC score: 0.9098
+Using base model with 641 trees kept
+
+Top 10 features by importance:
+tag_frequency: 0.2887
+avg_tag_length: 0.2258
+last_tag: 0.1215
+rating_count: 0.1025
+days_active: 0.0886
+rating_frequency: 0.0716
+unique_tags: 0.0272
+rating_std: 0.0269
+rating_mean: 0.0241
+tag_count: 0.0230
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8925
+
+Top 10 features by importance:
+avg_tag_length: 0.3361
+tag_frequency: 0.1528
+last_tag: 0.1105
+tag_count: 0.1103
+days_active: 0.0677
+rating_count: 0.0582
+unique_tags: 0.0544
+rating_frequency: 0.0508
+has_extended: 0.0334
+rating_std: 0.0142
+len with ext 16852
+len without ext 5642
+
+Base model (no extended)
+AUC: 0.8334, Accuracy: 0.9819, F1 Score: 0.2817
+
+Extended model (with extended)
+AUC: 0.8985, Accuracy: 0.9732, F1 Score: 0.3727
+
+Combined model (no extended)
+AUC: 0.8255, Accuracy: 0.9731, F1 Score: 0.3274
+
+Combined model (with extended)
+AUC: 0.9029, Accuracy: 0.9734, F1 Score: 0.3725
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                           Base_Features                            Extended_Features
+0        Base model (no extended)  0.833430  0.981921  0.281690  rating_count, rating_mean, rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, rating_frequency, has_extended
+1  Extended model (with extended)  0.898484  0.973238  0.372740  rating_count, rating_mean, rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, rating_frequency, has_extended
+2    Combined model (no extended)  0.825526  0.973059  0.327434  rating_count, rating_mean, rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, rating_frequency, has_extended
+3  Combined model (with extended)  0.902877  0.973416  0.372549  rating_count, rating_mean, rating_std, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, rating_frequency, has_extended
+
+>>> RESULT: objective = -0.003511
+    Base AUC: 0.8334 (5642 rows)
+    Extended AUC: 0.8985 (16852 rows)
+    Combined (no ext) AUC: 0.8255
+    Combined (with ext) AUC: 0.9029
+
+================================================================================
+Combo 17/20: daysac+tagcou+unique+avgtag+tagfre+lastta ext
+Extended: ['days_active', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    58399
+0    54067
+Name: count, dtype: int64
+Extended percentage: 51.93 %
+Train set distribution:
+TARGET  has_extended
+0       0               42705
+        1               45565
+1       0                 548
+        1                1154
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               10677
+        1               11392
+1       0                 137
+        1                 288
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8378
+
+Top 10 features by importance:
+rating_count: 0.4764
+rating_frequency: 0.3785
+rating_std: 0.0748
+rating_mean: 0.0702
+days_active: 0.0000
+tag_count: 0.0000
+unique_tags: 0.0000
+avg_tag_length: 0.0000
+tag_frequency: 0.0000
+last_tag: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.9287
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+last_tag: 0.1977
+tag_count: 0.1713
+rating_count: 0.1523
+rating_frequency: 0.1220
+avg_tag_length: 0.1033
+tag_frequency: 0.1006
+days_active: 0.0745
+rating_std: 0.0268
+unique_tags: 0.0262
+rating_mean: 0.0253
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8932
+
+Top 10 features by importance:
+avg_tag_length: 0.2611
+tag_frequency: 0.2609
+last_tag: 0.1253
+days_active: 0.0683
+tag_count: 0.0673
+rating_count: 0.0646
+rating_frequency: 0.0579
+has_extended: 0.0331
+unique_tags: 0.0265
+rating_std: 0.0180
+len with ext 11680
+len without ext 10814
+
+Base model (no extended)
+AUC: 0.8163, Accuracy: 0.9845, F1 Score: 0.1683
+
+Extended model (with extended)
+AUC: 0.9306, Accuracy: 0.9664, F1 Score: 0.4410
+
+Combined model (no extended)
+AUC: 0.8156, Accuracy: 0.9866, F1 Score: 0.1212
+
+Combined model (with extended)
+AUC: 0.9326, Accuracy: 0.9713, F1 Score: 0.4640
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                            Base_Features                                                                           Extended_Features
+0        Base model (no extended)  0.816266  0.984465  0.168317  rating_count, rating_mean, rating_std, rating_frequency  days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+1  Extended model (with extended)  0.930569  0.966353  0.440967  rating_count, rating_mean, rating_std, rating_frequency  days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+2    Combined model (no extended)  0.815574  0.986591  0.121212  rating_count, rating_mean, rating_std, rating_frequency  days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+3  Combined model (with extended)  0.932564  0.971318  0.464000  rating_count, rating_mean, rating_std, rating_frequency  days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+
+>>> RESULT: objective = 0.001303
+    Base AUC: 0.8163 (10814 rows)
+    Extended AUC: 0.9306 (11680 rows)
+    Combined (no ext) AUC: 0.8156
+    Combined (with ext) AUC: 0.9326
+
+================================================================================
+Combo 18/20: daysac ext
+Extended: ['days_active']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+0    56233
+1    56233
+Name: count, dtype: int64
+Extended percentage: 50.0 %
+Train set distribution:
+TARGET  has_extended
+0       0               44102
+        1               44168
+1       0                 884
+        1                 818
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               11026
+        1               11043
+1       0                 221
+        1                 204
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8758
+
+Top 10 features by importance:
+avg_tag_length: 0.3002
+tag_frequency: 0.2190
+tag_count: 0.1340
+last_tag: 0.1155
+rating_count: 0.0885
+rating_frequency: 0.0774
+unique_tags: 0.0320
+rating_std: 0.0189
+rating_mean: 0.0146
+days_active: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9218
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+avg_tag_length: 0.3027
+tag_frequency: 0.2143
+tag_count: 0.1336
+last_tag: 0.1103
+rating_count: 0.0824
+rating_frequency: 0.0721
+unique_tags: 0.0307
+days_active: 0.0245
+rating_std: 0.0167
+rating_mean: 0.0128
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8959
+
+Top 10 features by importance:
+avg_tag_length: 0.3177
+tag_frequency: 0.2009
+tag_count: 0.1373
+last_tag: 0.0968
+days_active: 0.0691
+rating_count: 0.0611
+rating_frequency: 0.0550
+unique_tags: 0.0283
+rating_std: 0.0152
+rating_mean: 0.0120
+len with ext 11247
+len without ext 11247
+
+Base model (no extended)
+AUC: 0.8682, Accuracy: 0.9736, F1 Score: 0.3721
+
+Extended model (with extended)
+AUC: 0.8957, Accuracy: 0.9743, F1 Score: 0.3890
+
+Combined model (no extended)
+AUC: 0.8657, Accuracy: 0.9721, F1 Score: 0.3566
+
+Combined model (with extended)
+AUC: 0.8991, Accuracy: 0.9746, F1 Score: 0.4139
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                             Base_Features          Extended_Features
+0        Base model (no extended)  0.868160  0.973593  0.372093  rating_count, rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, has_extended
+1  Extended model (with extended)  0.895680  0.974304  0.389006  rating_count, rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, has_extended
+2    Combined model (no extended)  0.865708  0.972081  0.356557  rating_count, rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, has_extended
+3  Combined model (with extended)  0.899124  0.974571  0.413934  rating_count, rating_mean, rating_std, rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  days_active, has_extended
+
+>>> RESULT: objective = 0.000991
+    Base AUC: 0.8682 (11247 rows)
+    Extended AUC: 0.8957 (11247 rows)
+    Combined (no ext) AUC: 0.8657
+    Combined (with ext) AUC: 0.8991
+
+================================================================================
+Combo 19/20: rating+tagcou+unique+avgtag+tagfre+lastta ext
+Extended: ['rating_frequency', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    58371
+0    54095
+Name: count, dtype: int64
+Extended percentage: 51.9 %
+Train set distribution:
+TARGET  has_extended
+0       0               42765
+        1               45505
+1       0                 511
+        1                1191
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               10692
+        1               11377
+1       0                 127
+        1                 298
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 3, 'learning_rate': 0.026698666742744605, 'n_estimators': 785, 'min_child_weight': 4, 'subsample': 0.9083868719818244, 'colsample_bytree': 0.7975182385457563, 'gamma': 2.6136641469099704, 'lambda': 4.275982642567138, 'alpha': 0.2551658483142078, 'scale_pos_weight': 1.6473485619598267}
+Best CV AUC score: 0.8452
+
+Top 10 features by importance:
+rating_count: 0.4250
+days_active: 0.4216
+rating_std: 0.0800
+rating_mean: 0.0734
+rating_frequency: 0.0000
+tag_count: 0.0000
+unique_tags: 0.0000
+avg_tag_length: 0.0000
+tag_frequency: 0.0000
+last_tag: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 641}
+Best CV AUC score: 0.9152
+Using base model with 641 trees kept
+
+Top 10 features by importance:
+last_tag: 0.2112
+days_active: 0.1534
+rating_count: 0.1439
+tag_count: 0.1390
+avg_tag_length: 0.0856
+rating_frequency: 0.0853
+tag_frequency: 0.0848
+rating_std: 0.0336
+rating_mean: 0.0327
+unique_tags: 0.0303
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8929
+
+Top 10 features by importance:
+avg_tag_length: 0.3742
+tag_frequency: 0.1596
+tag_count: 0.1276
+days_active: 0.0594
+last_tag: 0.0583
+rating_count: 0.0534
+rating_frequency: 0.0515
+has_extended: 0.0507
+unique_tags: 0.0409
+rating_std: 0.0131
+len with ext 11675
+len without ext 10819
+
+Base model (no extended)
+AUC: 0.8067, Accuracy: 0.9882, F1 Score: 0.0857
+
+Extended model (with extended)
+AUC: 0.9201, Accuracy: 0.9630, F1 Score: 0.4082
+
+Combined model (no extended)
+AUC: 0.8026, Accuracy: 0.9860, F1 Score: 0.2011
+
+Combined model (with extended)
+AUC: 0.9234, Accuracy: 0.9623, F1 Score: 0.4241
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                       Base_Features                                                                                Extended_Features
+0        Base model (no extended)  0.806714  0.988169  0.085714  rating_count, rating_mean, rating_std, days_active  rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+1  Extended model (with extended)  0.920098  0.962998  0.408219  rating_count, rating_mean, rating_std, days_active  rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+2    Combined model (no extended)  0.802645  0.986043  0.201058  rating_count, rating_mean, rating_std, days_active  rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+3  Combined model (with extended)  0.923384  0.962313  0.424084  rating_count, rating_mean, rating_std, days_active  rating_frequency, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag, has_extended
+
+>>> RESULT: objective = -0.000784
+    Base AUC: 0.8067 (10819 rows)
+    Extended AUC: 0.9201 (11675 rows)
+    Combined (no ext) AUC: 0.8026
+    Combined (with ext) AUC: 0.9234
+
+================================================================================
+Combo 20/20: rating ext
+Extended: ['rating_frequency']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+0    56233
+1    56233
+Name: count, dtype: int64
+Extended percentage: 50.0 %
+Train set distribution:
+TARGET  has_extended
+0       0               44148
+        1               44122
+1       0                 838
+        1                 864
+dtype: int64
+
+Test set distribution:
+TARGET  has_extended
+0       0               11038
+        1               11031
+1       0                 209
+        1                 216
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8769
+
+Top 10 features by importance:
+avg_tag_length: 0.2613
+tag_frequency: 0.1919
+tag_count: 0.1745
+last_tag: 0.1200
+days_active: 0.0931
+rating_count: 0.0709
+unique_tags: 0.0566
+rating_std: 0.0178
+rating_mean: 0.0139
+rating_frequency: 0.0000
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.9109
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+avg_tag_length: 0.2633
+tag_frequency: 0.1834
+tag_count: 0.1762
+last_tag: 0.1180
+days_active: 0.0880
+rating_count: 0.0665
+unique_tags: 0.0562
+rating_frequency: 0.0203
+rating_std: 0.0157
+rating_mean: 0.0123
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.8950
+
+Top 10 features by importance:
+avg_tag_length: 0.2911
+tag_frequency: 0.1764
+tag_count: 0.1593
+last_tag: 0.1129
+days_active: 0.0669
+rating_frequency: 0.0545
+rating_count: 0.0531
+unique_tags: 0.0524
+rating_std: 0.0147
+rating_mean: 0.0119
+len with ext 11247
+len without ext 11247
+
+Base model (no extended)
+AUC: 0.8563, Accuracy: 0.9736, F1 Score: 0.3774
+
+Extended model (with extended)
+AUC: 0.8995, Accuracy: 0.9739, F1 Score: 0.3318
+
+Combined model (no extended)
+AUC: 0.8544, Accuracy: 0.9729, F1 Score: 0.3659
+
+Combined model (with extended)
+AUC: 0.9062, Accuracy: 0.9742, F1 Score: 0.3498
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                        Base_Features               Extended_Features
+0        Base model (no extended)  0.856309  0.973593  0.377358  rating_count, rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_frequency, has_extended
+1  Extended model (with extended)  0.899520  0.973860  0.331818  rating_count, rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_frequency, has_extended
+2    Combined model (no extended)  0.854360  0.972882  0.365904  rating_count, rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_frequency, has_extended
+3  Combined model (with extended)  0.906249  0.974215  0.349776  rating_count, rating_mean, rating_std, days_active, tag_count, unique_tags, avg_tag_length, tag_frequency, last_tag  rating_frequency, has_extended
+
+>>> RESULT: objective = 0.004781
+    Base AUC: 0.8563 (11247 rows)
+    Extended AUC: 0.8995 (11247 rows)
+    Combined (no ext) AUC: 0.8544
+    Combined (with ext) AUC: 0.9062
+
+========================================================================================================================
+FINAL SUMMARY
+========================================================================================================================
+Combo                                         Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no_ext   N_ext     
+---------------------------------------------------------------------------------------------------------------------
+rating+rating ext                             0.003951     0.8845     0.9066     0.8812     0.9138     5617       16877     
+rating+rating ext                             0.000317     0.8789     0.8860     0.8754     0.8899     5592       16902     
+rating+daysac ext                             0.004928     0.8623     0.9086     0.8604     0.9154     5594       16900     
+rating+rating ext                             -0.002898    0.8431     0.8986     0.8389     0.8999     5617       16877     
+rating+tagcou+unique+avgtag+tagfre+lastta ext 0.002303     0.8153     0.9169     0.8149     0.9196     10816      11678     
+rating ext                                    -0.003813    0.8807     0.9123     0.8791     0.9100     11247      11247     
+rating+rating ext                             -0.004046    0.9209     0.8739     0.9199     0.8709     5616       16878     
+rating+daysac ext                             0.001982     0.8948     0.9023     0.8965     0.9027     5630       16864     
+rating+rating ext                             0.006616     0.8717     0.8922     0.8729     0.8976     5644       16850     
+rating+tagcou+unique+avgtag+tagfre+lastta ext 0.000544     0.8393     0.9088     0.8375     0.9112     10830      11664     
+rating ext                                    0.001604     0.8841     0.8970     0.8839     0.8988     11247      11247     
+rating+daysac ext                             0.004461     0.8635     0.8951     0.8667     0.8963     5641       16853     
+rating+rating ext                             0.004951     0.8758     0.9026     0.8752     0.9082     5628       16866     
+rating+tagcou+unique+avgtag+tagfre+lastta ext 0.006579     0.8103     0.9200     0.8133     0.9236     10822      11672     
+rating ext                                    0.006153     0.9035     0.8905     0.9034     0.8968     11248      11246     
+daysac+rating ext                             -0.003511    0.8334     0.8985     0.8255     0.9029     5642       16852     
+daysac+tagcou+unique+avgtag+tagfre+lastta ext 0.001303     0.8163     0.9306     0.8156     0.9326     10814      11680     
+daysac ext                                    0.000991     0.8682     0.8957     0.8657     0.8991     11247      11247     
+rating+tagcou+unique+avgtag+tagfre+lastta ext -0.000784    0.8067     0.9201     0.8026     0.9234     10819      11675     
+rating ext                                    0.004781     0.8563     0.8995     0.8544     0.9062     11247      11247     
+
+Negative objectives (incremental wins): 5/20
+
+Done!
