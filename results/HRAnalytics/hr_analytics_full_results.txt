@@ -1,0 +1,564 @@
+All random seeds have been set to: 42
+Dataset shape: (19158, 13)
+N_TRIALS per model: 10
+Target distribution:
+target
+0    14381
+1     4777
+Name: count, dtype: int64
+  Candidate: gender (null: 23.53%)
+  Candidate: major_discipline (null: 14.68%)
+  Candidate: company_size (null: 30.99%)
+  Candidate: company_type (null: 32.05%)
+
+4 candidate features -> 16 total combinations
+
+Null pattern overlap:
+
+====================================================================================================
+DRY RUN: Finding valid combinations
+====================================================================================================
+
+Valid: 5 -> Unique: 5
+
+#    Name                                          N_no_ext   N_ext      %ext     Test_no    Test_ext   MinGrp  
+----------------------------------------------------------------------------------------------------
+1    gender ext                                    4508       14650      76.5     902        2930       278     
+2    majord ext                                    2813       16345      85.3     563        3269       110     
+3    compan+compan ext                             5360       13798      72.0     1072       2760       448     
+4    compan ext                                    5938       13220      69.0     1188       2644       473     
+5    compan ext                                    6140       13018      68.0     1228       2604       477     
+
+====================================================================================================
+RUNNING 5 UNIQUE COMBINATIONS (n_trials=10)
+====================================================================================================
+
+================================================================================
+Combo 1/5: gender ext
+Extended: ['gender']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    14650
+0     4508
+Name: count, dtype: int64
+Extended percentage: 76.47 %
+Train set distribution:
+target  has_extended
+0       0               2495
+        1               9010
+1       0               1111
+        1               2710
+dtype: int64
+
+Test set distribution:
+target  has_extended
+0       0                624
+        1               2252
+1       0                278
+        1                678
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8043
+
+Top 10 features by importance:
+company_size: 0.2496
+city_development_index: 0.2091
+company_type: 0.1212
+major_discipline: 0.0921
+city: 0.0753
+relevent_experience: 0.0697
+education_level: 0.0526
+enrolled_university: 0.0437
+last_new_job: 0.0365
+experience: 0.0294
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.8297
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+company_size: 0.2367
+city_development_index: 0.2056
+company_type: 0.1175
+major_discipline: 0.0895
+city: 0.0736
+relevent_experience: 0.0710
+education_level: 0.0533
+enrolled_university: 0.0441
+last_new_job: 0.0370
+experience: 0.0298
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8045
+
+Top 10 features by importance:
+company_size: 0.2324
+city_development_index: 0.2036
+company_type: 0.1179
+major_discipline: 0.0868
+city: 0.0719
+relevent_experience: 0.0680
+education_level: 0.0507
+enrolled_university: 0.0417
+last_new_job: 0.0357
+experience: 0.0282
+len with ext 2930
+len without ext 902
+
+Base model (no extended)
+AUC: 0.7739, Accuracy: 0.7029, F1 Score: 0.6246
+
+Extended model (with extended)
+AUC: 0.8105, Accuracy: 0.7410, F1 Score: 0.5855
+
+Combined model (no extended)
+AUC: 0.7742, Accuracy: 0.7029, F1 Score: 0.6278
+
+Combined model (with extended)
+AUC: 0.8100, Accuracy: 0.7860, F1 Score: 0.6165
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                    Base_Features     Extended_Features
+0        Base model (no extended)  0.773946  0.702882  0.624650  city, city_development_index, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, company_type, last_new_job, training_hours  gender, has_extended
+1  Extended model (with extended)  0.810465  0.740956  0.585472  city, city_development_index, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, company_type, last_new_job, training_hours  gender, has_extended
+2    Combined model (no extended)  0.774234  0.702882  0.627778  city, city_development_index, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, company_type, last_new_job, training_hours  gender, has_extended
+3  Combined model (with extended)  0.809999  0.786007  0.616514  city, city_development_index, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, company_type, last_new_job, training_hours  gender, has_extended
+
+>>> RESULT: objective = -0.000177
+    Base AUC: 0.7739 (902 rows)
+    Extended AUC: 0.8105 (2930 rows)
+    Combined (no ext) AUC: 0.7742
+    Combined (with ext) AUC: 0.8100
+
+================================================================================
+Combo 2/5: majord ext
+Extended: ['major_discipline']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    16345
+0     2813
+Name: count, dtype: int64
+Extended percentage: 85.32 %
+Train set distribution:
+target  has_extended
+0       0               1811
+        1               9694
+1       0                439
+        1               3382
+dtype: int64
+
+Test set distribution:
+target  has_extended
+0       0                453
+        1               2423
+1       0                110
+        1                846
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8033
+
+Top 10 features by importance:
+company_size: 0.2542
+city_development_index: 0.2153
+company_type: 0.1275
+city: 0.0831
+education_level: 0.0810
+relevent_experience: 0.0693
+last_new_job: 0.0471
+enrolled_university: 0.0454
+experience: 0.0305
+training_hours: 0.0235
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.8314
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+company_size: 0.2374
+city_development_index: 0.2127
+company_type: 0.1237
+education_level: 0.0828
+city: 0.0811
+relevent_experience: 0.0685
+last_new_job: 0.0472
+enrolled_university: 0.0457
+experience: 0.0306
+training_hours: 0.0240
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8036
+
+Top 10 features by importance:
+company_size: 0.2097
+city_development_index: 0.1812
+company_type: 0.1133
+has_extended: 0.0960
+major_discipline: 0.0722
+city: 0.0709
+relevent_experience: 0.0664
+education_level: 0.0505
+enrolled_university: 0.0401
+last_new_job: 0.0325
+len with ext 3269
+len without ext 563
+
+Base model (no extended)
+AUC: 0.8044, Accuracy: 0.7780, F1 Score: 0.5675
+
+Extended model (with extended)
+AUC: 0.8053, Accuracy: 0.7207, F1 Score: 0.6036
+
+Combined model (no extended)
+AUC: 0.8078, Accuracy: 0.7869, F1 Score: 0.5620
+
+Combined model (with extended)
+AUC: 0.8047, Accuracy: 0.7611, F1 Score: 0.6297
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                          Base_Features               Extended_Features
+0        Base model (no extended)  0.804415  0.777975  0.567474  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, experience, company_size, company_type, last_new_job, training_hours  major_discipline, has_extended
+1  Extended model (with extended)  0.805317  0.720710  0.603561  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, experience, company_size, company_type, last_new_job, training_hours  major_discipline, has_extended
+2    Combined model (no extended)  0.807847  0.786856  0.562044  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, experience, company_size, company_type, last_new_job, training_hours  major_discipline, has_extended
+3  Combined model (with extended)  0.804673  0.761089  0.629682  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, experience, company_size, company_type, last_new_job, training_hours  major_discipline, has_extended
+
+>>> RESULT: objective = 0.002787
+    Base AUC: 0.8044 (563 rows)
+    Extended AUC: 0.8053 (3269 rows)
+    Combined (no ext) AUC: 0.8078
+    Combined (with ext) AUC: 0.8047
+
+================================================================================
+Combo 3/5: compan+compan ext
+Extended: ['company_size', 'company_type']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    13798
+0     5360
+Name: count, dtype: int64
+Extended percentage: 72.02 %
+Train set distribution:
+target  has_extended
+0       0               2494
+        1               9010
+1       0               1794
+        1               2028
+dtype: int64
+
+Test set distribution:
+target  has_extended
+0       0                624
+        1               2253
+1       0                448
+        1                507
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 6, 'learning_rate': 0.003488976654890368, 'n_estimators': 846, 'min_child_weight': 3, 'subsample': 0.7123738038749523, 'colsample_bytree': 0.8170784332632994, 'gamma': 0.7046211248738132, 'lambda': 8.022167610559643, 'alpha': 0.7464318861540284, 'scale_pos_weight': 6.921321619603104}
+Best CV AUC score: 0.7630
+
+Top 10 features by importance:
+city_development_index: 0.2824
+relevent_experience: 0.2582
+city: 0.0896
+enrolled_university: 0.0877
+major_discipline: 0.0691
+education_level: 0.0680
+last_new_job: 0.0470
+experience: 0.0369
+gender: 0.0307
+training_hours: 0.0304
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 690}
+Best CV AUC score: 0.8047
+Using base model with 690 trees kept
+
+Top 10 features by importance:
+city_development_index: 0.2711
+relevent_experience: 0.2463
+city: 0.0860
+enrolled_university: 0.0833
+major_discipline: 0.0652
+education_level: 0.0648
+last_new_job: 0.0435
+experience: 0.0332
+company_type: 0.0281
+gender: 0.0277
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8044
+
+Top 10 features by importance:
+has_extended: 0.5213
+city_development_index: 0.1155
+company_size: 0.0814
+city: 0.0467
+major_discipline: 0.0434
+education_level: 0.0365
+relevent_experience: 0.0319
+company_type: 0.0302
+enrolled_university: 0.0268
+last_new_job: 0.0228
+len with ext 2760
+len without ext 1072
+
+Base model (no extended)
+AUC: 0.7319, Accuracy: 0.6325, F1 Score: 0.6744
+
+Extended model (with extended)
+AUC: 0.7796, Accuracy: 0.7888, F1 Score: 0.5279
+
+Combined model (no extended)
+AUC: 0.7469, Accuracy: 0.6147, F1 Score: 0.6650
+
+Combined model (with extended)
+AUC: 0.7854, Accuracy: 0.8344, F1 Score: 0.5668
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                Base_Features                         Extended_Features
+0        Base model (no extended)  0.731878  0.632463  0.674380  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, last_new_job, training_hours  company_size, company_type, has_extended
+1  Extended model (with extended)  0.779644  0.788768  0.527935  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, last_new_job, training_hours  company_size, company_type, has_extended
+2    Combined model (no extended)  0.746890  0.614739  0.665045  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, last_new_job, training_hours  company_size, company_type, has_extended
+3  Combined model (with extended)  0.785431  0.834420  0.566825  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, last_new_job, training_hours  company_size, company_type, has_extended
+
+>>> RESULT: objective = 0.020799
+    Base AUC: 0.7319 (1072 rows)
+    Extended AUC: 0.7796 (2760 rows)
+    Combined (no ext) AUC: 0.7469
+    Combined (with ext) AUC: 0.7854
+
+================================================================================
+Combo 4/5: compan ext
+Extended: ['company_size']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    13220
+0     5938
+Name: count, dtype: int64
+Extended percentage: 69.01 %
+Train set distribution:
+target  has_extended
+0       0               2822
+        1               8682
+1       0               1928
+        1               1894
+dtype: int64
+
+Test set distribution:
+target  has_extended
+0       0                706
+        1               2171
+1       0                482
+        1                473
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.7959
+
+Top 10 features by importance:
+company_type: 0.3301
+city_development_index: 0.2012
+relevent_experience: 0.0965
+city: 0.0772
+education_level: 0.0700
+major_discipline: 0.0634
+enrolled_university: 0.0477
+last_new_job: 0.0376
+experience: 0.0320
+training_hours: 0.0225
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.8039
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+company_type: 0.3118
+city_development_index: 0.1954
+relevent_experience: 0.0957
+city: 0.0730
+education_level: 0.0701
+major_discipline: 0.0620
+enrolled_university: 0.0463
+last_new_job: 0.0375
+experience: 0.0327
+company_size: 0.0283
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8022
+
+Top 10 features by importance:
+has_extended: 0.3145
+company_size: 0.1848
+city_development_index: 0.1451
+major_discipline: 0.0604
+city: 0.0548
+company_type: 0.0464
+education_level: 0.0453
+relevent_experience: 0.0387
+enrolled_university: 0.0288
+last_new_job: 0.0274
+len with ext 2644
+len without ext 1188
+
+Base model (no extended)
+AUC: 0.7393, Accuracy: 0.6490, F1 Score: 0.6800
+
+Extended model (with extended)
+AUC: 0.7950, Accuracy: 0.8056, F1 Score: 0.5554
+
+Combined model (no extended)
+AUC: 0.7420, Accuracy: 0.6170, F1 Score: 0.6672
+
+Combined model (with extended)
+AUC: 0.7946, Accuracy: 0.8521, F1 Score: 0.6062
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                              Base_Features           Extended_Features
+0        Base model (no extended)  0.739312  0.648990  0.679969  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_type, last_new_job, training_hours  company_size, has_extended
+1  Extended model (with extended)  0.795002  0.805598  0.555363  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_type, last_new_job, training_hours  company_size, has_extended
+2    Combined model (no extended)  0.742013  0.617003  0.667154  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_type, last_new_job, training_hours  company_size, has_extended
+3  Combined model (with extended)  0.794603  0.852118  0.606244  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_type, last_new_job, training_hours  company_size, has_extended
+
+>>> RESULT: objective = 0.002301
+    Base AUC: 0.7393 (1188 rows)
+    Extended AUC: 0.7950 (2644 rows)
+    Combined (no ext) AUC: 0.7420
+    Combined (with ext) AUC: 0.7946
+
+================================================================================
+Combo 5/5: compan ext
+Extended: ['company_type']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    13018
+0     6140
+Name: count, dtype: int64
+Extended percentage: 67.95 %
+Train set distribution:
+target  has_extended
+0       0               3005
+        1               8500
+1       0               1907
+        1               1914
+dtype: int64
+
+Test set distribution:
+target  has_extended
+0       0                751
+        1               2125
+1       0                477
+        1                479
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8019
+
+Top 10 features by importance:
+company_size: 0.3244
+city_development_index: 0.2109
+city: 0.0852
+relevent_experience: 0.0805
+major_discipline: 0.0762
+education_level: 0.0584
+enrolled_university: 0.0520
+last_new_job: 0.0384
+experience: 0.0304
+gender: 0.0218
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 325}
+Best CV AUC score: 0.8122
+Using base model with 325 trees kept
+
+Top 10 features by importance:
+company_size: 0.2973
+city_development_index: 0.2066
+city: 0.0839
+relevent_experience: 0.0806
+major_discipline: 0.0758
+education_level: 0.0599
+enrolled_university: 0.0528
+last_new_job: 0.0389
+experience: 0.0313
+company_type: 0.0259
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 9, 'learning_rate': 0.01764396768338155, 'n_estimators': 398, 'min_child_weight': 1, 'subsample': 0.7243929286862649, 'colsample_bytree': 0.7300733288106989, 'gamma': 3.64803089169032, 'lambda': 6.375937156080776, 'alpha': 8.872240213020689, 'scale_pos_weight': 3.8332895509716955}
+Best CV AUC score: 0.8035
+
+Top 10 features by importance:
+company_size: 0.2352
+city_development_index: 0.1832
+has_extended: 0.1182
+company_type: 0.0847
+city: 0.0709
+major_discipline: 0.0656
+education_level: 0.0554
+relevent_experience: 0.0477
+enrolled_university: 0.0425
+last_new_job: 0.0323
+len with ext 2604
+len without ext 1228
+
+Base model (no extended)
+AUC: 0.7596, Accuracy: 0.6588, F1 Score: 0.6688
+
+Extended model (with extended)
+AUC: 0.7746, Accuracy: 0.7922, F1 Score: 0.5356
+
+Combined model (no extended)
+AUC: 0.7616, Accuracy: 0.6515, F1 Score: 0.6651
+
+Combined model (with extended)
+AUC: 0.7809, Accuracy: 0.8356, F1 Score: 0.5746
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                              Base_Features           Extended_Features
+0        Base model (no extended)  0.759567  0.658795  0.668775  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, last_new_job, training_hours  company_type, has_extended
+1  Extended model (with extended)  0.774601  0.792243  0.535622  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, last_new_job, training_hours  company_type, has_extended
+2    Combined model (no extended)  0.761595  0.651466  0.665102  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, last_new_job, training_hours  company_type, has_extended
+3  Combined model (with extended)  0.780925  0.835637  0.574553  city, city_development_index, gender, relevent_experience, enrolled_university, education_level, major_discipline, experience, company_size, last_new_job, training_hours  company_type, has_extended
+
+>>> RESULT: objective = 0.008352
+    Base AUC: 0.7596 (1228 rows)
+    Extended AUC: 0.7746 (2604 rows)
+    Combined (no ext) AUC: 0.7616
+    Combined (with ext) AUC: 0.7809
+
+========================================================================================================================
+FINAL SUMMARY
+========================================================================================================================
+Combo                                         Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no_ext   N_ext     
+---------------------------------------------------------------------------------------------------------------------
+gender ext                                    -0.000177    0.7739     0.8105     0.7742     0.8100     902        2930      
+majord ext                                    0.002787     0.8044     0.8053     0.8078     0.8047     563        3269      
+compan+compan ext                             0.020799     0.7319     0.7796     0.7469     0.7854     1072       2760      
+compan ext                                    0.002301     0.7393     0.7950     0.7420     0.7946     1188       2644      
+compan ext                                    0.008352     0.7596     0.7746     0.7616     0.7809     1228       2604      
+
+Negative objectives (incremental wins): 1/5
+
+Done!

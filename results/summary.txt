@@ -113,6 +113,26 @@ Incremental wins: 11/28 (39%)
 Best combo: weight+medica+A1Cres ext (objective: -0.005322)
 
 ================================================================================
+DATASET 4: HRAnalytics (Natural Nulls)
+================================================================================
+Rows: 19,158 | No augmentation needed (real-world missing data)
+Candidate features (>5% null): gender (24%), major_discipline (15%),
+  company_size (31%), company_type (32%)
+Combos: 5 unique | Optuna trials per model: 10
+Label: target (binary, job change prediction)
+
+#   Combo                                         Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- --------------------------------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   gender ext                                    -0.000177    0.7739    0.8105    0.7742    0.8100    902       2930      Increm
+2   majord ext                                     0.002787    0.8044    0.8053    0.8078    0.8047    563       3269      Combined
+3   compan+compan ext                              0.020799    0.7319    0.7796    0.7469    0.7854    1072      2760      Combined
+4   compan ext                                     0.002301    0.7393    0.7950    0.7420    0.7946    1188      2644      Combined
+5   compan ext                                     0.008352    0.7596    0.7746    0.7616    0.7809    1228      2604      Combined
+
+Incremental wins: 1/5 (20%)
+Best combo: gender ext (objective: -0.000177)
+
+================================================================================
 OVERALL SUMMARY
 ================================================================================
 
@@ -121,8 +141,9 @@ Dataset              Rows     Combos   Increm Wins   Best Combo                 
 BankLoanSta          100,000  7        7/7 (100%)    CS+AI ext                        -0.006532    0.6515    0.8008    0.6552    0.7906    Yes
 Weather              25,000   23       10/23 (43%)   Evapor+Sunshi+WindDi ext         -0.009676    0.8432    0.8448    0.8314    0.8469    No
 DiabetesRecord       101,766  28       11/28 (39%)   weight+medica+A1Cres ext         -0.005322    0.7069    0.7041    0.7024    0.7032    No
+HRAnalytics          19,158   5        1/5 (20%)     gender ext                       -0.000177    0.7739    0.8105    0.7742    0.8100    No
 
-Total: 28/58 combinations (48%) show incremental learning advantage.
+Total: 29/63 combinations (46%) show incremental learning advantage.
 
 Key insight: Across all datasets, specialized incremental models tend to outperform the single combined model,
 particularly when extended features have high null ratios and the base/extended split is well-separated.
