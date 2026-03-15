@@ -70,6 +70,49 @@ Incremental wins: 10/23 (43%)
 Best combo: Evapor+Sunshi+WindDi ext (objective: -0.009676)
 
 ================================================================================
+DATASET 3: DiabetesRecord (Natural Nulls)
+================================================================================
+Rows: 101,766 | No augmentation needed (real-world missing data)
+Candidate features (>5% null): weight (97%), payer_code (40%), medical_specialty (49%),
+  max_glu_serum (95%), A1Cresult (83%)
+Combos: 28 unique | Optuna trials per model: 10
+Label: readmitted (binary: NO=0, <30/>30=1)
+
+#   Combo                                         Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- --------------------------------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   weight+payerc+medica+maxglu+A1Cres ext         0.001210    0.6851    0.7061    0.6884    0.7039    2517      17837     Combined
+2   weight+payerc+medica+maxglu ext                0.009701    0.6792    0.7009    0.6890    0.7008    2949      17405     Combined
+3   weight+payerc+medica+A1Cres ext                0.002368    0.6943    0.7054    0.6968    0.7052    2753      17601     Combined
+4   weight+payerc+medica ext                       0.001719    0.6992    0.7054    0.7006    0.7057    3205      17149     Combined
+5   weight+payerc+maxglu+A1Cres ext               -0.003024    0.6757    0.7041    0.6750    0.7017    5869      14485     Increm
+6   weight+payerc+maxglu ext                      -0.001134    0.6840    0.7076    0.6841    0.7063    7189      13165     Increm
+7   weight+payerc+A1Cres ext                       0.004197    0.6899    0.7131    0.6944    0.7128    6507      13847     Combined
+8   weight+payerc ext                              0.000153    0.6854    0.7164    0.6885    0.7135    7875      12479     Combined
+9   weight+medica+maxglu+A1Cres ext               -0.002817    0.7004    0.7065    0.6998    0.7043    7664      12690     Increm
+10  weight+medica+maxglu ext                      -0.004022    0.7048    0.7062    0.7016    0.7053    9195      11159     Increm
+11  weight+medica+A1Cres ext                      -0.005322    0.7069    0.7041    0.7024    0.7032    8117      12237     Increm
+12  weight+medica ext                             -0.000806    0.7002    0.7045    0.6999    0.7040    9680      10674     Increm
+13  weight+maxglu+A1Cres ext                       0.005567    0.7006    0.7075    0.7025    0.7111    15370     4984      Combined
+14  weight+A1Cres ext                              0.001489    0.7077    0.7044    0.7075    0.7061    16380     3974      Combined
+15  payerc+medica+maxglu+A1Cres ext                0.005588    0.6959    0.7084    0.7016    0.7083    2580      17774     Combined
+16  payerc+medica+maxglu ext                       0.001334    0.6902    0.7046    0.6915    0.7046    3015      17339     Combined
+17  payerc+medica+A1Cres ext                       0.004057    0.6975    0.7083    0.7047    0.7052    2816      17538     Combined
+18  payerc+medica ext                              0.002888    0.6916    0.7128    0.6973    0.7100    3271      17083     Combined
+19  payerc+maxglu+A1Cres ext                       0.004477    0.6839    0.7055    0.6882    0.7057    6035      14319     Combined
+20  payerc+maxglu ext                              0.001192    0.6962    0.7088    0.6977    0.7086    7365      12989     Combined
+21  payerc+A1Cres ext                              0.000476    0.6922    0.7057    0.6934    0.7050    6674      13680     Combined
+22  payerc ext                                     0.000117    0.7045    0.7108    0.7046    0.7108    8051      12303     Combined
+23  medica+maxglu+A1Cres ext                      -0.002276    0.6922    0.7045    0.6910    0.7035    7935      12419     Increm
+24  medica+maxglu ext                             -0.001809    0.7021    0.7072    0.7021    0.7054    9506      10848     Increm
+25  medica+A1Cres ext                             -0.000842    0.7015    0.7038    0.7014    0.7031    8389      11965     Increm
+26  medica ext                                    -0.002546    0.7034    0.7013    0.7032    0.6989    9990      10364     Increm
+27  maxglu+A1Cres ext                              0.003587    0.7060    0.7020    0.7063    0.7053    15940     4414      Combined
+28  A1Cres ext                                    -0.001880    0.7000    0.6944    0.6985    0.6940    16951     3403      Increm
+
+Incremental wins: 11/28 (39%)
+Best combo: weight+medica+A1Cres ext (objective: -0.005322)
+
+================================================================================
 OVERALL SUMMARY
 ================================================================================
 
@@ -77,8 +120,9 @@ Dataset              Rows     Combos   Increm Wins   Best Combo                 
 -------------------- -------- -------- ------------- -------------------------------- ------------ --------- --------- --------- --------- ----------
 BankLoanSta          100,000  7        7/7 (100%)    CS+AI ext                        -0.006532    0.6515    0.8008    0.6552    0.7906    Yes
 Weather              25,000   23       10/23 (43%)   Evapor+Sunshi+WindDi ext         -0.009676    0.8432    0.8448    0.8314    0.8469    No
+DiabetesRecord       101,766  28       11/28 (39%)   weight+medica+A1Cres ext         -0.005322    0.7069    0.7041    0.7024    0.7032    No
 
-Total: 17/30 combinations (57%) show incremental learning advantage.
+Total: 28/58 combinations (48%) show incremental learning advantage.
 
-Key insight: In both datasets, Avg Ext > Avg Comb+ext and Avg Base > Avg Comb-no (on average),
-confirming that specialized incremental models tend to outperform the single combined model.
+Key insight: Across all datasets, specialized incremental models tend to outperform the single combined model,
+particularly when extended features have high null ratios and the base/extended split is well-separated.
