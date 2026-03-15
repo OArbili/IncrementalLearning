@@ -1,0 +1,55 @@
+All random seeds have been set to: 42
+Downloading MovieLens 20M dataset...
+Dataset path: /Users/arbili/.cache/kagglehub/datasets/grouplens/movielens-20m-dataset/versions/1
+Ratings: (20000263, 4), Tags: (465564, 4)
+Converting timestamps...
+Engineering features...
+Dataset shape: (112466, 11)
+N_TRIALS per model: 10
+Target distribution:
+TARGET
+0    110339
+1      2127
+Name: count, dtype: int64
+  Candidate: tag_count (null: 96.21%)
+  Candidate: unique_tags (null: 96.21%)
+  Candidate: avg_tag_length (null: 96.21%)
+  Candidate: tag_frequency (null: 96.21%)
+  Candidate: last_tag (null: 96.21%)
+
+5 candidate features -> 32 total combinations
+
+Null pattern overlap:
+  tag_count ~ unique_tags: Jaccard=1.0000 (nearly identical!)
+  tag_count ~ avg_tag_length: Jaccard=1.0000 (nearly identical!)
+  tag_count ~ tag_frequency: Jaccard=1.0000 (nearly identical!)
+  tag_count ~ last_tag: Jaccard=1.0000 (nearly identical!)
+  unique_tags ~ avg_tag_length: Jaccard=1.0000 (nearly identical!)
+  unique_tags ~ tag_frequency: Jaccard=1.0000 (nearly identical!)
+  unique_tags ~ last_tag: Jaccard=1.0000 (nearly identical!)
+  avg_tag_length ~ tag_frequency: Jaccard=1.0000 (nearly identical!)
+  avg_tag_length ~ last_tag: Jaccard=1.0000 (nearly identical!)
+  tag_frequency ~ last_tag: Jaccard=1.0000 (nearly identical!)
+
+====================================================================================================
+DRY RUN: Finding valid combinations
+====================================================================================================
+
+Valid: 0 -> Unique: 0
+
+#    Name                                          N_no_ext   N_ext      %ext     Test_no    Test_ext   MinGrp  
+----------------------------------------------------------------------------------------------------
+
+====================================================================================================
+RUNNING 0 UNIQUE COMBINATIONS (n_trials=10)
+====================================================================================================
+
+========================================================================================================================
+FINAL SUMMARY
+========================================================================================================================
+Combo                                         Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no_ext   N_ext     
+---------------------------------------------------------------------------------------------------------------------
+
+Negative objectives (incremental wins): 0/0
+
+Done!

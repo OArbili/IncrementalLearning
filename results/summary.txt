@@ -133,6 +133,34 @@ Incremental wins: 1/5 (20%)
 Best combo: gender ext (objective: -0.000177)
 
 ================================================================================
+DATASET 5: ClientRecord (Natural Nulls)
+================================================================================
+Rows: 7,043 | No augmentation needed (real-world missing data)
+Candidate features (>5% null): Offer (55%), Internet Type (22%), Avg Monthly GB Download (22%),
+  Online Security (22%), Online Backup (22%), Device Protection Plan (22%), Premium Tech Support (22%),
+  Streaming TV (22%), Streaming Movies (22%), Streaming Music (22%), Unlimited Data (22%),
+  Avg Monthly Long Distance Charges (10%), Multiple Lines (10%)
+Note: 10 Internet features share identical null pattern; 2 Phone features share identical null pattern
+Combos: 1 unique (from 8192 total, heavy deduplication) | Optuna trials per model: 10
+Label: Customer Status (binary: Stayed=1, else=0)
+
+#   Combo                                         Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- --------------------------------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   Offer ext                                      0.000560    0.9515    0.9553    0.9518    0.9556    775       634       Combined
+
+Incremental wins: 0/1 (0%)
+Note: Very high base AUC (~0.95) leaves little room for improvement.
+
+================================================================================
+DATASET 6: Movie (Natural Nulls) — NOT VIABLE
+================================================================================
+Rows: 112,466 | MovieLens 20M user-level features
+Candidate features (>5% null): tag_count (96%), unique_tags (96%), avg_tag_length (96%),
+  tag_frequency (96%), last_tag (96%)
+Note: All 5 tag features share identical null pattern (~96% null). Only ~4% of users have tags.
+Result: 0 valid combinations — extended group too small for min group size constraints.
+
+================================================================================
 OVERALL SUMMARY
 ================================================================================
 
@@ -142,8 +170,11 @@ BankLoanSta          100,000  7        7/7 (100%)    CS+AI ext                  
 Weather              25,000   23       10/23 (43%)   Evapor+Sunshi+WindDi ext         -0.009676    0.8432    0.8448    0.8314    0.8469    No
 DiabetesRecord       101,766  28       11/28 (39%)   weight+medica+A1Cres ext         -0.005322    0.7069    0.7041    0.7024    0.7032    No
 HRAnalytics          19,158   5        1/5 (20%)     gender ext                       -0.000177    0.7739    0.8105    0.7742    0.8100    No
+ClientRecord         7,043    1        0/1 (0%)      Offer ext                         0.000560    0.9515    0.9553    0.9518    0.9556    No
+Movie                112,466  0        N/A           N/A (no valid combos)            N/A          N/A       N/A       N/A       N/A       No
 
-Total: 29/63 combinations (46%) show incremental learning advantage.
+Total: 29/64 combinations (45%) show incremental learning advantage.
+(Excluding Movie which had no valid combinations)
 
 Key insight: Across all datasets, specialized incremental models tend to outperform the single combined model,
 particularly when extended features have high null ratios and the base/extended split is well-separated.
