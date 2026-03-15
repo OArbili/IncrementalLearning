@@ -1,0 +1,222 @@
+All random seeds have been set to: 42
+Dataset shape (before augmentation): (7043, 28)
+
+=== After Augmentation ===
+Null ratios (features with nulls):
+  Offer: 55.05%
+  Avg Monthly Long Distance Charges: 9.68%
+  Multiple Lines: 9.68%
+  Internet Type: 21.67%
+  Avg Monthly GB Download: 21.67%
+  Online Security: 21.67%
+  Online Backup: 21.67%
+  Device Protection Plan: 21.67%
+  Premium Tech Support: 21.67%
+  Streaming TV: 21.67%
+  Streaming Movies: 21.67%
+  Streaming Music: 21.67%
+  Unlimited Data: 21.67%
+  Contract: 10.10%
+  Payment Method: 10.21%
+  Monthly Charge: 13.46%
+
+N_TRIALS per model: 10
+Target distribution:
+Customer Status
+1    4720
+0    2323
+Name: count, dtype: int64
+  Candidate: Offer (null: 55.05%)
+  Candidate: Avg Monthly Long Distance Charges (null: 9.68%)
+  Candidate: Multiple Lines (null: 9.68%)
+  Candidate: Internet Type (null: 21.67%)
+  Candidate: Avg Monthly GB Download (null: 21.67%)
+  Candidate: Online Security (null: 21.67%)
+  Candidate: Online Backup (null: 21.67%)
+  Candidate: Device Protection Plan (null: 21.67%)
+  Candidate: Premium Tech Support (null: 21.67%)
+  Candidate: Streaming TV (null: 21.67%)
+  Candidate: Streaming Movies (null: 21.67%)
+  Candidate: Streaming Music (null: 21.67%)
+  Candidate: Unlimited Data (null: 21.67%)
+  Candidate: Contract (null: 10.10%)
+  Candidate: Payment Method (null: 10.21%)
+  Candidate: Monthly Charge (null: 13.46%)
+
+16 candidate features -> 65536 total combinations
+
+Null pattern overlap:
+  Avg Monthly Long Distance Charges ~ Multiple Lines: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Avg Monthly GB Download: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Online Security: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Online Backup: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Device Protection Plan: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Premium Tech Support: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Streaming TV: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Streaming Movies: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Internet Type ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Online Security: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Online Backup: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Device Protection Plan: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Premium Tech Support: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Streaming TV: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Streaming Movies: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Avg Monthly GB Download ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Online Security ~ Online Backup: Jaccard=1.0000 (nearly identical!)
+  Online Security ~ Device Protection Plan: Jaccard=1.0000 (nearly identical!)
+  Online Security ~ Premium Tech Support: Jaccard=1.0000 (nearly identical!)
+  Online Security ~ Streaming TV: Jaccard=1.0000 (nearly identical!)
+  Online Security ~ Streaming Movies: Jaccard=1.0000 (nearly identical!)
+  Online Security ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Online Security ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Online Backup ~ Device Protection Plan: Jaccard=1.0000 (nearly identical!)
+  Online Backup ~ Premium Tech Support: Jaccard=1.0000 (nearly identical!)
+  Online Backup ~ Streaming TV: Jaccard=1.0000 (nearly identical!)
+  Online Backup ~ Streaming Movies: Jaccard=1.0000 (nearly identical!)
+  Online Backup ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Online Backup ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Device Protection Plan ~ Premium Tech Support: Jaccard=1.0000 (nearly identical!)
+  Device Protection Plan ~ Streaming TV: Jaccard=1.0000 (nearly identical!)
+  Device Protection Plan ~ Streaming Movies: Jaccard=1.0000 (nearly identical!)
+  Device Protection Plan ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Device Protection Plan ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Premium Tech Support ~ Streaming TV: Jaccard=1.0000 (nearly identical!)
+  Premium Tech Support ~ Streaming Movies: Jaccard=1.0000 (nearly identical!)
+  Premium Tech Support ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Premium Tech Support ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Streaming TV ~ Streaming Movies: Jaccard=1.0000 (nearly identical!)
+  Streaming TV ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Streaming TV ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Streaming Movies ~ Streaming Music: Jaccard=1.0000 (nearly identical!)
+  Streaming Movies ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+  Streaming Music ~ Unlimited Data: Jaccard=1.0000 (nearly identical!)
+
+====================================================================================================
+DRY RUN: Finding valid combinations
+====================================================================================================
+
+Valid: 1 -> Unique: 1
+
+#    Name                                          N_no_ext   N_ext      %ext     Test_no    Test_ext   MinGrp  
+----------------------------------------------------------------------------------------------------
+1    Offer ext                                     3877       3166       45.0     775        634        199     
+
+====================================================================================================
+RUNNING 1 UNIQUE COMBINATIONS (n_trials=10)
+====================================================================================================
+
+================================================================================
+Combo 1/1: Offer ext
+Extended: ['Offer']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+0    3877
+1    3166
+Name: count, dtype: int64
+Extended percentage: 44.95 %
+Train set distribution:
+Customer Status  has_extended
+0                0               1064
+                 1                794
+1                0               2038
+                 1               1738
+dtype: int64
+
+Test set distribution:
+Customer Status  has_extended
+0                0               266
+                 1               199
+1                0               509
+                 1               435
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 3, 'learning_rate': 0.026698666742744605, 'n_estimators': 785, 'min_child_weight': 4, 'subsample': 0.9083868719818244, 'colsample_bytree': 0.7975182385457563, 'gamma': 2.6136641469099704, 'lambda': 4.275982642567138, 'alpha': 0.2551658483142078, 'scale_pos_weight': 1.6473485619598267}
+Best CV AUC score: 0.9461
+
+Top 10 features by importance:
+Tenure in Months: 0.1727
+Contract: 0.1414
+Internet Type: 0.0941
+Premium Tech Support: 0.0839
+Online Security: 0.0744
+Number of Referrals: 0.0571
+Number of Dependents: 0.0504
+Age: 0.0380
+Internet Service: 0.0354
+Streaming TV: 0.0314
+
+=== Training Extended Model (Incremental) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 641}
+Best CV AUC score: 0.9616
+Using base model with 641 trees kept
+
+Top 10 features by importance:
+Tenure in Months: 0.1646
+Contract: 0.1414
+Internet Type: 0.0974
+Premium Tech Support: 0.0871
+Online Security: 0.0728
+Number of Referrals: 0.0571
+Number of Dependents: 0.0500
+Age: 0.0384
+Internet Service: 0.0347
+Streaming TV: 0.0307
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 3, 'learning_rate': 0.026698666742744605, 'n_estimators': 785, 'min_child_weight': 4, 'subsample': 0.9083868719818244, 'colsample_bytree': 0.7975182385457563, 'gamma': 2.6136641469099704, 'lambda': 4.275982642567138, 'alpha': 0.2551658483142078, 'scale_pos_weight': 1.6473485619598267}
+Best CV AUC score: 0.9467
+
+Top 10 features by importance:
+Tenure in Months: 0.1659
+Contract: 0.1417
+Internet Type: 0.0944
+Online Security: 0.0749
+Premium Tech Support: 0.0729
+Number of Referrals: 0.0561
+Number of Dependents: 0.0481
+Offer: 0.0356
+Age: 0.0342
+Streaming TV: 0.0340
+len with ext 634
+len without ext 775
+
+Base model (no extended)
+AUC: 0.9505, Accuracy: 0.8877, F1 Score: 0.9188
+
+Extended model (with extended)
+AUC: 0.9560, Accuracy: 0.8644, F1 Score: 0.9095
+
+Combined model (no extended)
+AUC: 0.9503, Accuracy: 0.8929, F1 Score: 0.9222
+
+Combined model (with extended)
+AUC: 0.9558, Accuracy: 0.8880, F1 Score: 0.9226
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                                                                                                                                                                                                                                                                    Base_Features    Extended_Features
+0        Base model (no extended)  0.950470  0.887742  0.918768  Population, Gender, Age, Married, Number of Dependents, Number of Referrals, Tenure in Months, Phone Service, Avg Monthly Long Distance Charges, Multiple Lines, Internet Service, Internet Type, Avg Monthly GB Download, Online Security, Online Backup, Device Protection Plan, Premium Tech Support, Streaming TV, Streaming Movies, Streaming Music, Unlimited Data, Contract, Paperless Billing, Payment Method, Monthly Charge, Total Extra Data Charges  Offer, has_extended
+1  Extended model (with extended)  0.955998  0.864353  0.909474  Population, Gender, Age, Married, Number of Dependents, Number of Referrals, Tenure in Months, Phone Service, Avg Monthly Long Distance Charges, Multiple Lines, Internet Service, Internet Type, Avg Monthly GB Download, Online Security, Online Backup, Device Protection Plan, Premium Tech Support, Streaming TV, Streaming Movies, Streaming Music, Unlimited Data, Contract, Paperless Billing, Payment Method, Monthly Charge, Total Extra Data Charges  Offer, has_extended
+2    Combined model (no extended)  0.950338  0.892903  0.922212  Population, Gender, Age, Married, Number of Dependents, Number of Referrals, Tenure in Months, Phone Service, Avg Monthly Long Distance Charges, Multiple Lines, Internet Service, Internet Type, Avg Monthly GB Download, Online Security, Online Backup, Device Protection Plan, Premium Tech Support, Streaming TV, Streaming Movies, Streaming Music, Unlimited Data, Contract, Paperless Billing, Payment Method, Monthly Charge, Total Extra Data Charges  Offer, has_extended
+3  Combined model (with extended)  0.955790  0.888013  0.922574  Population, Gender, Age, Married, Number of Dependents, Number of Referrals, Tenure in Months, Phone Service, Avg Monthly Long Distance Charges, Multiple Lines, Internet Service, Internet Type, Avg Monthly GB Download, Online Security, Online Backup, Device Protection Plan, Premium Tech Support, Streaming TV, Streaming Movies, Streaming Music, Unlimited Data, Contract, Paperless Billing, Payment Method, Monthly Charge, Total Extra Data Charges  Offer, has_extended
+
+>>> RESULT: objective = -0.000341
+    Base AUC: 0.9505 (775 rows)
+    Extended AUC: 0.9560 (634 rows)
+    Combined (no ext) AUC: 0.9503
+    Combined (with ext) AUC: 0.9558
+
+========================================================================================================================
+FINAL SUMMARY
+========================================================================================================================
+Combo                                         Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no_ext   N_ext     
+---------------------------------------------------------------------------------------------------------------------
+Offer ext                                     -0.000341    0.9505     0.9560     0.9503     0.9558     775        634       
+
+Negative objectives (incremental wins): 1/1
+
+Done!

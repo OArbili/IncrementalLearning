@@ -161,6 +161,30 @@ Note: All 5 tag features share identical null pattern (~96% null). Only ~4% of u
 Result: 0 valid combinations — extended group too small for min group size constraints.
 
 ================================================================================
+DATASET 7: ClientRecord (Augmented)
+================================================================================
+Rows: 7,043 | Augmented with artificial nulls (20% of null-bearing rows)
+Augmented features: Contract (10%), Monthly Charge (13%), Payment Method (10%)
+Note: Still only 1 unique combo after dedup (existing null patterns dominate)
+Combos: 1 unique | Optuna trials per model: 10
+Label: Customer Status (binary: Stayed=1, else=0)
+
+#   Combo                                         Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- --------------------------------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   Offer ext                                     -0.000341    0.9505    0.9560    0.9503    0.9558    775       634       Increm
+
+Incremental wins: 1/1 (100%)
+Best combo: Offer ext (objective: -0.000341)
+
+================================================================================
+DATASET 8: Movie (Augmented) — NOT VIABLE
+================================================================================
+Rows: 112,466 | Augmented with artificial nulls (20% random rows)
+Augmented features: rating_count (10%), rating_mean (13%), days_active (10%)
+Note: 0 valid combinations. Extreme class imbalance (1.9% positive) causes
+  stratified min group constraint to fail for all feature combinations.
+
+================================================================================
 OVERALL SUMMARY
 ================================================================================
 
@@ -172,9 +196,11 @@ DiabetesRecord       101,766  28       11/28 (39%)   weight+medica+A1Cres ext   
 HRAnalytics          19,158   5        1/5 (20%)     gender ext                       -0.000177    0.7739    0.8105    0.7742    0.8100    No
 ClientRecord         7,043    1        0/1 (0%)      Offer ext                         0.000560    0.9515    0.9553    0.9518    0.9556    No
 Movie                112,466  0        N/A           N/A (no valid combos)            N/A          N/A       N/A       N/A       N/A       No
+ClientRecord (Aug)   7,043    1        1/1 (100%)    Offer ext                        -0.000341    0.9505    0.9560    0.9503    0.9558    Yes
+Movie (Aug)          112,466  0        N/A           N/A (no valid combos)            N/A          N/A       N/A       N/A       N/A       Yes
 
-Total: 29/64 combinations (45%) show incremental learning advantage.
-(Excluding Movie which had no valid combinations)
+Total: 30/65 combinations (46%) show incremental learning advantage.
+(Excluding Movie/Movie Aug which had no valid combinations)
 
 Key insight: Across all datasets, specialized incremental models tend to outperform the single combined model,
 particularly when extended features have high null ratios and the base/extended split is well-separated.
