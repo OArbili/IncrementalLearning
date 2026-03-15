@@ -77,7 +77,7 @@ class RunPipeline():
                 self.base_df[feature] = np.nan
         self.ext_df = self.train_df[self.base_features + self.ext_features + [self.label]].copy()
 
-    def train_all(self, n_trials=20):
+    def train_all(self, n_trials=20, pruning_mode='optuna'):
         ext_train_df = self.ext_df[self.ext_df['has_extended'] == 1]
 
         if len(ext_train_df) == 0:
@@ -95,13 +95,14 @@ class RunPipeline():
         self.base_model.save_model()
         self.ext_df = self.ext_df[self.ext_df['has_extended'] == 1]
 
-        print("\n=== Training Extended Model (Incremental) ===")
+        print(f"\n=== Training Extended Model (Incremental, pruning_mode={pruning_mode}) ===")
         self.extended_model = XGBoostModel(name="extended_model")
         self.extended_model.train(
             self.ext_df[self.base_features + self.ext_features],
             self.ext_df[self.label],
             base_model_path="base_model.json",
-            n_trials=n_trials
+            n_trials=n_trials,
+            pruning_mode=pruning_mode
         )
 
         print("\n=== Training Combined Model ===")
@@ -159,14 +160,14 @@ class RunPipeline():
         return (combined_with_ext_auc - extended_auc) + \
                (combined_no_ext_auc - base_auc)
 
-    def full_run(self, data, in_base_features, in_ext_features, label, csv_name, n_trials=20):
+    def full_run(self, data, in_base_features, in_ext_features, label, csv_name, n_trials=20, pruning_mode='optuna'):
         self.load_data(in_base_features, in_ext_features, data, label)
         self.set_has_extended()
         a = self.train_test_split()
         if a == 999:
             return 999
         self.set_train_base_ext_datasets()
-        result = self.train_all(n_trials=n_trials)
+        result = self.train_all(n_trials=n_trials, pruning_mode=pruning_mode)
         if result == True:
             ret_val = self.test_all(csv_name)
             return ret_val

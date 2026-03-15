@@ -13,7 +13,7 @@ class XGBoostModel:
         self.used_base_model = True
         self.seed = SEED
 
-    def objective(self, trial, X, y, base_model_path=None, n_splits=3):
+    def objective(self, trial, X, y, base_model_path=None, n_splits=3, pruning_mode='optuna'):
         params = {
             'max_depth': trial.suggest_int('max_depth', 3, 10),
             'learning_rate': trial.suggest_float('learning_rate', 1e-3, 0.1, log=True),
@@ -39,10 +39,19 @@ class XGBoostModel:
             base_booster.load_model(base_model_path)
             total_trees_in_base = len(base_booster.get_dump())
 
-            use_base_model = trial.suggest_categorical('use_base_model', [True, False])
-
-            if use_base_model:
-                n_trees_keep = trial.suggest_int("n_trees_keep", 1, total_trees_in_base)
+            if pruning_mode == 'optuna':
+                # Current behavior: Optuna decides whether to use base model and how many trees
+                use_base_model = trial.suggest_categorical('use_base_model', [True, False])
+                if use_base_model:
+                    n_trees_keep = trial.suggest_int("n_trees_keep", 1, total_trees_in_base)
+            elif pruning_mode == 'no_pruning':
+                # Always use full base model, no pruning
+                use_base_model = True
+                n_trees_keep = total_trees_in_base
+            elif pruning_mode == 'fixed_50':
+                # Always use base model, keep 50% of trees
+                use_base_model = True
+                n_trees_keep = max(1, total_trees_in_base // 2)
 
         kf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=self.seed)
         auc_scores = []
@@ -74,11 +83,11 @@ class XGBoostModel:
         mean_auc = np.mean(auc_scores)
         return mean_auc
 
-    def train(self, X, y, n_trials=20, base_model_path=None):
+    def train(self, X, y, n_trials=20, base_model_path=None, pruning_mode='optuna'):
         study = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler(seed=self.seed))
 
         study.optimize(
-            lambda trial: self.objective(trial, X, y, base_model_path),
+            lambda trial: self.objective(trial, X, y, base_model_path, pruning_mode=pruning_mode),
             n_trials=n_trials
         )
 
@@ -94,15 +103,37 @@ class XGBoostModel:
         best_params_clean['eval_metric'] = 'auc'
         best_params_clean['random_state'] = self.seed
 
-        # Check if we should use base model or fallback
-        use_base_model = self.best_params.get('use_base_model', True)
-        self.used_base_model = use_base_model
+        if pruning_mode == 'optuna':
+            # Current behavior: check Optuna's decision
+            use_base_model = self.best_params.get('use_base_model', True)
+            self.used_base_model = use_base_model
+            n_trees_keep = self.best_params.get('n_trees_keep', 0)
+        elif pruning_mode == 'no_pruning':
+            # Always use full base model
+            use_base_model = True
+            self.used_base_model = True
+            if base_model_path is not None:
+                base_booster = xgb.Booster()
+                base_booster.load_model(base_model_path)
+                n_trees_keep = len(base_booster.get_dump())
+            else:
+                n_trees_keep = 0
+        elif pruning_mode == 'fixed_50':
+            # Always use base model, keep 50% of trees
+            use_base_model = True
+            self.used_base_model = True
+            if base_model_path is not None:
+                base_booster = xgb.Booster()
+                base_booster.load_model(base_model_path)
+                n_trees_keep = max(1, len(base_booster.get_dump()) // 2)
+            else:
+                n_trees_keep = 0
 
-        if base_model_path is not None and use_base_model and self.best_params.get('n_trees_keep', 0) > 0:
-            print(f"Using base model with {self.best_params['n_trees_keep']} trees kept")
+        if base_model_path is not None and use_base_model and n_trees_keep > 0:
+            print(f"Using base model with {n_trees_keep} trees kept (mode: {pruning_mode})")
             pruned_model = xgb.Booster()
             pruned_model.load_model(base_model_path)
-            pruned_model = pruned_model[:self.best_params['n_trees_keep']]
+            pruned_model = pruned_model[:n_trees_keep]
 
             self.model = xgb.XGBClassifier(**best_params_clean)
             self.model.fit(X, y, xgb_model=pruned_model)

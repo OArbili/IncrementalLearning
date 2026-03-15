@@ -1,0 +1,65 @@
+========================================================================================================================
+ABLATION STUDY: PRUNING MODE COMPARISON
+========================================================================================================================
+
+Modes:
+  optuna     — Optuna picks use_base_model (True/False) and n_trees_keep (1..N)
+  no_pruning — Always warm-start from base, keep ALL trees
+  fixed_50   — Always warm-start, keep 50% of base trees
+
+Dataset              Mode           Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no     N_ext   
+------------------------------------------------------------------------------------------------------
+BankLoanSta          optuna         -0.002345    0.6558     0.7991     0.6624     0.7901     3831     16169   
+BankLoanSta          no_pruning     0.012086     0.6558     0.7847     0.6624     0.7901     3831     16169   
+BankLoanSta          fixed_50       0.016770     0.6558     0.7800     0.6624     0.7901     3831     16169   
+Weather              optuna         -0.009676    0.8432     0.8448     0.8314     0.8469     578      4422    
+Weather              no_pruning     -0.003829    0.8432     0.8389     0.8314     0.8469     578      4422    
+Weather              fixed_50       -0.009124    0.8432     0.8442     0.8314     0.8469     578      4422    
+DiabetesRecord       optuna         -0.005322    0.7069     0.7041     0.7024     0.7032     8117     12237   
+DiabetesRecord       no_pruning     -0.003269    0.7069     0.7020     0.7024     0.7032     8117     12237   
+DiabetesRecord       fixed_50       -0.003067    0.7069     0.7018     0.7024     0.7032     8117     12237   
+HRAnalytics          optuna         -0.000177    0.7739     0.8105     0.7742     0.8100     902      2930    
+HRAnalytics          no_pruning     0.000264     0.7739     0.8100     0.7742     0.8100     902      2930    
+HRAnalytics          fixed_50       0.002470     0.7739     0.8078     0.7742     0.8100     902      2930    
+ClientRecordAug      optuna         -0.000518    0.9599     0.9621     0.9596     0.9619     775      634     
+ClientRecordAug      no_pruning     -0.000657    0.9599     0.9622     0.9596     0.9619     775      634     
+ClientRecordAug      fixed_50       0.000117     0.9599     0.9615     0.9596     0.9619     775      634     
+MovieAugV2           optuna         -0.004046    0.9209     0.8739     0.9199     0.8709     5616     16878   
+MovieAugV2           no_pruning     -0.000505    0.9209     0.8704     0.9199     0.8709     5616     16878   
+MovieAugV2           fixed_50       0.004244     0.9209     0.8657     0.9199     0.8709     5616     16878   
+
+
+================================================================================
+PER-DATASET COMPARISON
+================================================================================
+
+
+BankLoanSta:
+  optuna         objective=-0.002345  ext_auc=0.7991 <-- BEST
+  no_pruning     objective=0.012086  ext_auc=0.7847
+  fixed_50       objective=0.016770  ext_auc=0.7800
+
+Weather:
+  optuna         objective=-0.009676  ext_auc=0.8448 <-- BEST
+  no_pruning     objective=-0.003829  ext_auc=0.8389
+  fixed_50       objective=-0.009124  ext_auc=0.8442
+
+DiabetesRecord:
+  optuna         objective=-0.005322  ext_auc=0.7041 <-- BEST
+  no_pruning     objective=-0.003269  ext_auc=0.7020
+  fixed_50       objective=-0.003067  ext_auc=0.7018
+
+HRAnalytics:
+  optuna         objective=-0.000177  ext_auc=0.8105 <-- BEST
+  no_pruning     objective=0.000264  ext_auc=0.8100
+  fixed_50       objective=0.002470  ext_auc=0.8078
+
+ClientRecordAug:
+  optuna         objective=-0.000518  ext_auc=0.9621
+  no_pruning     objective=-0.000657  ext_auc=0.9622 <-- BEST
+  fixed_50       objective=0.000117  ext_auc=0.9615
+
+MovieAugV2:
+  optuna         objective=-0.004046  ext_auc=0.8739 <-- BEST
+  no_pruning     objective=-0.000505  ext_auc=0.8704
+  fixed_50       objective=0.004244  ext_auc=0.8657
