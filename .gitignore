@@ -1,5 +1,6 @@
 # Data files
 *.csv
+datasets/
 
 # Model outputs
 *.json

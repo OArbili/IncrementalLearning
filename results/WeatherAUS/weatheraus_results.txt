@@ -1,0 +1,1616 @@
+All random seeds have been set to: 42
+Dataset shape: (142193, 21)
+N_TRIALS per model: 10
+  Candidate: Evaporation (null: 42.79%)
+  Candidate: Sunshine (null: 47.69%)
+  Candidate: WindGustDir (null: 6.56%)
+  Candidate: WindGustSpeed (null: 6.52%)
+  Candidate: WindDir9am (null: 7.04%)
+  Candidate: Pressure9am (null: 9.86%)
+  Candidate: Pressure3pm (null: 9.83%)
+  Candidate: Cloud9am (null: 37.74%)
+  Candidate: Cloud3pm (null: 40.15%)
+
+9 candidate features -> 512 total combinations
+
+Null pattern overlap:
+  WindGustDir ~ WindGustSpeed: Jaccard=0.9936 (nearly identical!)
+  Pressure9am ~ Pressure3pm: Jaccard=0.9709 (nearly identical!)
+
+====================================================================================================
+DRY RUN: Finding valid combinations
+====================================================================================================
+
+Valid: 15 -> Unique: 15
+
+#    Name                                          N_no_ext   N_ext      %ext     Test_no    Test_ext   MinGrp  
+----------------------------------------------------------------------------------------------------
+1    Evapor+Sunshi+Cloud9+Cloud3 ext               39443      102750     72.3     7889       20550      1638    
+2    Evapor+Sunshi+Cloud9 ext                      42490      99703      70.1     8498       19941      1760    
+3    Evapor+Sunshi+Cloud3 ext                      43225      98968      69.6     8645       19794      1760    
+4    Evapor+Sunshi ext                             56884      85309      60.0     11377      17062      2619    
+5    Evapor+Cloud9+Cloud3 ext                      40783      101410     71.3     8157       20282      1674    
+6    Evapor+Cloud9 ext                             44074      98119      69.0     8815       19624      1807    
+7    Evapor+Cloud3 ext                             44881      97312      68.4     8976       19463      1803    
+8    Evapor ext                                    60843      81350      57.2     12169      16270      2804    
+9    Sunshi+Cloud9+Cloud3 ext                      42256      99937      70.3     8451       19988      1726    
+10   Sunshi+Cloud9 ext                             45759      96434      67.8     9152       19287      1864    
+11   Sunshi+Cloud3 ext                             47610      94583      66.5     9522       18917      1894    
+12   Sunshi ext                                    67816      74377      52.3     13563      14876      3011    
+13   Cloud9+Cloud3 ext                             49677      92516      65.1     9936       18503      2088    
+14   Cloud9 ext                                    53657      88536      62.3     10732      17707      2251    
+15   Cloud3 ext                                    57094      85099      59.8     11419      17020      2318    
+
+====================================================================================================
+RUNNING 15 UNIQUE COMBINATIONS (n_trials=10)
+====================================================================================================
+
+================================================================================
+Combo 1/15: Evapor+Sunshi+Cloud9+Cloud3 ext
+Extended: ['Evaporation', 'Sunshine', 'Cloud9am', 'Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    102750
+0     39443
+Name: count, dtype: int64
+Extended percentage: 72.26 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               25003
+              1               63250
+1             0                6551
+              1               18950
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                6251
+              1               15812
+1             0                1638
+              1                4738
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.07969454818643935, 'n_estimators': 759, 'min_child_weight': 5, 'subsample': 0.6624074561769746, 'colsample_bytree': 0.662397808134481, 'gamma': 0.2904180608409973, 'lambda': 8.661895281603577, 'alpha': 6.011549002420345, 'scale_pos_weight': 5.248435466776273}
+Best CV AUC score: 0.8819
+
+Top 10 features by importance:
+RainToday: 0.3354
+Humidity3pm: 0.1687
+Rainfall: 0.1189
+WindGustSpeed: 0.0612
+Pressure3pm: 0.0436
+Humidity9am: 0.0315
+Pressure9am: 0.0310
+MaxTemp: 0.0300
+WindDir3pm: 0.0279
+MinTemp: 0.0249
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 619}
+Best CV AUC score: 0.9223
+Using base model with 619 trees kept (mode: optuna)
+
+Top 10 features by importance:
+RainToday: 0.2835
+Humidity3pm: 0.1407
+Rainfall: 0.1023
+WindGustSpeed: 0.0550
+Cloud3pm: 0.0447
+Sunshine: 0.0393
+Pressure3pm: 0.0387
+Humidity9am: 0.0300
+Pressure9am: 0.0289
+MaxTemp: 0.0285
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8918
+
+Top 10 features by importance:
+RainToday: 0.1960
+Humidity3pm: 0.1753
+Rainfall: 0.0610
+WindGustSpeed: 0.0549
+Sunshine: 0.0506
+Cloud3pm: 0.0471
+Pressure3pm: 0.0466
+WindDir3pm: 0.0301
+WindGustDir: 0.0275
+Temp3pm: 0.0274
+len with ext 20550
+len without ext 7889
+
+Base model (no extended)
+AUC: 0.8891, Accuracy: 0.7811, F1 Score: 0.6160
+
+Extended model (with extended)
+AUC: 0.8970, Accuracy: 0.7807, F1 Score: 0.6436
+
+Combined model (no extended)
+AUC: 0.8933, Accuracy: 0.8573, F1 Score: 0.6708
+
+Combined model (with extended)
+AUC: 0.9001, Accuracy: 0.8487, F1 Score: 0.6883
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                Base_Features                                        Extended_Features
+0        Base model (no extended)  0.889126  0.781088  0.615966  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, Cloud3pm, has_extended
+1  Extended model (with extended)  0.896966  0.780730  0.643569  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, Cloud3pm, has_extended
+2    Combined model (no extended)  0.893257  0.857270  0.670760  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, Cloud3pm, has_extended
+3  Combined model (with extended)  0.900115  0.848710  0.688321  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.007280
+    Base AUC: 0.8891 (7889 rows)
+    Extended AUC: 0.8970 (20550 rows)
+    Combined (no ext) AUC: 0.8933
+    Combined (with ext) AUC: 0.9001
+
+================================================================================
+Combo 2/15: Evapor+Sunshi+Cloud9 ext
+Extended: ['Evaporation', 'Sunshine', 'Cloud9am']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    99703
+0    42490
+Name: count, dtype: int64
+Extended percentage: 70.12 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               26954
+              1               61299
+1             0                7038
+              1               18463
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                6738
+              1               15325
+1             0                1760
+              1                4616
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.07969454818643935, 'n_estimators': 759, 'min_child_weight': 5, 'subsample': 0.6624074561769746, 'colsample_bytree': 0.662397808134481, 'gamma': 0.2904180608409973, 'lambda': 8.661895281603577, 'alpha': 6.011549002420345, 'scale_pos_weight': 5.248435466776273}
+Best CV AUC score: 0.8860
+
+Top 10 features by importance:
+RainToday: 0.3245
+Humidity3pm: 0.1469
+Rainfall: 0.1108
+Cloud3pm: 0.0834
+WindGustSpeed: 0.0538
+Pressure3pm: 0.0464
+Humidity9am: 0.0291
+WindDir3pm: 0.0251
+Temp3pm: 0.0246
+Pressure9am: 0.0239
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 619}
+Best CV AUC score: 0.9236
+Using base model with 619 trees kept (mode: optuna)
+
+Top 10 features by importance:
+RainToday: 0.3054
+Humidity3pm: 0.1354
+Rainfall: 0.1002
+Cloud3pm: 0.0742
+WindGustSpeed: 0.0499
+Pressure3pm: 0.0419
+Sunshine: 0.0302
+Humidity9am: 0.0287
+WindDir3pm: 0.0246
+Temp3pm: 0.0243
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8921
+
+Top 10 features by importance:
+Humidity3pm: 0.1899
+RainToday: 0.1411
+Rainfall: 0.0637
+WindGustSpeed: 0.0583
+Sunshine: 0.0566
+Pressure3pm: 0.0503
+Cloud3pm: 0.0483
+WindDir3pm: 0.0319
+Temp3pm: 0.0292
+WindGustDir: 0.0289
+len with ext 19941
+len without ext 8498
+
+Base model (no extended)
+AUC: 0.8851, Accuracy: 0.7852, F1 Score: 0.6128
+
+Extended model (with extended)
+AUC: 0.9002, Accuracy: 0.7825, F1 Score: 0.6495
+
+Combined model (no extended)
+AUC: 0.8879, Accuracy: 0.8514, F1 Score: 0.6558
+
+Combined model (with extended)
+AUC: 0.9029, Accuracy: 0.8509, F1 Score: 0.6891
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                          Base_Features                              Extended_Features
+0        Base model (no extended)  0.885088  0.785244  0.612773  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, has_extended
+1  Extended model (with extended)  0.900244  0.782508  0.649535  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, has_extended
+2    Combined model (no extended)  0.887880  0.851377  0.655765  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, has_extended
+3  Combined model (with extended)  0.902910  0.850860  0.689107  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud9am, has_extended
+
+>>> RESULT: objective = 0.005457
+    Base AUC: 0.8851 (8498 rows)
+    Extended AUC: 0.9002 (19941 rows)
+    Combined (no ext) AUC: 0.8879
+    Combined (with ext) AUC: 0.9029
+
+================================================================================
+Combo 3/15: Evapor+Sunshi+Cloud3 ext
+Extended: ['Evaporation', 'Sunshine', 'Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    98968
+0    43225
+Name: count, dtype: int64
+Extended percentage: 69.6 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               27538
+              1               60714
+1             0                7042
+              1               18460
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                6885
+              1               15179
+1             0                1760
+              1                4615
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.07969454818643935, 'n_estimators': 759, 'min_child_weight': 5, 'subsample': 0.6624074561769746, 'colsample_bytree': 0.662397808134481, 'gamma': 0.2904180608409973, 'lambda': 8.661895281603577, 'alpha': 6.011549002420345, 'scale_pos_weight': 5.248435466776273}
+Best CV AUC score: 0.8842
+
+Top 10 features by importance:
+RainToday: 0.3367
+Humidity3pm: 0.1559
+Rainfall: 0.1178
+WindGustSpeed: 0.0577
+Pressure3pm: 0.0446
+Cloud9am: 0.0437
+Humidity9am: 0.0285
+Temp3pm: 0.0281
+WindDir3pm: 0.0262
+Pressure9am: 0.0249
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 619}
+Best CV AUC score: 0.9231
+Using base model with 619 trees kept (mode: optuna)
+
+Top 10 features by importance:
+RainToday: 0.3057
+Humidity3pm: 0.1394
+Rainfall: 0.1039
+WindGustSpeed: 0.0529
+Cloud9am: 0.0425
+Pressure3pm: 0.0401
+Sunshine: 0.0333
+Humidity9am: 0.0281
+Temp3pm: 0.0277
+Cloud3pm: 0.0275
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8919
+
+Top 10 features by importance:
+RainToday: 0.1836
+Humidity3pm: 0.1788
+Rainfall: 0.0658
+WindGustSpeed: 0.0540
+Sunshine: 0.0527
+Pressure3pm: 0.0482
+Cloud3pm: 0.0446
+WindDir3pm: 0.0306
+Temp3pm: 0.0275
+Humidity9am: 0.0274
+len with ext 19794
+len without ext 8645
+
+Base model (no extended)
+AUC: 0.8759, Accuracy: 0.7826, F1 Score: 0.5993
+
+Extended model (with extended)
+AUC: 0.8995, Accuracy: 0.7802, F1 Score: 0.6481
+
+Combined model (no extended)
+AUC: 0.8796, Accuracy: 0.8517, F1 Score: 0.6407
+
+Combined model (with extended)
+AUC: 0.9036, Accuracy: 0.8481, F1 Score: 0.6875
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                          Base_Features                              Extended_Features
+0        Base model (no extended)  0.875882  0.782649  0.599275  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud3pm, has_extended
+1  Extended model (with extended)  0.899517  0.780236  0.648115  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud3pm, has_extended
+2    Combined model (no extended)  0.879647  0.851706  0.640695  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud3pm, has_extended
+3  Combined model (with extended)  0.903573  0.848085  0.687519  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.007822
+    Base AUC: 0.8759 (8645 rows)
+    Extended AUC: 0.8995 (19794 rows)
+    Combined (no ext) AUC: 0.8796
+    Combined (with ext) AUC: 0.9036
+
+================================================================================
+Combo 4/15: Evapor+Sunshi ext
+Extended: ['Evaporation', 'Sunshine']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    85309
+0    56884
+Name: count, dtype: int64
+Extended percentage: 60.0 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               35032
+              1               53221
+1             0               10475
+              1               15026
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                8758
+              1               13305
+1             0                2619
+              1                3757
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.07969454818643935, 'n_estimators': 759, 'min_child_weight': 5, 'subsample': 0.6624074561769746, 'colsample_bytree': 0.662397808134481, 'gamma': 0.2904180608409973, 'lambda': 8.661895281603577, 'alpha': 6.011549002420345, 'scale_pos_weight': 5.248435466776273}
+Best CV AUC score: 0.8876
+
+Top 10 features by importance:
+RainToday: 0.1761
+Humidity3pm: 0.1753
+Rainfall: 0.1365
+Cloud3pm: 0.0789
+WindGustSpeed: 0.0626
+Pressure3pm: 0.0505
+Cloud9am: 0.0400
+Humidity9am: 0.0380
+Temp3pm: 0.0318
+Pressure9am: 0.0316
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 619}
+Best CV AUC score: 0.9283
+Using base model with 619 trees kept (mode: optuna)
+
+Top 10 features by importance:
+RainToday: 0.1650
+Humidity3pm: 0.1629
+Rainfall: 0.1272
+Cloud3pm: 0.0712
+WindGustSpeed: 0.0605
+Pressure3pm: 0.0474
+Cloud9am: 0.0384
+Humidity9am: 0.0378
+Temp3pm: 0.0315
+Pressure9am: 0.0314
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8931
+
+Top 10 features by importance:
+Humidity3pm: 0.1861
+RainToday: 0.1579
+Rainfall: 0.0618
+WindGustSpeed: 0.0577
+Sunshine: 0.0543
+Pressure3pm: 0.0489
+Cloud3pm: 0.0474
+WindDir3pm: 0.0314
+Temp3pm: 0.0288
+WindGustDir: 0.0285
+len with ext 17062
+len without ext 11377
+
+Base model (no extended)
+AUC: 0.8778, Accuracy: 0.7648, F1 Score: 0.6207
+
+Extended model (with extended)
+AUC: 0.9047, Accuracy: 0.7949, F1 Score: 0.6479
+
+Combined model (no extended)
+AUC: 0.8790, Accuracy: 0.8361, F1 Score: 0.6596
+
+Combined model (with extended)
+AUC: 0.9090, Accuracy: 0.8629, F1 Score: 0.6967
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                    Base_Features                    Extended_Features
+0        Base model (no extended)  0.877839  0.764789  0.620748  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, has_extended
+1  Extended model (with extended)  0.904733  0.794924  0.647882  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, has_extended
+2    Combined model (no extended)  0.879005  0.836073  0.659609  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, has_extended
+3  Combined model (with extended)  0.908959  0.862912  0.696667  MinTemp, MaxTemp, Rainfall, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Sunshine, has_extended
+
+>>> RESULT: objective = 0.005392
+    Base AUC: 0.8778 (11377 rows)
+    Extended AUC: 0.9047 (17062 rows)
+    Combined (no ext) AUC: 0.8790
+    Combined (with ext) AUC: 0.9090
+
+================================================================================
+Combo 5/15: Evapor+Cloud9+Cloud3 ext
+Extended: ['Evaporation', 'Cloud9am', 'Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    101410
+0     40783
+Name: count, dtype: int64
+Extended percentage: 71.32 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               25933
+              1               62320
+1             0                6693
+              1               18808
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                6483
+              1               15580
+1             0                1674
+              1                4702
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8885
+
+Top 10 features by importance:
+Humidity3pm: 0.2147
+RainToday: 0.2050
+WindGustSpeed: 0.0628
+Sunshine: 0.0591
+Rainfall: 0.0549
+Pressure3pm: 0.0547
+WindDir3pm: 0.0364
+Pressure9am: 0.0329
+MaxTemp: 0.0327
+WindGustDir: 0.0325
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9919
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.1966
+RainToday: 0.1881
+WindGustSpeed: 0.0556
+Cloud3pm: 0.0537
+Sunshine: 0.0521
+Rainfall: 0.0491
+Pressure3pm: 0.0485
+Cloud9am: 0.0316
+WindDir3pm: 0.0314
+Pressure9am: 0.0284
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8914
+
+Top 10 features by importance:
+RainToday: 0.2132
+Humidity3pm: 0.1895
+WindGustSpeed: 0.0538
+Sunshine: 0.0504
+Rainfall: 0.0479
+Pressure3pm: 0.0465
+Cloud3pm: 0.0383
+WindDir3pm: 0.0302
+MaxTemp: 0.0273
+Pressure9am: 0.0271
+len with ext 20282
+len without ext 8157
+
+Base model (no extended)
+AUC: 0.8892, Accuracy: 0.8530, F1 Score: 0.6565
+
+Extended model (with extended)
+AUC: 0.9033, Accuracy: 0.8220, F1 Score: 0.6804
+
+Combined model (no extended)
+AUC: 0.8905, Accuracy: 0.8523, F1 Score: 0.6546
+
+Combined model (with extended)
+AUC: 0.9055, Accuracy: 0.8519, F1 Score: 0.6960
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                          Base_Features                              Extended_Features
+0        Base model (no extended)  0.889235  0.853010  0.656545  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, Cloud3pm, has_extended
+1  Extended model (with extended)  0.903277  0.821960  0.680414  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, Cloud3pm, has_extended
+2    Combined model (no extended)  0.890548  0.852274  0.654629  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, Cloud3pm, has_extended
+3  Combined model (with extended)  0.905534  0.851938  0.695960  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.003570
+    Base AUC: 0.8892 (8157 rows)
+    Extended AUC: 0.9033 (20282 rows)
+    Combined (no ext) AUC: 0.8905
+    Combined (with ext) AUC: 0.9055
+
+================================================================================
+Combo 6/15: Evapor+Cloud9 ext
+Extended: ['Evaporation', 'Cloud9am']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    98119
+0    44074
+Name: count, dtype: int64
+Extended percentage: 69.0 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               28030
+              1               60222
+1             0                7229
+              1               18273
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                7008
+              1               15056
+1             0                1807
+              1                4568
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8911
+
+Top 10 features by importance:
+Humidity3pm: 0.2066
+RainToday: 0.1848
+Rainfall: 0.0599
+WindGustSpeed: 0.0593
+Sunshine: 0.0567
+Pressure3pm: 0.0535
+Cloud3pm: 0.0411
+WindDir3pm: 0.0356
+Pressure9am: 0.0321
+WindGustDir: 0.0316
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9930
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.2055
+RainToday: 0.1705
+Rainfall: 0.0578
+WindGustSpeed: 0.0570
+Sunshine: 0.0540
+Pressure3pm: 0.0514
+Cloud3pm: 0.0387
+WindDir3pm: 0.0334
+Pressure9am: 0.0300
+WindGustDir: 0.0293
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8921
+
+Top 10 features by importance:
+Humidity3pm: 0.1933
+RainToday: 0.1794
+WindGustSpeed: 0.0540
+Rainfall: 0.0538
+Sunshine: 0.0534
+Pressure3pm: 0.0494
+Cloud3pm: 0.0395
+WindDir3pm: 0.0321
+Pressure9am: 0.0285
+MaxTemp: 0.0277
+len with ext 19624
+len without ext 8815
+
+Base model (no extended)
+AUC: 0.8867, Accuracy: 0.8542, F1 Score: 0.6547
+
+Extended model (with extended)
+AUC: 0.9019, Accuracy: 0.8207, F1 Score: 0.6764
+
+Combined model (no extended)
+AUC: 0.8855, Accuracy: 0.8501, F1 Score: 0.6480
+
+Combined model (with extended)
+AUC: 0.9037, Accuracy: 0.8492, F1 Score: 0.6903
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                    Base_Features                    Extended_Features
+0        Base model (no extended)  0.886675  0.854226  0.654663  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, has_extended
+1  Extended model (with extended)  0.901938  0.820730  0.676357  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, has_extended
+2    Combined model (no extended)  0.885518  0.850142  0.648015  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, has_extended
+3  Combined model (with extended)  0.903656  0.849215  0.690319  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, Cloud9am, has_extended
+
+>>> RESULT: objective = 0.000560
+    Base AUC: 0.8867 (8815 rows)
+    Extended AUC: 0.9019 (19624 rows)
+    Combined (no ext) AUC: 0.8855
+    Combined (with ext) AUC: 0.9037
+
+================================================================================
+Combo 7/15: Evapor+Cloud3 ext
+Extended: ['Evaporation', 'Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    97312
+0    44881
+Name: count, dtype: int64
+Extended percentage: 68.44 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               28691
+              1               59561
+1             0                7214
+              1               18288
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                7173
+              1               14891
+1             0                1803
+              1                4572
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8904
+
+Top 10 features by importance:
+Humidity3pm: 0.2105
+RainToday: 0.1981
+WindGustSpeed: 0.0616
+Sunshine: 0.0571
+Rainfall: 0.0555
+Pressure3pm: 0.0525
+WindDir3pm: 0.0353
+Pressure9am: 0.0316
+Temp3pm: 0.0306
+MaxTemp: 0.0305
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9937
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.2002
+RainToday: 0.1976
+WindGustSpeed: 0.0565
+Sunshine: 0.0519
+Rainfall: 0.0508
+Pressure3pm: 0.0480
+Cloud3pm: 0.0461
+WindDir3pm: 0.0317
+Pressure9am: 0.0282
+Temp3pm: 0.0275
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8922
+
+Top 10 features by importance:
+Humidity3pm: 0.1940
+RainToday: 0.1844
+WindGustSpeed: 0.0567
+Sunshine: 0.0513
+Rainfall: 0.0507
+Pressure3pm: 0.0476
+Cloud3pm: 0.0397
+WindDir3pm: 0.0315
+Pressure9am: 0.0281
+WindDir9am: 0.0276
+len with ext 19463
+len without ext 8976
+
+Base model (no extended)
+AUC: 0.8901, Accuracy: 0.8583, F1 Score: 0.6590
+
+Extended model (with extended)
+AUC: 0.8988, Accuracy: 0.8171, F1 Score: 0.6736
+
+Combined model (no extended)
+AUC: 0.8892, Accuracy: 0.8575, F1 Score: 0.6552
+
+Combined model (with extended)
+AUC: 0.9011, Accuracy: 0.8444, F1 Score: 0.6856
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                    Base_Features                    Extended_Features
+0        Base model (no extended)  0.890092  0.858289  0.658981  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Cloud3pm, has_extended
+1  Extended model (with extended)  0.898806  0.817089  0.673634  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Cloud3pm, has_extended
+2    Combined model (no extended)  0.889225  0.857509  0.655163  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Cloud3pm, has_extended
+3  Combined model (with extended)  0.901126  0.844371  0.685560  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Evaporation, Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.001453
+    Base AUC: 0.8901 (8976 rows)
+    Extended AUC: 0.8988 (19463 rows)
+    Combined (no ext) AUC: 0.8892
+    Combined (with ext) AUC: 0.9011
+
+================================================================================
+Combo 8/15: Evapor ext
+Extended: ['Evaporation']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    81350
+0    60843
+Name: count, dtype: int64
+Extended percentage: 57.21 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               37460
+              1               50793
+1             0               11214
+              1               14287
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                9365
+              1               12698
+1             0                2804
+              1                3572
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8916
+
+Top 10 features by importance:
+Humidity3pm: 0.2083
+RainToday: 0.1595
+Rainfall: 0.0598
+WindGustSpeed: 0.0582
+Sunshine: 0.0559
+Pressure3pm: 0.0530
+Cloud3pm: 0.0451
+WindDir3pm: 0.0342
+Pressure9am: 0.0312
+MaxTemp: 0.0309
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9948
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.2122
+RainToday: 0.1556
+Rainfall: 0.0592
+WindGustSpeed: 0.0575
+Sunshine: 0.0546
+Pressure3pm: 0.0519
+Cloud3pm: 0.0438
+WindDir3pm: 0.0326
+Pressure9am: 0.0299
+MaxTemp: 0.0295
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8921
+
+Top 10 features by importance:
+Humidity3pm: 0.1964
+RainToday: 0.1634
+Rainfall: 0.0558
+WindGustSpeed: 0.0553
+Sunshine: 0.0539
+Pressure3pm: 0.0493
+Cloud3pm: 0.0424
+WindDir3pm: 0.0319
+Pressure9am: 0.0292
+WindGustDir: 0.0282
+len with ext 16270
+len without ext 12169
+
+Base model (no extended)
+AUC: 0.8889, Accuracy: 0.8439, F1 Score: 0.6732
+
+Extended model (with extended)
+AUC: 0.9020, Accuracy: 0.8318, F1 Score: 0.6734
+
+Combined model (no extended)
+AUC: 0.8886, Accuracy: 0.8444, F1 Score: 0.6739
+
+Combined model (with extended)
+AUC: 0.9038, Accuracy: 0.8562, F1 Score: 0.6825
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                              Base_Features          Extended_Features
+0        Base model (no extended)  0.888902  0.843948  0.673206  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, has_extended
+1  Extended model (with extended)  0.901991  0.831776  0.673350  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, has_extended
+2    Combined model (no extended)  0.888646  0.844441  0.673902  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, has_extended
+3  Combined model (with extended)  0.903819  0.856238  0.682503  MinTemp, MaxTemp, Rainfall, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Evaporation, has_extended
+
+>>> RESULT: objective = 0.001572
+    Base AUC: 0.8889 (12169 rows)
+    Extended AUC: 0.9020 (16270 rows)
+    Combined (no ext) AUC: 0.8886
+    Combined (with ext) AUC: 0.9038
+
+================================================================================
+Combo 9/15: Sunshi+Cloud9+Cloud3 ext
+Extended: ['Sunshine', 'Cloud9am', 'Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    99937
+0    42256
+Name: count, dtype: int64
+Extended percentage: 70.28 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               26900
+              1               61352
+1             0                6905
+              1               18597
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                6725
+              1               15339
+1             0                1726
+              1                4649
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.07969454818643935, 'n_estimators': 759, 'min_child_weight': 5, 'subsample': 0.6624074561769746, 'colsample_bytree': 0.662397808134481, 'gamma': 0.2904180608409973, 'lambda': 8.661895281603577, 'alpha': 6.011549002420345, 'scale_pos_weight': 5.248435466776273}
+Best CV AUC score: 0.8833
+
+Top 10 features by importance:
+Humidity3pm: 0.2563
+RainToday: 0.1778
+Rainfall: 0.1008
+WindGustSpeed: 0.0759
+Pressure3pm: 0.0569
+WindDir3pm: 0.0355
+Pressure9am: 0.0327
+Humidity9am: 0.0309
+WindDir9am: 0.0302
+WindGustDir: 0.0299
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 619}
+Best CV AUC score: 0.9231
+Using base model with 619 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.2195
+RainToday: 0.1367
+Rainfall: 0.0914
+WindGustSpeed: 0.0679
+Pressure3pm: 0.0521
+Sunshine: 0.0488
+Cloud3pm: 0.0426
+WindDir3pm: 0.0331
+Humidity9am: 0.0297
+Pressure9am: 0.0296
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8917
+
+Top 10 features by importance:
+Humidity3pm: 0.1983
+RainToday: 0.1617
+Rainfall: 0.0564
+Sunshine: 0.0546
+WindGustSpeed: 0.0539
+Pressure3pm: 0.0488
+Cloud3pm: 0.0408
+WindDir3pm: 0.0323
+has_extended: 0.0288
+Pressure9am: 0.0285
+len with ext 19988
+len without ext 8451
+
+Base model (no extended)
+AUC: 0.8903, Accuracy: 0.7947, F1 Score: 0.6206
+
+Extended model (with extended)
+AUC: 0.8969, Accuracy: 0.7777, F1 Score: 0.6444
+
+Combined model (no extended)
+AUC: 0.8941, Accuracy: 0.8590, F1 Score: 0.6617
+
+Combined model (with extended)
+AUC: 0.8992, Accuracy: 0.8465, F1 Score: 0.6854
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                             Base_Features                           Extended_Features
+0        Base model (no extended)  0.890317  0.794699  0.620599  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, Cloud3pm, has_extended
+1  Extended model (with extended)  0.896912  0.777717  0.644418  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, Cloud3pm, has_extended
+2    Combined model (no extended)  0.894146  0.858952  0.661748  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, Cloud3pm, has_extended
+3  Combined model (with extended)  0.899177  0.846458  0.685392  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.006093
+    Base AUC: 0.8903 (8451 rows)
+    Extended AUC: 0.8969 (19988 rows)
+    Combined (no ext) AUC: 0.8941
+    Combined (with ext) AUC: 0.8992
+
+================================================================================
+Combo 10/15: Sunshi+Cloud9 ext
+Extended: ['Sunshine', 'Cloud9am']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    96434
+0    45759
+Name: count, dtype: int64
+Extended percentage: 67.82 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               29150
+              1               59102
+1             0                7457
+              1               18045
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                7288
+              1               14776
+1             0                1864
+              1                4511
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8875
+
+Top 10 features by importance:
+Humidity3pm: 0.2152
+RainToday: 0.1781
+WindGustSpeed: 0.0643
+Rainfall: 0.0574
+Cloud3pm: 0.0573
+Pressure3pm: 0.0523
+WindDir3pm: 0.0358
+Pressure9am: 0.0325
+WindGustDir: 0.0319
+MaxTemp: 0.0318
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9925
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.2022
+RainToday: 0.1645
+Sunshine: 0.0603
+WindGustSpeed: 0.0587
+Rainfall: 0.0524
+Cloud3pm: 0.0516
+Pressure3pm: 0.0473
+WindDir3pm: 0.0318
+Cloud9am: 0.0308
+Pressure9am: 0.0289
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8923
+
+Top 10 features by importance:
+Humidity3pm: 0.1959
+RainToday: 0.1761
+WindGustSpeed: 0.0539
+Sunshine: 0.0535
+Rainfall: 0.0509
+Pressure3pm: 0.0480
+Cloud3pm: 0.0410
+has_extended: 0.0316
+WindDir3pm: 0.0306
+Pressure9am: 0.0285
+len with ext 19287
+len without ext 9152
+
+Base model (no extended)
+AUC: 0.8847, Accuracy: 0.8558, F1 Score: 0.6510
+
+Extended model (with extended)
+AUC: 0.9018, Accuracy: 0.8249, F1 Score: 0.6813
+
+Combined model (no extended)
+AUC: 0.8842, Accuracy: 0.8521, F1 Score: 0.6459
+
+Combined model (with extended)
+AUC: 0.9051, Accuracy: 0.8526, F1 Score: 0.6951
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                       Base_Features                 Extended_Features
+0        Base model (no extended)  0.884680  0.855769  0.650978  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, has_extended
+1  Extended model (with extended)  0.901759  0.824908  0.681265  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, has_extended
+2    Combined model (no extended)  0.884205  0.852054  0.645921  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, has_extended
+3  Combined model (with extended)  0.905101  0.852595  0.695121  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, Cloud9am, has_extended
+
+>>> RESULT: objective = 0.002867
+    Base AUC: 0.8847 (9152 rows)
+    Extended AUC: 0.9018 (19287 rows)
+    Combined (no ext) AUC: 0.8842
+    Combined (with ext) AUC: 0.9051
+
+================================================================================
+Combo 11/15: Sunshi+Cloud3 ext
+Extended: ['Sunshine', 'Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    94583
+0    47610
+Name: count, dtype: int64
+Extended percentage: 66.52 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               30510
+              1               57742
+1             0                7578
+              1               17924
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                7628
+              1               14436
+1             0                1894
+              1                4481
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8853
+
+Top 10 features by importance:
+Humidity3pm: 0.2196
+RainToday: 0.1840
+WindGustSpeed: 0.0680
+Rainfall: 0.0544
+Pressure3pm: 0.0528
+Cloud9am: 0.0380
+WindDir3pm: 0.0365
+WindGustDir: 0.0336
+Pressure9am: 0.0328
+WindDir9am: 0.0327
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9924
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.1967
+RainToday: 0.1631
+Sunshine: 0.0759
+WindGustSpeed: 0.0594
+Cloud3pm: 0.0556
+Rainfall: 0.0471
+Pressure3pm: 0.0457
+Cloud9am: 0.0326
+WindDir3pm: 0.0309
+WindGustDir: 0.0283
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8926
+
+Top 10 features by importance:
+Humidity3pm: 0.1969
+RainToday: 0.1650
+WindGustSpeed: 0.0561
+Sunshine: 0.0556
+Rainfall: 0.0502
+Pressure3pm: 0.0481
+Cloud3pm: 0.0418
+WindDir3pm: 0.0315
+has_extended: 0.0296
+Pressure9am: 0.0287
+len with ext 18917
+len without ext 9522
+
+Base model (no extended)
+AUC: 0.8784, Accuracy: 0.8492, F1 Score: 0.6363
+
+Extended model (with extended)
+AUC: 0.8998, Accuracy: 0.8228, F1 Score: 0.6812
+
+Combined model (no extended)
+AUC: 0.8793, Accuracy: 0.8523, F1 Score: 0.6389
+
+Combined model (with extended)
+AUC: 0.9041, Accuracy: 0.8474, F1 Score: 0.6889
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                       Base_Features                 Extended_Features
+0        Base model (no extended)  0.878368  0.849191  0.636272  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Sunshine, Cloud3pm, has_extended
+1  Extended model (with extended)  0.899815  0.822752  0.681183  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Sunshine, Cloud3pm, has_extended
+2    Combined model (no extended)  0.879261  0.852342  0.638932  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Sunshine, Cloud3pm, has_extended
+3  Combined model (with extended)  0.904083  0.847386  0.688867  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Sunshine, Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.005161
+    Base AUC: 0.8784 (9522 rows)
+    Extended AUC: 0.8998 (18917 rows)
+    Combined (no ext) AUC: 0.8793
+    Combined (with ext) AUC: 0.9041
+
+================================================================================
+Combo 12/15: Sunshi ext
+Extended: ['Sunshine']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    74377
+0    67816
+Name: count, dtype: int64
+Extended percentage: 52.31 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               42208
+              1               46044
+1             0               12045
+              1               13457
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0               10552
+              1               11512
+1             0                3011
+              1                3364
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8892
+
+Top 10 features by importance:
+Humidity3pm: 0.2049
+RainToday: 0.1915
+WindGustSpeed: 0.0627
+Cloud3pm: 0.0566
+Rainfall: 0.0541
+Pressure3pm: 0.0483
+WindDir3pm: 0.0339
+WindGustDir: 0.0304
+Pressure9am: 0.0304
+Cloud9am: 0.0302
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9935
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.1986
+RainToday: 0.1880
+WindGustSpeed: 0.0593
+Sunshine: 0.0565
+Cloud3pm: 0.0528
+Rainfall: 0.0510
+Pressure3pm: 0.0450
+WindDir3pm: 0.0311
+Pressure9am: 0.0278
+WindGustDir: 0.0277
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8930
+
+Top 10 features by importance:
+Humidity3pm: 0.2023
+RainToday: 0.1543
+Sunshine: 0.0568
+WindGustSpeed: 0.0560
+Rainfall: 0.0539
+Pressure3pm: 0.0496
+Cloud3pm: 0.0406
+WindDir3pm: 0.0331
+Pressure9am: 0.0292
+WindGustDir: 0.0287
+len with ext 14876
+len without ext 13563
+
+Base model (no extended)
+AUC: 0.8810, Accuracy: 0.8427, F1 Score: 0.6572
+
+Extended model (with extended)
+AUC: 0.9014, Accuracy: 0.8263, F1 Score: 0.6749
+
+Combined model (no extended)
+AUC: 0.8819, Accuracy: 0.8411, F1 Score: 0.6531
+
+Combined model (with extended)
+AUC: 0.9050, Accuracy: 0.8541, F1 Score: 0.6891
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                                 Base_Features       Extended_Features
+0        Base model (no extended)  0.880991  0.842734  0.657239  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, has_extended
+1  Extended model (with extended)  0.901386  0.826297  0.674887  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, has_extended
+2    Combined model (no extended)  0.881898  0.841112  0.653147  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, has_extended
+3  Combined model (with extended)  0.904953  0.854060  0.689102  MinTemp, MaxTemp, Rainfall, Evaporation, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Cloud3pm, Temp9am, Temp3pm, RainToday  Sunshine, has_extended
+
+>>> RESULT: objective = 0.004474
+    Base AUC: 0.8810 (13563 rows)
+    Extended AUC: 0.9014 (14876 rows)
+    Combined (no ext) AUC: 0.8819
+    Combined (with ext) AUC: 0.9050
+
+================================================================================
+Combo 13/15: Cloud9+Cloud3 ext
+Extended: ['Cloud9am', 'Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    92516
+0    49677
+Name: count, dtype: int64
+Extended percentage: 65.06 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               31389
+              1               56863
+1             0                8352
+              1               17150
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                7848
+              1               14216
+1             0                2088
+              1                4287
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8894
+
+Top 10 features by importance:
+Humidity3pm: 0.2201
+RainToday: 0.1546
+Sunshine: 0.0643
+WindGustSpeed: 0.0629
+Rainfall: 0.0593
+Pressure3pm: 0.0559
+WindDir3pm: 0.0360
+Temp3pm: 0.0328
+Pressure9am: 0.0326
+WindGustDir: 0.0325
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9928
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.2078
+RainToday: 0.1399
+Cloud3pm: 0.0602
+Sunshine: 0.0588
+WindGustSpeed: 0.0575
+Rainfall: 0.0543
+Pressure3pm: 0.0511
+WindDir3pm: 0.0321
+Cloud9am: 0.0309
+Temp3pm: 0.0293
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8914
+
+Top 10 features by importance:
+Humidity3pm: 0.2028
+RainToday: 0.1365
+Sunshine: 0.0584
+WindGustSpeed: 0.0582
+Rainfall: 0.0544
+Pressure3pm: 0.0513
+Cloud3pm: 0.0424
+WindDir3pm: 0.0325
+WindGustDir: 0.0293
+Pressure9am: 0.0293
+len with ext 18503
+len without ext 9936
+
+Base model (no extended)
+AUC: 0.8877, Accuracy: 0.8494, F1 Score: 0.6561
+
+Extended model (with extended)
+AUC: 0.9043, Accuracy: 0.8248, F1 Score: 0.6829
+
+Combined model (no extended)
+AUC: 0.8887, Accuracy: 0.8510, F1 Score: 0.6587
+
+Combined model (with extended)
+AUC: 0.9041, Accuracy: 0.8495, F1 Score: 0.6906
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                       Base_Features                 Extended_Features
+0        Base model (no extended)  0.887736  0.849436  0.656092  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Cloud9am, Cloud3pm, has_extended
+1  Extended model (with extended)  0.904299  0.824839  0.682908  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Cloud9am, Cloud3pm, has_extended
+2    Combined model (no extended)  0.888717  0.851047  0.658672  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Cloud9am, Cloud3pm, has_extended
+3  Combined model (with extended)  0.904082  0.849538  0.690598  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Temp9am, Temp3pm, RainToday  Cloud9am, Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.000763
+    Base AUC: 0.8877 (9936 rows)
+    Extended AUC: 0.9043 (18503 rows)
+    Combined (no ext) AUC: 0.8887
+    Combined (with ext) AUC: 0.9041
+
+================================================================================
+Combo 14/15: Cloud9 ext
+Extended: ['Cloud9am']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    88536
+0    53657
+Name: count, dtype: int64
+Extended percentage: 62.26 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               33921
+              1               54331
+1             0                9004
+              1               16498
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                8481
+              1               13583
+1             0                2251
+              1                4124
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8924
+
+Top 10 features by importance:
+RainToday: 0.2126
+Humidity3pm: 0.1997
+Rainfall: 0.0580
+WindGustSpeed: 0.0543
+Sunshine: 0.0529
+Pressure3pm: 0.0498
+Cloud3pm: 0.0399
+WindDir3pm: 0.0318
+WindGustDir: 0.0288
+Pressure9am: 0.0285
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9944
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+RainToday: 0.2123
+Humidity3pm: 0.2019
+Rainfall: 0.0569
+WindGustSpeed: 0.0534
+Sunshine: 0.0513
+Pressure3pm: 0.0483
+Cloud3pm: 0.0383
+WindDir3pm: 0.0303
+WindGustDir: 0.0273
+Pressure9am: 0.0272
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8932
+
+Top 10 features by importance:
+RainToday: 0.2298
+Humidity3pm: 0.1816
+Rainfall: 0.0535
+Sunshine: 0.0498
+WindGustSpeed: 0.0497
+Pressure3pm: 0.0459
+Cloud3pm: 0.0377
+WindDir3pm: 0.0295
+WindGustDir: 0.0262
+MaxTemp: 0.0259
+len with ext 17707
+len without ext 10732
+
+Base model (no extended)
+AUC: 0.8806, Accuracy: 0.8474, F1 Score: 0.6450
+
+Extended model (with extended)
+AUC: 0.8982, Accuracy: 0.8229, F1 Score: 0.6740
+
+Combined model (no extended)
+AUC: 0.8812, Accuracy: 0.8461, F1 Score: 0.6440
+
+Combined model (with extended)
+AUC: 0.8992, Accuracy: 0.8494, F1 Score: 0.6863
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                                 Base_Features       Extended_Features
+0        Base model (no extended)  0.880592  0.847372  0.644993  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Cloud9am, has_extended
+1  Extended model (with extended)  0.898161  0.822895  0.674012  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Cloud9am, has_extended
+2    Combined model (no extended)  0.881204  0.846068  0.643966  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Cloud9am, has_extended
+3  Combined model (with extended)  0.899207  0.849438  0.686279  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud3pm, Temp9am, Temp3pm, RainToday  Cloud9am, has_extended
+
+>>> RESULT: objective = 0.001659
+    Base AUC: 0.8806 (10732 rows)
+    Extended AUC: 0.8982 (17707 rows)
+    Combined (no ext) AUC: 0.8812
+    Combined (with ext) AUC: 0.8992
+
+================================================================================
+Combo 15/15: Cloud3 ext
+Extended: ['Cloud3pm']
+================================================================================
+
+=== Breakdown BEFORE splitting ===
+has_extended
+1    85099
+0    57094
+Name: count, dtype: int64
+Extended percentage: 59.85 %
+Train set distribution:
+RainTomorrow  has_extended
+0             0               36404
+              1               51849
+1             0                9271
+              1               16230
+dtype: int64
+
+Test set distribution:
+RainTomorrow  has_extended
+0             0                9101
+              1               12962
+1             0                2318
+              1                4058
+dtype: int64
+
+=== Training Base Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8903
+
+Top 10 features by importance:
+Humidity3pm: 0.2030
+RainToday: 0.1894
+Sunshine: 0.0595
+WindGustSpeed: 0.0581
+Rainfall: 0.0568
+Pressure3pm: 0.0526
+WindDir3pm: 0.0340
+WindGustDir: 0.0300
+MaxTemp: 0.0299
+WindDir9am: 0.0298
+
+=== Training Extended Model (Incremental, pruning_mode=optuna) ===
+Best parameters found: {'max_depth': 5, 'learning_rate': 0.045443839603360174, 'n_estimators': 421, 'min_child_weight': 2, 'subsample': 0.8170784332632994, 'colsample_bytree': 0.6563696899899051, 'gamma': 4.010984903770199, 'lambda': 0.7464318861540284, 'alpha': 9.868882479068573, 'scale_pos_weight': 5.633468615779945, 'use_base_model': True, 'n_trees_keep': 772}
+Best CV AUC score: 0.9941
+Using base model with 772 trees kept (mode: optuna)
+
+Top 10 features by importance:
+Humidity3pm: 0.2038
+RainToday: 0.1684
+Sunshine: 0.0571
+WindGustSpeed: 0.0562
+Rainfall: 0.0552
+Cloud3pm: 0.0522
+Pressure3pm: 0.0508
+WindDir3pm: 0.0320
+WindGustDir: 0.0280
+WindDir9am: 0.0279
+
+=== Training Combined Model ===
+Best parameters found: {'max_depth': 10, 'learning_rate': 0.035503048581283086, 'n_estimators': 946, 'min_child_weight': 7, 'subsample': 0.8391599915244341, 'colsample_bytree': 0.9687496940092467, 'gamma': 0.4424625102595975, 'lambda': 1.960632641329033, 'alpha': 0.4532276618164702, 'scale_pos_weight': 2.951981984579586}
+Best CV AUC score: 0.8922
+
+Top 10 features by importance:
+Humidity3pm: 0.1927
+RainToday: 0.1815
+Sunshine: 0.0540
+WindGustSpeed: 0.0540
+Rainfall: 0.0526
+Pressure3pm: 0.0489
+Cloud3pm: 0.0408
+WindDir3pm: 0.0315
+WindGustDir: 0.0278
+Pressure9am: 0.0276
+len with ext 17020
+len without ext 11419
+
+Base model (no extended)
+AUC: 0.8903, Accuracy: 0.8561, F1 Score: 0.6599
+
+Extended model (with extended)
+AUC: 0.9027, Accuracy: 0.8199, F1 Score: 0.6824
+
+Combined model (no extended)
+AUC: 0.8906, Accuracy: 0.8565, F1 Score: 0.6595
+
+Combined model (with extended)
+AUC: 0.9032, Accuracy: 0.8474, F1 Score: 0.6953
+
+Results Summary:
+                            Model       AUC  Accuracy        F1                                                                                                                                                                                                                 Base_Features       Extended_Features
+0        Base model (no extended)  0.890335  0.856117  0.659905  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Cloud3pm, has_extended
+1  Extended model (with extended)  0.902716  0.819918  0.682416  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Cloud3pm, has_extended
+2    Combined model (no extended)  0.890602  0.856467  0.659464  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Cloud3pm, has_extended
+3  Combined model (with extended)  0.903158  0.847356  0.695285  MinTemp, MaxTemp, Rainfall, Evaporation, Sunshine, WindGustDir, WindGustSpeed, WindDir9am, WindDir3pm, WindSpeed9am, WindSpeed3pm, Humidity9am, Humidity3pm, Pressure9am, Pressure3pm, Cloud9am, Temp9am, Temp3pm, RainToday  Cloud3pm, has_extended
+
+>>> RESULT: objective = 0.000710
+    Base AUC: 0.8903 (11419 rows)
+    Extended AUC: 0.9027 (17020 rows)
+    Combined (no ext) AUC: 0.8906
+    Combined (with ext) AUC: 0.9032
+
+========================================================================================================================
+FINAL SUMMARY
+========================================================================================================================
+Combo                                         Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no_ext   N_ext     
+---------------------------------------------------------------------------------------------------------------------
+Evapor+Sunshi+Cloud9+Cloud3 ext               0.007280     0.8891     0.8970     0.8933     0.9001     7889       20550     
+Evapor+Sunshi+Cloud9 ext                      0.005457     0.8851     0.9002     0.8879     0.9029     8498       19941     
+Evapor+Sunshi+Cloud3 ext                      0.007822     0.8759     0.8995     0.8796     0.9036     8645       19794     
+Evapor+Sunshi ext                             0.005392     0.8778     0.9047     0.8790     0.9090     11377      17062     
+Evapor+Cloud9+Cloud3 ext                      0.003570     0.8892     0.9033     0.8905     0.9055     8157       20282     
+Evapor+Cloud9 ext                             0.000560     0.8867     0.9019     0.8855     0.9037     8815       19624     
+Evapor+Cloud3 ext                             0.001453     0.8901     0.8988     0.8892     0.9011     8976       19463     
+Evapor ext                                    0.001572     0.8889     0.9020     0.8886     0.9038     12169      16270     
+Sunshi+Cloud9+Cloud3 ext                      0.006093     0.8903     0.8969     0.8941     0.8992     8451       19988     
+Sunshi+Cloud9 ext                             0.002867     0.8847     0.9018     0.8842     0.9051     9152       19287     
+Sunshi+Cloud3 ext                             0.005161     0.8784     0.8998     0.8793     0.9041     9522       18917     
+Sunshi ext                                    0.004474     0.8810     0.9014     0.8819     0.9050     13563      14876     
+Cloud9+Cloud3 ext                             0.000763     0.8877     0.9043     0.8887     0.9041     9936       18503     
+Cloud9 ext                                    0.001659     0.8806     0.8982     0.8812     0.8992     10732      17707     
+Cloud3 ext                                    0.000710     0.8903     0.9027     0.8906     0.9032     11419      17020     
+
+Negative objectives (incremental wins): 0/15
+
+Done!

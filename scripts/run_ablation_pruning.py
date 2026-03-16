@@ -9,7 +9,10 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import pandas as pd
 import numpy as np
-import kagglehub
+try:
+    import kagglehub
+except ImportError:
+    kagglehub = None
 import shutil
 from core.GenericDataPipeline import GenericDataPipeline
 from core.RunData import RunPipeline
@@ -21,6 +24,8 @@ pd.set_option('future.infer_string', False)
 set_all_seeds()
 
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+# Optional: filter to specific datasets (comma-separated), e.g. "WeatherAUS,WIDS"
+DATASET_FILTER = sys.argv[2].split(',') if len(sys.argv) > 2 else None
 ABLATION_DIR = os.path.join(os.path.dirname(__file__), '..', 'results', 'ablation')
 PRUNING_MODES = ['optuna', 'no_pruning', 'fixed_50']
 
@@ -201,6 +206,41 @@ def load_movie_aug_v2():
     return df, label, ext_features
 
 
+def load_weatheraus():
+    """WeatherAUS (Natural Nulls). Best combo: Evaporation + Cloud9am ext."""
+    csv_path = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'weatherAUS.csv')
+    df = pd.read_csv(csv_path, na_values=['NA'])
+    columns_to_drop = ['Date', 'Location', 'RISK_MM']
+    df = df.drop(columns=columns_to_drop)
+    df = pipeline.preprocessing(df)
+    label = "RainTomorrow"
+    df[label] = df[label].astype(int)
+
+    ext_features = ['Evaporation', 'Cloud9am']
+    return df, label, ext_features
+
+
+def load_wids():
+    """WIDS (Natural Nulls). Best combo: groups 1-4 (h1_bilirubin, h1_lactate, h1_pao2fio2ratio, h1_arterial_ph)."""
+    csv_path = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'WIDS.csv')
+    df = pd.read_csv(csv_path, na_values=['NA'])
+    columns_to_drop = ['encounter_id', 'patient_id', 'hospital_id']
+    df = df.drop(columns=columns_to_drop)
+    df = pipeline.preprocessing(df)
+    label = "hospital_death"
+    df[label] = df[label].astype(int)
+
+    # Best combo uses groups 1-4 from null pattern grouping (14 features total)
+    ext_features = [
+        'h1_bilirubin_max', 'h1_bilirubin_min', 'h1_albumin_max', 'h1_albumin_min',
+        'h1_lactate_max', 'h1_lactate_min',
+        'h1_pao2fio2ratio_max', 'h1_pao2fio2ratio_min',
+        'h1_arterial_ph_max', 'h1_arterial_ph_min', 'h1_arterial_pco2_max',
+        'h1_arterial_pco2_min', 'h1_arterial_po2_max', 'h1_arterial_po2_min',
+    ]
+    return df, label, ext_features
+
+
 # ============================================================================
 # Dataset registry
 # ============================================================================
@@ -212,6 +252,8 @@ DATASETS = [
     ('HRAnalytics', load_hr_analytics),
     ('ClientRecordAug', load_client_record_aug),
     ('MovieAugV2', load_movie_aug_v2),
+    ('WeatherAUS', load_weatheraus),
+    ('WIDS', load_wids),
 ]
 
 # ============================================================================
@@ -221,6 +263,9 @@ DATASETS = [
 all_results = []
 
 for ds_name, load_fn in DATASETS:
+    if DATASET_FILTER and ds_name not in DATASET_FILTER:
+        print(f"\nSkipping {ds_name} (not in filter: {DATASET_FILTER})")
+        continue
     print(f"\n{'#'*100}")
     print(f"# DATASET: {ds_name}")
     print(f"{'#'*100}")
