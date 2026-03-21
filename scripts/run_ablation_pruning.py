@@ -6,6 +6,7 @@ For each dataset's best combo, trains base+combined once, then extended model
 """
 import sys
 import os
+sys.stdout.reconfigure(line_buffering=True)
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import pandas as pd
 import numpy as np
@@ -24,6 +25,12 @@ pd.set_option('future.infer_string', False)
 set_all_seeds()
 
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+# Per-mode trial overrides (default to N_TRIALS if not specified)
+TRIALS_PER_MODE = {
+    'optuna': N_TRIALS,
+    'no_pruning': max(N_TRIALS * 3 // 5, 10),
+    'fixed_50': max(N_TRIALS * 3 // 5, 10),
+}
 # Optional: filter to specific datasets (comma-separated), e.g. "WeatherAUS,WIDS"
 DATASET_FILTER = sys.argv[2].split(',') if len(sys.argv) > 2 else None
 ABLATION_DIR = os.path.join(os.path.dirname(__file__), '..', 'results', 'ablation')
@@ -48,16 +55,18 @@ def load_bankloansta():
     df[label] = df[label].astype(int)
 
     # Augmentation: inject nulls into Home Ownership & Purpose
+    # Must match run_augmented_combos.py exactly
     rng = np.random.RandomState(SEED)
-    null_features_original = [c for c in df.columns if c != label and df[c].isna().mean() > 0.05]
-    null_rows = df[df[null_features_original].isna().any(axis=1)].index
-    n_sample = int(0.20 * len(null_rows))
-    sampled_idx = rng.choice(null_rows, size=n_sample, replace=False)
-    choices = rng.choice(['ho', 'purpose', 'both'], size=len(sampled_idx))
-    ho_idx = sampled_idx[np.isin(choices, ['ho', 'both'])]
-    purp_idx = sampled_idx[np.isin(choices, ['purpose', 'both'])]
-    df.loc[ho_idx, 'Home Ownership'] = np.nan
-    df.loc[purp_idx, 'Purpose'] = np.nan
+    null_features_original = ['Credit Score', 'Annual Income', 'Months since last delinquent', 'Years in current job']
+    has_any_null = df[null_features_original].isna().any(axis=1)
+    candidate_indices = df[has_any_null].index.tolist()
+    n_sample = min(int(0.20 * len(df)), len(candidate_indices))
+    sampled_indices = rng.choice(candidate_indices, size=n_sample, replace=False)
+    choices = rng.choice(['home', 'purpose', 'both'], size=len(sampled_indices))
+    home_null_idx = sampled_indices[choices != 'purpose']
+    purpose_null_idx = sampled_indices[choices != 'home']
+    df.loc[home_null_idx, 'Home Ownership'] = np.nan
+    df.loc[purpose_null_idx, 'Purpose'] = np.nan
 
     ext_features = ['Credit Score', 'Annual Income']
     return df, label, ext_features
@@ -241,6 +250,39 @@ def load_wids():
     return df, label, ext_features
 
 
+def load_flight_delay():
+    """FlightDelay (Augmented). Best combo: OP_CARRIER_FL_NUM ext."""
+    path = kagglehub.dataset_download("divyansh22/flight-delay-prediction")
+    df = pd.read_csv(os.path.join(path, "Jan_2019_ontime.csv"))
+
+    # Drop leaky/useless columns
+    drop_cols = ['Unnamed: 21', 'CANCELLED', 'DIVERTED', 'DEP_TIME', 'ARR_TIME',
+                 'ARR_DEL15', 'ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID',
+                 'OP_CARRIER_AIRLINE_ID']
+    df.drop([c for c in drop_cols if c in df.columns], axis=1, inplace=True)
+
+    df.dropna(subset=['DEP_DEL15'], inplace=True)
+    label = "DEP_DEL15"
+    df[label] = df[label].astype(int)
+    # Sample to 100K rows to avoid OOM
+    if len(df) > 100000:
+        df = df.sample(n=100000, random_state=SEED).reset_index(drop=True)
+    df = pipeline.preprocessing(df)
+
+    # Augmentation: inject 20% nulls into selected features
+    rng = np.random.RandomState(SEED)
+    augment_features = ['TAIL_NUM', 'DISTANCE', 'OP_CARRIER_FL_NUM', 'DAY_OF_MONTH']
+    null_pct = 0.20
+    n_null = int(null_pct * len(df))
+    for feat in augment_features:
+        null_idx = rng.choice(df.index, size=n_null, replace=False)
+        df.loc[null_idx, feat] = np.nan
+
+    # Best combo: OP_CARRIER_FL_NUM as extended feature
+    ext_features = ['OP_CARRIER_FL_NUM']
+    return df, label, ext_features
+
+
 # ============================================================================
 # Dataset registry
 # ============================================================================
@@ -254,6 +296,7 @@ DATASETS = [
     ('MovieAugV2', load_movie_aug_v2),
     ('WeatherAUS', load_weatheraus),
     ('WIDS', load_wids),
+    ('FlightDelay', load_flight_delay),
 ]
 
 # ============================================================================
@@ -336,8 +379,9 @@ for ds_name, load_fn in DATASETS:
 
     # --- Train Extended Model (3 modes) ---
     for mode in PRUNING_MODES:
+        mode_trials = TRIALS_PER_MODE.get(mode, N_TRIALS)
         print(f"\n{'='*80}")
-        print(f"Training Extended Model — pruning_mode={mode}")
+        print(f"Training Extended Model — pruning_mode={mode}, n_trials={mode_trials}")
         print(f"{'='*80}")
         sys.stdout.flush()
 
@@ -346,7 +390,7 @@ for ds_name, load_fn in DATASETS:
             ext_train[dm.base_features + dm.ext_features],
             ext_train[dm.label],
             base_model_path="base_model.json",
-            n_trials=N_TRIALS,
+            n_trials=mode_trials,
             pruning_mode=mode
         )
         # Save model

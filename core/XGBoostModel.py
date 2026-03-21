@@ -19,11 +19,11 @@ class XGBoostModel:
             'learning_rate': trial.suggest_float('learning_rate', 1e-3, 0.1, log=True),
             'n_estimators': trial.suggest_int('n_estimators', 100, 1000),
             'min_child_weight': trial.suggest_int('min_child_weight', 1, 7),
-            'subsample': trial.suggest_float('subsample', 0.6, 1.0),
-            'colsample_bytree': trial.suggest_float('colsample_bytree', 0.6, 1.0),
-            'gamma': trial.suggest_float('gamma', 0, 5),
-            'lambda': trial.suggest_float('lambda', 1e-3, 10.0),
-            'alpha': trial.suggest_float('alpha', 1e-3, 10.0),
+            'subsample': trial.suggest_float('subsample', 0.6, 0.9),
+            'colsample_bytree': trial.suggest_float('colsample_bytree', 0.6, 0.9),
+            'gamma': trial.suggest_float('gamma', 1e-3, 5.0, log=True),
+            'lambda': trial.suggest_float('lambda', 1e-2, 10.0, log=True),
+            'alpha': trial.suggest_float('alpha', 1e-3, 10.0, log=True),
             'scale_pos_weight': trial.suggest_float('scale_pos_weight', 1.0, 7.0),
             "random_state": self.seed,
             "eval_metric": "auc",
@@ -86,9 +86,13 @@ class XGBoostModel:
     def train(self, X, y, n_trials=20, base_model_path=None, pruning_mode='optuna'):
         study = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler(seed=self.seed))
 
+        def _callback(study, trial):
+            print(f"  Trial {trial.number+1}/{n_trials}: AUC={trial.value:.4f}", flush=True)
+
         study.optimize(
             lambda trial: self.objective(trial, X, y, base_model_path, pruning_mode=pruning_mode),
-            n_trials=n_trials
+            n_trials=n_trials,
+            callbacks=[_callback]
         )
 
         self.best_params = study.best_params
