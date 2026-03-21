@@ -84,11 +84,21 @@ Some datasets are downloaded automatically via `kagglehub`. Others require local
 
 Place these files before running the corresponding experiments.
 
-## 7. Run from a Jupyter Notebook
+## 7. Run from a Jupyter Notebook (on a different machine)
+
+### Cell 1: Clone repo and install dependencies
+
+```python
+!git clone https://github.com/OArbili/IncrementalLearning.git
+%cd IncrementalLearning
+!pip install pandas numpy scikit-learn xgboost optuna kagglehub
+```
+
+### Cell 2: Setup imports
 
 ```python
 import sys, os
-sys.path.insert(0, '/path/to/IncrementalLearning')
+sys.path.insert(0, os.getcwd())
 
 import pandas as pd
 import numpy as np
