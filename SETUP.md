@@ -84,6 +84,110 @@ Some datasets are downloaded automatically via `kagglehub`. Others require local
 
 Place these files before running the corresponding experiments.
 
+## 7. Run from a Jupyter Notebook
+
+```python
+import sys, os
+sys.path.insert(0, '/path/to/IncrementalLearning')
+
+import pandas as pd
+import numpy as np
+from core.GenericDataPipeline import GenericDataPipeline
+from core.RunData import RunPipeline
+from core.seed_utils import SEED, set_all_seeds
+
+pd.set_option('future.infer_string', False)
+set_all_seeds()
+
+pipeline = GenericDataPipeline()
+```
+
+### Option A: Run on your own dataset
+
+```python
+# 1. Load and preprocess
+df = pd.read_csv('your_data.csv')
+df = pipeline.preprocessing(df)
+
+label = 'target_column'
+
+# 2. Define which features are "extended" (partially available)
+ext_features = ['feature_A', 'feature_B']  # features with missing values
+base_features = [c for c in df.columns if c != label and c not in ext_features]
+
+# 3. Run the full pipeline (trains base, extended, combined + evaluates)
+dm = RunPipeline()
+objective = dm.full_run(
+    df.copy(),
+    base_features,
+    ext_features,
+    label,
+    csv_name='my_experiment.csv',  # saves results CSV
+    n_trials=30                     # Optuna trials per model
+)
+
+print(f'Objective: {objective:.6f}')
+# Negative = incremental learning wins
+# Positive = combined (retrain from scratch) wins
+```
+
+### Option B: Run step-by-step for more control
+
+```python
+# 1. Load and preprocess
+df = pd.read_csv('your_data.csv')
+df = pipeline.preprocessing(df)
+
+label = 'target_column'
+ext_features = ['feature_A', 'feature_B']
+base_features = [c for c in df.columns if c != label and c not in ext_features]
+
+# 2. Setup pipeline
+dm = RunPipeline()
+dm.load_data(base_features, ext_features, df.copy(), label)
+dm.set_has_extended()
+dm.train_test_split()
+dm.set_train_base_ext_datasets()
+
+# 3. Train models individually
+dm.train_all(n_trials=30, pruning_mode='optuna')
+
+# 4. Evaluate
+objective = dm.test_all(csv_name='my_experiment.csv')
+print(f'Objective: {objective:.6f}')
+
+# 5. Access individual models for inspection
+print(dm.base_model.best_params)
+print(dm.extended_model.best_params)
+print(dm.combined_model.best_params)
+```
+
+### Option C: Run an existing dataset experiment
+
+```python
+# Example: Weather dataset
+import kagglehub
+
+path = kagglehub.dataset_download("rever3nd/weather-data")
+csv_path = os.path.join(path, os.listdir(path)[0])
+df = pd.read_csv(csv_path)
+
+columns_to_drop = ['Unnamed: 0', 'Date', 'RISK_MM',
+    'Humidity3pm', 'Pressure3pm', 'Cloud3pm', 'Temp3pm',
+    'WindDir3pm', 'WindSpeed3pm']
+df = df.drop(columns=columns_to_drop)
+df = pipeline.preprocessing(df)
+
+label = 'RainTomorrow'
+ext_features = ['Evaporation', 'Sunshine', 'WindDir9am']
+base_features = [c for c in df.columns if c != label and c not in ext_features]
+
+dm = RunPipeline()
+objective = dm.full_run(df.copy(), base_features, ext_features, label,
+                        'weather_notebook.csv', n_trials=10)
+print(f'Objective: {objective:.6f}')
+```
+
 ## Notes
 
 - Seed is fixed at 42 for reproducibility (`core/seed_utils.py`)
