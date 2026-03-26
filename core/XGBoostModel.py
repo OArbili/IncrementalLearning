@@ -40,9 +40,18 @@ class XGBoostModel:
             total_trees_in_base = len(base_booster.get_dump())
 
             if pruning_mode == 'optuna':
-                # Current behavior: Optuna decides whether to use base model and how many trees
-                use_base_model = trial.suggest_categorical('use_base_model', [True, False])
-                if use_base_model:
+                # Optuna chooses a pruning strategy: flexible tree count, no pruning, fixed 50%, or no base model
+                strategy = trial.suggest_categorical('pruning_strategy', ['flexible', 'no_pruning', 'fixed_50', 'no_base'])
+                if strategy == 'no_base':
+                    use_base_model = False
+                elif strategy == 'no_pruning':
+                    use_base_model = True
+                    n_trees_keep = total_trees_in_base
+                elif strategy == 'fixed_50':
+                    use_base_model = True
+                    n_trees_keep = max(1, total_trees_in_base // 2)
+                else:  # flexible
+                    use_base_model = True
                     n_trees_keep = trial.suggest_int("n_trees_keep", 1, total_trees_in_base)
             elif pruning_mode == 'no_pruning':
                 # Always use full base model, no pruning
@@ -100,7 +109,7 @@ class XGBoostModel:
         print(f"Best CV AUC score: {study.best_value:.4f}")
 
         best_params_clean = {k: v for k, v in self.best_params.items()
-                           if k not in ['n_trees_keep', 'use_base_model']}
+                           if k not in ['n_trees_keep', 'use_base_model', 'pruning_strategy']}
         # Add fixed params not tuned by Optuna
         best_params_clean['tree_method'] = 'hist'
         best_params_clean['device'] = DEVICE
@@ -108,10 +117,33 @@ class XGBoostModel:
         best_params_clean['random_state'] = self.seed
 
         if pruning_mode == 'optuna':
-            # Current behavior: check Optuna's decision
-            use_base_model = self.best_params.get('use_base_model', True)
-            self.used_base_model = use_base_model
-            n_trees_keep = self.best_params.get('n_trees_keep', 0)
+            strategy = self.best_params.get('pruning_strategy', 'flexible')
+            if strategy == 'no_base':
+                use_base_model = False
+                self.used_base_model = False
+                n_trees_keep = 0
+            elif strategy == 'no_pruning':
+                use_base_model = True
+                self.used_base_model = True
+                if base_model_path is not None:
+                    base_booster = xgb.Booster()
+                    base_booster.load_model(base_model_path)
+                    n_trees_keep = len(base_booster.get_dump())
+                else:
+                    n_trees_keep = 0
+            elif strategy == 'fixed_50':
+                use_base_model = True
+                self.used_base_model = True
+                if base_model_path is not None:
+                    base_booster = xgb.Booster()
+                    base_booster.load_model(base_model_path)
+                    n_trees_keep = max(1, len(base_booster.get_dump()) // 2)
+                else:
+                    n_trees_keep = 0
+            else:  # flexible
+                use_base_model = True
+                self.used_base_model = True
+                n_trees_keep = self.best_params.get('n_trees_keep', 0)
         elif pruning_mode == 'no_pruning':
             # Always use full base model
             use_base_model = True
