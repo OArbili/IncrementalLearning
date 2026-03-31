@@ -33,28 +33,22 @@ WIDS             h1_lac+h1_lac+h1_pao+h1_pao           optuna             50   -
                                                        no_pruning         15   -0.002086     0.8940
                                                        fixed_50           15   -0.000674     0.8926
 
-WeatherAUS       Sunshi+Evapor+Cloud9+Pressu+Pressu    optuna              3   -0.000016     1.0000    tie
-                                                       no_pruning          3   -0.000016     1.0000    tie
-                                                       fixed_50            3   -0.000016     1.0000    tie
-
 ========================================================================================================================
 SUMMARY
 ========================================================================================================================
 
 Pruning Mode Wins:
-  optuna:      3/5  (CreditRisk, HRAnalytics, WIDS)
-  no_pruning:  0/5
-  fixed_50:    1/5  (DiabetesRecord)
-  tie:         1/5  (WeatherAUS)
+  optuna:      3/4  (CreditRisk, HRAnalytics, WIDS)
+  no_pruning:  0/4
+  fixed_50:    1/4  (DiabetesRecord)
 
 Negative Objective (incremental beats combined):
   CreditRisk:     YES (optuna: -0.0018)
   DiabetesRecord: YES (fixed_50: -0.0038)
   HRAnalytics:    YES (optuna: -0.0053)
   WIDS:           YES (optuna: -0.0024)
-  WeatherAUS:     YES (all: -0.0000)
 
-  5/5 datasets show incremental approach >= combined model
+  4/4 datasets show incremental approach >= combined model
 
 Datasets pending ablation:
   - BankLoanSta (Phase 1 done, ablation inconclusive)
