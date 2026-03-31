@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""HRAnalytics: Feature combo search + ablation study.
+"""WeatherAUS: Feature combo search + ablation study.
 
-Phase 1: Find best feature combo using 30 Optuna trials per combo.
+Phase 1: Find best feature combo using 20 Optuna trials per combo.
 Phase 2: Ablation on best combo — optuna (50 trials), no_pruning (15), fixed_50 (15).
 
 Usage:
-    python run_hr_ablation.py
+    python run_weatheraus_ablation.py
+    python run_weatheraus_ablation.py --test
 """
 import sys
 import os
@@ -19,7 +20,6 @@ from datetime import datetime
 from itertools import combinations
 import pandas as pd
 import numpy as np
-import kagglehub
 
 from core.GenericDataPipeline import GenericDataPipeline
 from core.RunData import RunPipeline
@@ -31,10 +31,12 @@ pd.set_option('future.infer_string', False)
 set_all_seeds()
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
-RESULTS_DIR = os.path.join(SCRIPTS_DIR, '..', 'results', 'HRAnalytics')
+RESULTS_DIR = os.path.join(SCRIPTS_DIR, '..', 'results', 'WeatherAUS')
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
-# Quick test mode: python run_hr_ablation.py --test
+DATASET_NAME = 'WeatherAUS'
+
+# Quick test mode: python run_weatheraus_ablation.py --test
 TEST_MODE = '--test' in sys.argv
 
 # Phase 1 config
@@ -55,14 +57,14 @@ pipeline = GenericDataPipeline()
 # Data loading
 # ============================================================================
 
-def load_hr_analytics():
-    """HRAnalytics (Natural Nulls)."""
-    path = kagglehub.dataset_download("arashnic/hr-analytics-job-change-of-data-scientists")
-    csv_path = os.path.join(path, "aug_train.csv")
+def load_weatheraus():
+    """WeatherAUS (Natural Nulls)."""
+    csv_path = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'weatherAUS.csv')
     df = pd.read_csv(csv_path)
-    df = df.drop(columns=['enrollee_id'], errors='ignore')
+    label = "RainTomorrow"
+    df.dropna(subset=[label], inplace=True)
+    df.drop(columns=['Date', 'Location', 'RainToday'], errors='ignore', inplace=True)
     df = pipeline.preprocessing(df)
-    label = "target"
     df[label] = df[label].astype(int)
     return df, label
 
@@ -225,14 +227,14 @@ def run_combo(df, label, ext_features, n_trials):
 # ============================================================================
 
 print("=" * 100)
-print("HRAnalytics: FEATURE COMBO SEARCH + ABLATION STUDY")
+print(f"{DATASET_NAME}: FEATURE COMBO SEARCH + ABLATION STUDY")
 print(f"Phase 1: {PHASE1_TRIALS} trials per combo | Phase 2: base/combined={PHASE2_BASE_COMBINED_TRIALS}, "
       f"optuna={ABLATION_TRIALS['optuna']}, no_pruning={ABLATION_TRIALS['no_pruning']}, fixed_50={ABLATION_TRIALS['fixed_50']}")
 print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print("=" * 100)
 
 # Load data
-df, label = load_hr_analytics()
+df, label = load_weatheraus()
 print(f"Shape: {df.shape}, Label: {label}")
 print(f"Target distribution:\n{df[label].value_counts()}", flush=True)
 
@@ -428,7 +430,7 @@ print(f"\nSaving artifacts to {RESULTS_DIR} ...", flush=True)
 summary_path = os.path.join(RESULTS_DIR, 'ablation_summary.txt')
 with open(summary_path, 'w') as f:
     f.write("=" * 120 + "\n")
-    f.write("HRAnalytics: FEATURE COMBO SEARCH + ABLATION STUDY\n")
+    f.write(f"{DATASET_NAME}: FEATURE COMBO SEARCH + ABLATION STUDY\n")
     f.write(f"Phase 1: {PHASE1_TRIALS} trials per combo\n")
     f.write(f"Phase 2: optuna={ABLATION_TRIALS['optuna']}, no_pruning={ABLATION_TRIALS['no_pruning']}, fixed_50={ABLATION_TRIALS['fixed_50']}\n")
     f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -497,7 +499,7 @@ for name, model_obj in [('base', dm.base_model), ('combined', dm.combined_model)
 
 # 7. Experiment config
 config = {
-    'dataset': 'HRAnalytics',
+    'dataset': DATASET_NAME,
     'phase1_trials': PHASE1_TRIALS,
     'phase2_base_combined_trials': PHASE2_BASE_COMBINED_TRIALS,
     'ablation_trials': ABLATION_TRIALS,

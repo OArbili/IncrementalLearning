@@ -1,0 +1,20 @@
+========================================================================================================================
+CreditRisk: FEATURE COMBO SEARCH + ABLATION STUDY
+Phase 1: 20 trials per combo
+Phase 2: optuna=50, no_pruning=15, fixed_50=15
+Generated: 2026-03-28 18:22:36
+========================================================================================================================
+
+Phase 1: Feature Combo Search
+--------------------------------------------------------------------------------
+Combo                                               Objective   Base AUC    Ext AUC    Comb-no   Comb+ext
+MIN_AM+MAX_AM+MEAN_A+MEDIAN+MIN_AM+MAX_AM+MEAN_...   0.001350     0.7527     0.7616     0.7526     0.7630
+STD_AM+STD_DP                                       -0.001380     0.7543     0.7536     0.7552     0.7514 <-- BEST
+MIN_AM+MAX_AM+MEAN_A+MEDIAN+MIN_AM+MAX_AM+MEAN_...  -0.000306     0.7427     0.7251     0.7421     0.7254
+
+Phase 2: Ablation on STD_AM+STD_DP
+--------------------------------------------------------------------------------
+Mode             Trials    Objective    Ext AUC   Base AUC    Comb-no   Comb+ext
+optuna               50    -0.001805     0.7541     0.7543     0.7552     0.7514 <-- BEST
+no_pruning           15    -0.000805     0.7531     0.7543     0.7552     0.7514
+fixed_50             15     0.003036     0.7492     0.7543     0.7552     0.7514

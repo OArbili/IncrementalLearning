@@ -95,6 +95,12 @@ class XGBoostModel:
     def train(self, X, y, n_trials=20, base_model_path=None, pruning_mode='optuna'):
         study = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler(seed=self.seed))
 
+        # When using optuna pruning mode with a base model, enqueue trials
+        # for no_pruning and fixed_50 strategies to guarantee they are tested.
+        if pruning_mode == 'optuna' and base_model_path is not None:
+            study.enqueue_trial({"pruning_strategy": "no_pruning"})
+            study.enqueue_trial({"pruning_strategy": "fixed_50"})
+
         def _callback(study, trial):
             print(f"  Trial {trial.number+1}/{n_trials}: AUC={trial.value:.4f}", flush=True)
 
@@ -104,6 +110,7 @@ class XGBoostModel:
             callbacks=[_callback]
         )
 
+        self.study = study
         self.best_params = study.best_params
         print(f"Best parameters found: {self.best_params}")
         print(f"Best CV AUC score: {study.best_value:.4f}")

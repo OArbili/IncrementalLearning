@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""HRAnalytics: Feature combo search + ablation study.
+"""BankLoanSta: Feature combo search + ablation study.
 
-Phase 1: Find best feature combo using 30 Optuna trials per combo.
+Phase 1: Find best feature combo using 20 Optuna trials per combo.
 Phase 2: Ablation on best combo — optuna (50 trials), no_pruning (15), fixed_50 (15).
 
 Usage:
-    python run_hr_ablation.py
+    python run_bankloan_ablation.py
+    python run_bankloan_ablation.py --test
 """
 import sys
 import os
@@ -31,10 +32,12 @@ pd.set_option('future.infer_string', False)
 set_all_seeds()
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
-RESULTS_DIR = os.path.join(SCRIPTS_DIR, '..', 'results', 'HRAnalytics')
+RESULTS_DIR = os.path.join(SCRIPTS_DIR, '..', 'results', 'BankLoanSta')
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
-# Quick test mode: python run_hr_ablation.py --test
+DATASET_NAME = 'BankLoanSta'
+
+# Quick test mode: python run_diabetes_ablation.py --test
 TEST_MODE = '--test' in sys.argv
 
 # Phase 1 config
@@ -55,14 +58,16 @@ pipeline = GenericDataPipeline()
 # Data loading
 # ============================================================================
 
-def load_hr_analytics():
-    """HRAnalytics (Natural Nulls)."""
-    path = kagglehub.dataset_download("arashnic/hr-analytics-job-change-of-data-scientists")
-    csv_path = os.path.join(path, "aug_train.csv")
+def load_bankloan():
+    """Bank loan status dataset (Natural Nulls)."""
+    path = kagglehub.dataset_download("zaurbegiev/my-dataset")
+    csv_files = [f for f in os.listdir(path) if f.endswith('.csv')]
+    csv_path = os.path.join(path, csv_files[1])
     df = pd.read_csv(csv_path)
-    df = df.drop(columns=['enrollee_id'], errors='ignore')
+    label = "Loan Status"
+    df = df.dropna(subset=[label]).reset_index(drop=True)
+    df = df.drop(columns=['Loan ID', 'Customer ID'])
     df = pipeline.preprocessing(df)
-    label = "target"
     df[label] = df[label].astype(int)
     return df, label
 
@@ -225,14 +230,14 @@ def run_combo(df, label, ext_features, n_trials):
 # ============================================================================
 
 print("=" * 100)
-print("HRAnalytics: FEATURE COMBO SEARCH + ABLATION STUDY")
+print(f"{DATASET_NAME}: FEATURE COMBO SEARCH + ABLATION STUDY")
 print(f"Phase 1: {PHASE1_TRIALS} trials per combo | Phase 2: base/combined={PHASE2_BASE_COMBINED_TRIALS}, "
       f"optuna={ABLATION_TRIALS['optuna']}, no_pruning={ABLATION_TRIALS['no_pruning']}, fixed_50={ABLATION_TRIALS['fixed_50']}")
 print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print("=" * 100)
 
 # Load data
-df, label = load_hr_analytics()
+df, label = load_bankloan()
 print(f"Shape: {df.shape}, Label: {label}")
 print(f"Target distribution:\n{df[label].value_counts()}", flush=True)
 
@@ -261,6 +266,8 @@ print(f"\n{'#':<4} {'Name':<50} {'N_no':>8} {'N_ext':>8} {'%ext':>8}")
 print("-" * 82)
 for i, c in enumerate(combos):
     name = "+".join([f[:6] for f in c['ext_features']])
+    if len(name) > 50:
+        name = name[:47] + "..."
     print(f"{i+1:<4} {name:<50} {c['n_no']:>8} {c['n_ext']:>8} {c['ext_pct']:>7.1f}%")
 print(flush=True)
 
@@ -272,6 +279,8 @@ all_combo_results = []
 for i, combo in enumerate(combos):
     ext_features = combo['ext_features']
     combo_name = "+".join([f[:6] for f in ext_features])
+    if len(combo_name) > 50:
+        combo_name = combo_name[:47] + "..."
 
     print(f"\n{'='*80}")
     print(f"Combo {i+1}/{len(combos)}: {combo_name} ext")
@@ -305,6 +314,8 @@ if best_result is None:
     sys.exit(1)
 
 best_name = "+".join([f[:6] for f in best_result['ext_features']])
+if len(best_name) > 50:
+    best_name = best_name[:47] + "..."
 print(f"\n{'*'*80}")
 print(f"PHASE 1 COMPLETE — Best combo: {best_name}")
 print(f"  Objective: {best_result['objective']:.6f}")
@@ -428,7 +439,7 @@ print(f"\nSaving artifacts to {RESULTS_DIR} ...", flush=True)
 summary_path = os.path.join(RESULTS_DIR, 'ablation_summary.txt')
 with open(summary_path, 'w') as f:
     f.write("=" * 120 + "\n")
-    f.write("HRAnalytics: FEATURE COMBO SEARCH + ABLATION STUDY\n")
+    f.write(f"{DATASET_NAME}: FEATURE COMBO SEARCH + ABLATION STUDY\n")
     f.write(f"Phase 1: {PHASE1_TRIALS} trials per combo\n")
     f.write(f"Phase 2: optuna={ABLATION_TRIALS['optuna']}, no_pruning={ABLATION_TRIALS['no_pruning']}, fixed_50={ABLATION_TRIALS['fixed_50']}\n")
     f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -497,7 +508,7 @@ for name, model_obj in [('base', dm.base_model), ('combined', dm.combined_model)
 
 # 7. Experiment config
 config = {
-    'dataset': 'HRAnalytics',
+    'dataset': DATASET_NAME,
     'phase1_trials': PHASE1_TRIALS,
     'phase2_base_combined_trials': PHASE2_BASE_COMBINED_TRIALS,
     'ablation_trials': ABLATION_TRIALS,
