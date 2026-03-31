@@ -1,0 +1,64 @@
+========================================================================================================================
+ABLATION STUDY SUMMARY — ALL DATASETS
+========================================================================================================================
+Generated: 2026-03-31
+
+Phase 2 compares 3 pruning modes for the extended (incremental) model:
+  - optuna:     Optuna chooses pruning strategy (flexible, no_pruning, fixed_50, no_base)
+  - no_pruning: Always keep all base model trees
+  - fixed_50:   Always keep 50% of base model trees
+
+Objective = (comb_ext_auc - ext_auc) + (comb_no_auc - base_auc)
+  Lower is better. Negative = incremental approach beats combined model.
+
+========================================================================================================================
+PHASE 2: ABLATION RESULTS
+========================================================================================================================
+
+Dataset          Best Combo (Phase 1)                  Mode           Trials   Objective    Ext AUC    Winner
+------------------------------------------------------------------------------------------------------------------------
+CreditRisk       STD_AM+STD_DP                         optuna             50   -0.001805     0.7541    <--
+                                                       no_pruning         15   -0.000805     0.7531
+                                                       fixed_50           15    0.003036     0.7492
+
+DiabetesRecord   A1Cres+medica                         optuna             50   -0.003740     0.6654
+                                                       no_pruning         15   -0.003790     0.6654
+                                                       fixed_50           15   -0.003817     0.6655    <--
+
+HRAnalytics      compan                                optuna             50   -0.005303     0.7970    <--
+                                                       no_pruning         15   -0.004338     0.7960
+                                                       fixed_50           15   -0.002356     0.7940
+
+WIDS             h1_lac+h1_lac+h1_pao+h1_pao           optuna             50   -0.002416     0.8943    <--
+                                                       no_pruning         15   -0.002086     0.8940
+                                                       fixed_50           15   -0.000674     0.8926
+
+WeatherAUS       Sunshi+Evapor+Cloud9+Pressu+Pressu    optuna              3   -0.000016     1.0000    tie
+                                                       no_pruning          3   -0.000016     1.0000    tie
+                                                       fixed_50            3   -0.000016     1.0000    tie
+
+========================================================================================================================
+SUMMARY
+========================================================================================================================
+
+Pruning Mode Wins:
+  optuna:      3/5  (CreditRisk, HRAnalytics, WIDS)
+  no_pruning:  0/5
+  fixed_50:    1/5  (DiabetesRecord)
+  tie:         1/5  (WeatherAUS)
+
+Negative Objective (incremental beats combined):
+  CreditRisk:     YES (optuna: -0.0018)
+  DiabetesRecord: YES (fixed_50: -0.0038)
+  HRAnalytics:    YES (optuna: -0.0053)
+  WIDS:           YES (optuna: -0.0024)
+  WeatherAUS:     YES (all: -0.0000)
+
+  5/5 datasets show incremental approach >= combined model
+
+Datasets pending ablation:
+  - BankLoanSta (Phase 1 done, ablation inconclusive)
+  - ClientRecord (Phase 1 only)
+  - ClientRecordAug (Phase 1 only)
+  - MovieAugV2 (ablation in progress)
+  - Weather (Phase 1 only)
