@@ -28,8 +28,8 @@ N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 # Per-mode trial overrides (default to N_TRIALS if not specified)
 TRIALS_PER_MODE = {
     'optuna': N_TRIALS,
-    'no_pruning': max(N_TRIALS * 3 // 5, 10),
-    'fixed_50': max(N_TRIALS * 3 // 5, 10),
+    'no_pruning': max(N_TRIALS // 2, 10),
+    'fixed_50': max(N_TRIALS // 2, 10),
 }
 # Optional: filter to specific datasets (comma-separated), e.g. "WeatherAUS,WIDS"
 DATASET_FILTER = sys.argv[2].split(',') if len(sys.argv) > 2 else None
@@ -73,7 +73,7 @@ def load_bankloansta():
 
 
 def load_weather():
-    """Weather (Natural Nulls). Best combo: Evaporation + Sunshine + WindDir9am ext."""
+    """Weather (Natural Nulls). Best combo: Evaporation ext."""
     path = kagglehub.dataset_download("rever3nd/weather-data")
     csv_files = sorted([f for f in os.listdir(path) if f.endswith('.csv')])
     csv_path = os.path.join(path, csv_files[0])
@@ -85,7 +85,7 @@ def load_weather():
     label = "RainTomorrow"
     df[label] = df[label].astype(int)
 
-    ext_features = ['Evaporation', 'Sunshine', 'WindDir9am']
+    ext_features = ['Evaporation']
     return df, label, ext_features
 
 

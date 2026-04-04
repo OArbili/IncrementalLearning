@@ -26,7 +26,7 @@ pipeline = GenericDataPipeline()
 csv_path = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'weatherAUS.csv')
 df = pd.read_csv(csv_path, na_values=['NA'])
 
-columns_to_drop = ['Date', 'Location', 'RISK_MM']
+columns_to_drop = ['Date', 'Location', 'RISK_MM', 'RainToday']
 df = df.drop(columns=columns_to_drop)
 df = pipeline.preprocessing(df)
 

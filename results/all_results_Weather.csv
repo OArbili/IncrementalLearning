@@ -1,0 +1,27 @@
+dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
+Weather,Evapor+Sunshi+WindGustDir+WindGustSpeed+Pressu ext,"Evaporation,Sunshine,WindGustDir,WindGustSpeed,Pressure9am",5,10,optuna,0.7658,0.8669,0.7690,0.8684,0.004706,641,4359,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Sunshi+WindGustDir+WindGustSpeed ext,"Evaporation,Sunshine,WindGustDir,WindGustSpeed",4,10,optuna,0.7774,0.8485,0.7752,0.8496,-0.001047,657,4343,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Sunshi+WindDir9am ext,"Evaporation,Sunshine,WindDir9am",3,10,optuna,0.8432,0.8448,0.8314,0.8469,-0.009676,578,4422,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Sunshi+Pressu ext,"Evaporation,Sunshine,Pressure9am",3,10,optuna,0.8035,0.8686,0.8083,0.8699,0.006128,957,4043,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Sunshi+Cloud9 ext,"Evaporation,Sunshine,Cloud9am",3,10,optuna,0.8484,0.8487,0.8459,0.8538,0.002577,2128,2872,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Sunshi ext,"Evaporation,Sunshine",2,10,optuna,0.8424,0.8695,0.8419,0.8724,0.002486,3095,1905,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+WindGustDir+WindGustSpeed ext,"Evaporation,WindGustDir,WindGustSpeed",3,10,optuna,0.7599,0.8603,0.7568,0.8614,-0.002004,658,4342,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+WindDir9am ext,"Evaporation,WindDir9am",2,10,optuna,0.8020,0.8377,0.7979,0.8386,-0.003243,580,4420,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Pressu ext,"Evaporation,Pressure9am",2,10,optuna,0.7975,0.8710,0.7962,0.8717,-0.000550,958,4042,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Cloud9 ext,"Evaporation,Cloud9am",2,10,optuna,0.8517,0.8478,0.8544,0.8490,0.003868,2130,2870,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor ext,"Evaporation",1,10,optuna,0.8419,0.8724,0.8423,0.8729,0.000901,3114,1886,summary.txt (10t full sweep),2026-03-14
+Weather,Sunshi+WindGustDir+WindGustSpeed+Pressu ext,"Sunshine,WindGustDir,WindGustSpeed,Pressure9am",4,10,optuna,0.7739,0.8653,0.7687,0.8668,-0.003719,643,4357,summary.txt (10t full sweep),2026-03-14
+Weather,Sunshi+WindGustDir+WindGustSpeed ext,"Sunshine,WindGustDir,WindGustSpeed",3,10,optuna,0.7528,0.8644,0.7530,0.8647,0.000497,670,4330,summary.txt (10t full sweep),2026-03-14
+Weather,Sunshi+WindDir9am ext,"Sunshine,WindDir9am",2,10,optuna,0.8232,0.8477,0.8254,0.8516,0.006081,589,4411,summary.txt (10t full sweep),2026-03-14
+Weather,Sunshi+Pressu ext,"Sunshine,Pressure9am",2,10,optuna,0.7752,0.8649,0.7718,0.8655,-0.002746,963,4037,summary.txt (10t full sweep),2026-03-14
+Weather,Sunshi+Cloud9 ext,"Sunshine,Cloud9am",2,10,optuna,0.8507,0.8509,0.8527,0.8516,0.002674,2169,2831,summary.txt (10t full sweep),2026-03-14
+Weather,Sunshi ext,"Sunshine",1,10,optuna,0.8323,0.8589,0.8318,0.8606,0.001159,3667,1333,summary.txt (10t full sweep),2026-03-14
+Weather,WindGustDir+WindGustSpeed+Pressu ext,"WindGustDir,WindGustSpeed,Pressure9am",3,10,optuna,0.7683,0.8668,0.7744,0.8668,0.006009,644,4356,summary.txt (10t full sweep),2026-03-14
+Weather,WindGustDir+WindGustSpeed ext,"WindGustDir,WindGustSpeed",2,10,optuna,0.7967,0.8584,0.7881,0.8596,-0.007482,691,4309,summary.txt (10t full sweep),2026-03-14
+Weather,WindGustDir ext,"WindGustDir",1,10,optuna,0.7687,0.8625,0.7677,0.8601,-0.003507,692,4308,summary.txt (10t full sweep),2026-03-14
+Weather,WindDir9am ext,"WindDir9am",1,10,optuna,0.8265,0.8489,0.8263,0.8487,-0.000434,614,4386,summary.txt (10t full sweep),2026-03-14
+Weather,Pressu ext,"Pressure9am",1,10,optuna,0.7981,0.8732,0.8021,0.8746,0.005329,966,4034,summary.txt (10t full sweep),2026-03-14
+Weather,Cloud9 ext,"Cloud9am",1,10,optuna,0.8540,0.8500,0.8556,0.8501,0.001748,2173,2827,summary.txt (10t full sweep),2026-03-14
+Weather,Evapor+Sunshi+WindDir9am ext,"Evaporation,Sunshine,WindDir9am",3,30,optuna,0.8327,0.8403,0.8361,0.8451,0.008229,578,4422,upbeat-chandrasekhar (30t ablation),2026-03-25
+Weather,Evapor+Sunshi+WindDir9am ext,"Evaporation,Sunshine,WindDir9am",3,30,no_pruning,0.8327,0.8404,0.8361,0.8451,0.008119,578,4422,upbeat-chandrasekhar (30t ablation),2026-03-25
+Weather,Evapor+Sunshi+WindDir9am ext,"Evaporation,Sunshine,WindDir9am",3,30,fixed_50,0.8327,0.8411,0.8361,0.8451,0.007388,578,4422,upbeat-chandrasekhar (30t ablation),2026-03-25

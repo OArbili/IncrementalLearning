@@ -1,5 +1,7 @@
 # Data files
 *.csv
+!results/all_results_*.csv
+!results/summary_best_per_dataset.csv
 datasets/
 
 # Model outputs

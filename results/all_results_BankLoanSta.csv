@@ -1,0 +1,22 @@
+dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
+BankLoanSta,CS+AI+MLD ext,"Credit Score,Annual Income,Months since last delinquent",3,10,optuna,0.6535,0.7899,0.6588,0.7804,-0.004173,2094,17906,summary.txt (10t full sweep),2026-03-14
+BankLoanSta,CS+AI ext,"Credit Score,Annual Income",2,10,optuna,0.6515,0.8008,0.6552,0.7906,-0.006532,3831,16169,summary.txt (10t full sweep),2026-03-14
+BankLoanSta,MLD+HO ext,"Months since last delinquent,Home Ownership",2,10,optuna,0.7486,0.7671,0.7488,0.7659,-0.000922,2231,17769,summary.txt (10t full sweep),2026-03-14
+BankLoanSta,HO ext,"Home Ownership",1,10,optuna,0.7596,0.7704,0.7596,0.7690,-0.001410,2654,17346,summary.txt (10t full sweep),2026-03-14
+BankLoanSta,MLD+Purp ext,"Months since last delinquent,Purpose",2,10,optuna,0.7601,0.7668,0.7604,0.7663,-0.000279,2234,17766,summary.txt (10t full sweep),2026-03-14
+BankLoanSta,Purp ext,"Purpose",1,10,optuna,0.7649,0.7646,0.7650,0.7640,-0.000430,2657,17343,summary.txt (10t full sweep),2026-03-14
+BankLoanSta,MLD ext,"Months since last delinquent",1,10,optuna,0.7662,0.7641,0.7665,0.7636,-0.000306,10628,9372,summary.txt (10t full sweep),2026-03-14
+BankLoanSta,CS+AI ext,"Credit Score,Annual Income",2,30,optuna,0.6504,0.7775,0.6636,0.7927,0.028379,3831,16169,upbeat-chandrasekhar (30t ablation),2026-03-25
+BankLoanSta,CS+AI ext,"Credit Score,Annual Income",2,30,no_pruning,0.6504,0.7523,0.6636,0.7927,0.053562,3831,16169,upbeat-chandrasekhar (30t ablation),2026-03-25
+BankLoanSta,CS+AI ext,"Credit Score,Annual Income",2,30,fixed_50,0.6504,0.7812,0.6636,0.7927,0.024701,3831,16169,upbeat-chandrasekhar (30t ablation),2026-03-25
+BankLoanSta,Curren ext,"Current Loan Amount",1,30,optuna,0.7134,0.7628,0.7121,0.7651,0.001095,4003,15997,local main (30t bgjqj8vf6 run1),2026-04-01
+BankLoanSta,Annual ext,"Annual Income",1,30,optuna,0.6889,0.7728,0.6902,0.7807,0.009207,7057,12943,local main (30t bgjqj8vf6 run1),2026-04-01
+BankLoanSta,Credit ext,"Credit Score",1,30,optuna,0.6640,0.7768,0.6632,0.7853,0.007728,7054,12946,local main (30t bgjqj8vf6 run1),2026-04-01
+BankLoanSta,Curren+Credit ext,"Current Loan Amount,Credit Score",2,30,optuna,0.6146,0.7384,0.6173,0.7547,0.019036,1414,18586,local main (30t bgjqj8vf6 run1),2026-04-01
+BankLoanSta,Curren ext,"Current Loan Amount",1,30,optuna,0.7408,0.7634,0.7350,0.7621,-0.007132,4003,15997,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Annual ext,"Annual Income",1,30,optuna,0.7053,0.7778,0.7023,0.7743,-0.006456,7054,12946,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Credit ext,"Credit Score",1,30,optuna,0.6797,0.8015,0.6654,0.7849,-0.030886,7037,12963,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Curren+Annual ext,"Current Loan Amount,Annual Income",2,30,optuna,0.6937,0.7576,0.6956,0.7555,-0.000187,1414,18586,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Curren+Credit ext,"Current Loan Amount,Credit Score",2,30,optuna,0.6777,0.7746,0.6621,0.7650,-0.025278,1418,18582,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Annual+Credit ext,"Annual Income,Credit Score",2,30,optuna,0.6693,0.7801,0.6543,0.7605,-0.034466,4478,15522,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Curren+Annual+Credit ext,"Current Loan Amount,Annual Income,Credit Score",3,30,optuna,0.6952,0.7817,0.6495,0.7531,-0.074311,907,19093,local main (30t b4l625xsb run2),2026-04-03

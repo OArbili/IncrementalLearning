@@ -1,0 +1,10 @@
+dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date,selection_rule
+BankLoanSta,Curren+Annual+Credit ext,"Current Loan Amount,Annual Income,Credit Score",3,30,optuna,0.6952,0.7817,0.6495,0.7531,-0.074311,907,19093,local main (30t b4l625xsb run2),2026-04-03,30t optuna (negative)
+Weather,Evapor+Sunshi+WindDir9am ext,"Evaporation,Sunshine,WindDir9am",3,10,optuna,0.8432,0.8448,0.8314,0.8469,-0.009676,578,4422,summary.txt (10t full sweep),2026-03-14,best overall
+DiabetesRecord,weight+medical_specialty+A1Cresult ext,"weight,medical_specialty,A1Cresult",3,10,optuna,0.7069,0.7041,0.7024,0.7032,-0.005322,8117,12237,summary.txt (10t full sweep),2026-03-15,best overall
+HRAnalytics,gender ext,gender,1,30,optuna,0.7735,0.8102,0.7727,0.8108,-0.000192,902,2930,upbeat-chandrasekhar (30t ablation),2026-03-25,30t optuna (negative)
+ClientRecordAug,Offer ext,Offer,1,30,optuna,0.9612,0.9608,0.9605,0.9612,-0.000361,775,634,upbeat-chandrasekhar (30t ablation),2026-03-25,30t optuna (negative)
+MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,30,optuna,0.9187,0.8726,0.9185,0.8726,-0.000147,5616,16878,upbeat-chandrasekhar (30t ablation),2026-03-25,30t optuna (negative)
+WeatherAUS,Cloud3 ext,Cloud3pm,1,30,optuna,0.8923,0.9016,0.8906,0.9021,-0.001144,11419,17020,frosty-pasteur (30t sweep),2026-04-03,30t optuna (negative)
+WIDS,h1_bilirub+h1_lactate+h1_pao2fio+h1_arteria,"h1_bilirubin_max,h1_bilirubin_min,h1_albumin_max,h1_albumin_min,h1_lactate_max,h1_lactate_min,h1_pao2fio2ratio_max,h1_pao2fio2ratio_min,h1_arterial_ph_max,h1_arterial_ph_min,h1_arterial_pco2_max,h1_arterial_pco2_min,h1_arterial_po2_max,h1_arterial_po2_min",14,30,optuna,0.8997,0.8967,0.8991,0.895,-0.002435,13632,4711,local main (30t b3u89jijt),2026-04-02,30t optuna (negative)
+FlightDelay,OP_CARRIER_FL_NUM ext,OP_CARRIER_FL_NUM,1,30,optuna,0.7478,0.7188,0.745,0.717,-0.004602,6011,13989,local main (30t bqulrp3zv),2026-04-01,30t optuna (negative)
