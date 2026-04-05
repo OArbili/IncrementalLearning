@@ -1,32 +1,16 @@
-dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
-DiabetesRecord,weight+payer_code+medical_specialty+max_glu_serum+A1Cresult ext,"weight,payer_code,medical_specialty,max_glu_serum,A1Cresult",5,10,optuna,0.6851,0.7061,0.6884,0.7039,0.001210,2517,17837,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+payer_code+medical_specialty+max_glu_serum ext,"weight,payer_code,medical_specialty,max_glu_serum",4,10,optuna,0.6792,0.7009,0.6890,0.7008,0.009701,2949,17405,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+payer_code+medical_specialty+A1Cresult ext,"weight,payer_code,medical_specialty,A1Cresult",4,10,optuna,0.6943,0.7054,0.6968,0.7052,0.002368,2753,17601,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+payer_code+medical_specialty ext,"weight,payer_code,medical_specialty",3,10,optuna,0.6992,0.7054,0.7006,0.7057,0.001719,3205,17149,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+payer_code+max_glu_serum+A1Cresult ext,"weight,payer_code,max_glu_serum,A1Cresult",4,10,optuna,0.6757,0.7041,0.6750,0.7017,-0.003024,5869,14485,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+payer_code+max_glu_serum ext,"weight,payer_code,max_glu_serum",3,10,optuna,0.6840,0.7076,0.6841,0.7063,-0.001134,7189,13165,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+payer_code+A1Cresult ext,"weight,payer_code,A1Cresult",3,10,optuna,0.6899,0.7131,0.6944,0.7128,0.004197,6507,13847,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+payer_code ext,"weight,payer_code",2,10,optuna,0.6854,0.7164,0.6885,0.7135,0.000153,7875,12479,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+medical_specialty+max_glu_serum+A1Cresult ext,"weight,medical_specialty,max_glu_serum,A1Cresult",4,10,optuna,0.7004,0.7065,0.6998,0.7043,-0.002817,7664,12690,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+medical_specialty+max_glu_serum ext,"weight,medical_specialty,max_glu_serum",3,10,optuna,0.7048,0.7062,0.7016,0.7053,-0.004022,9195,11159,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+medical_specialty+A1Cresult ext,"weight,medical_specialty,A1Cresult",3,10,optuna,0.7069,0.7041,0.7024,0.7032,-0.005322,8117,12237,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+medical_specialty ext,"weight,medical_specialty",2,10,optuna,0.7002,0.7045,0.6999,0.7040,-0.000806,9680,10674,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+max_glu_serum+A1Cresult ext,"weight,max_glu_serum,A1Cresult",3,10,optuna,0.7006,0.7075,0.7025,0.7111,0.005567,15370,4984,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+A1Cresult ext,"weight,A1Cresult",2,10,optuna,0.7077,0.7044,0.7075,0.7061,0.001489,16380,3974,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code+medical_specialty+max_glu_serum+A1Cresult ext,"payer_code,medical_specialty,max_glu_serum,A1Cresult",4,10,optuna,0.6959,0.7084,0.7016,0.7083,0.005588,2580,17774,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code+medical_specialty+max_glu_serum ext,"payer_code,medical_specialty,max_glu_serum",3,10,optuna,0.6902,0.7046,0.6915,0.7046,0.001334,3015,17339,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code+medical_specialty+A1Cresult ext,"payer_code,medical_specialty,A1Cresult",3,10,optuna,0.6975,0.7083,0.7047,0.7052,0.004057,2816,17538,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code+medical_specialty ext,"payer_code,medical_specialty",2,10,optuna,0.6916,0.7128,0.6973,0.7100,0.002888,3271,17083,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code+max_glu_serum+A1Cresult ext,"payer_code,max_glu_serum,A1Cresult",3,10,optuna,0.6839,0.7055,0.6882,0.7057,0.004477,6035,14319,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code+max_glu_serum ext,"payer_code,max_glu_serum",2,10,optuna,0.6962,0.7088,0.6977,0.7086,0.001192,7365,12989,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code+A1Cresult ext,"payer_code,A1Cresult",2,10,optuna,0.6922,0.7057,0.6934,0.7050,0.000476,6674,13680,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,payer_code ext,"payer_code",1,10,optuna,0.7045,0.7108,0.7046,0.7108,0.000117,8051,12303,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,medical_specialty+max_glu_serum+A1Cresult ext,"medical_specialty,max_glu_serum,A1Cresult",3,10,optuna,0.6922,0.7045,0.6910,0.7035,-0.002276,7935,12419,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,medical_specialty+max_glu_serum ext,"medical_specialty,max_glu_serum",2,10,optuna,0.7021,0.7072,0.7021,0.7054,-0.001809,9506,10848,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,10,optuna,0.7015,0.7038,0.7014,0.7031,-0.000842,8389,11965,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,medical_specialty ext,"medical_specialty",1,10,optuna,0.7034,0.7013,0.7032,0.6989,-0.002546,9990,10364,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,max_glu_serum+A1Cresult ext,"max_glu_serum,A1Cresult",2,10,optuna,0.7060,0.7020,0.7063,0.7053,0.003587,15940,4414,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,A1Cresult ext,"A1Cresult",1,10,optuna,0.7000,0.6944,0.6985,0.6940,-0.001880,16951,3403,summary.txt (10t full sweep),2026-03-15
-DiabetesRecord,weight+medical_specialty+A1Cresult ext,"weight,medical_specialty,A1Cresult",3,30,optuna,0.7076,0.7079,0.7070,0.7089,0.000378,8117,12237,upbeat-chandrasekhar (30t ablation),2026-03-25
-DiabetesRecord,weight+medical_specialty+A1Cresult ext,"weight,medical_specialty,A1Cresult",3,30,no_pruning,0.7076,0.7074,0.7070,0.7089,0.000900,8117,12237,upbeat-chandrasekhar (30t ablation),2026-03-25
-DiabetesRecord,weight+medical_specialty+A1Cresult ext,"weight,medical_specialty,A1Cresult",3,30,fixed_50,0.7076,0.7058,0.7070,0.7089,0.002505,8117,12237,upbeat-chandrasekhar (30t ablation),2026-03-25
+dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date,notes
+DiabetesRecord,weight+payer_code+max_glu_serum ext,"weight,payer_code,max_glu_serum",3,30,optuna,0.6526,0.6841,0.6565,0.6830,0.002819,7189,13165,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,weight+payer_code ext,"weight,payer_code",2,30,optuna,0.6548,0.6831,0.6589,0.6812,0.002215,7875,12479,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,weight+medical_specialty+max_glu_serum+A1Cresult ext,"weight,medical_specialty,max_glu_serum,A1Cresult",4,30,optuna,0.6705,0.6788,0.6718,0.6791,0.001572,7664,12690,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,weight+medical_specialty+max_glu_serum ext,"weight,medical_specialty,max_glu_serum",3,30,optuna,0.6695,0.6723,0.6703,0.6736,0.002224,9195,11159,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,weight+medical_specialty+A1Cresult ext,"weight,medical_specialty,A1Cresult",3,30,optuna,0.6697,0.6705,0.6720,0.6729,0.004633,8117,12237,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,weight+medical_specialty ext,"weight,medical_specialty",2,30,optuna,0.6665,0.6725,0.6706,0.6735,0.005031,9680,10674,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,payer_code+max_glu_serum ext,"payer_code,max_glu_serum",2,30,optuna,0.6611,0.6806,0.6663,0.6816,0.006244,7365,12989,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,payer_code ext,"payer_code",1,30,optuna,0.6706,0.6785,0.6737,0.6769,0.001568,8051,12303,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,medical_specialty+max_glu_serum+A1Cresult ext,"medical_specialty,max_glu_serum,A1Cresult",3,30,optuna,0.6638,0.6741,0.6636,0.6751,0.000737,7935,12419,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,medical_specialty+max_glu_serum ext,"medical_specialty,max_glu_serum",2,30,optuna,0.6732,0.6751,0.6746,0.6750,0.001275,9506,10848,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,30,optuna,0.6734,0.6682,0.6727,0.6663,-0.002604,8389,11965,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,medical_specialty ext,"medical_specialty",1,30,optuna,0.6719,0.6677,0.6735,0.6684,0.002324,9990,10364,30t combo sweep (IDs removed),2026-04-05,
+DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,30,optuna,0.6734,0.6682,0.6727,0.6663,-0.002604,8389,11965,30t ablation (IDs removed),2026-04-05,
+DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,30,no_pruning,0.6734,0.6649,0.6727,0.6663,0.000635,8389,11965,30t ablation (IDs removed),2026-04-05,
+DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,30,fixed_50,0.6734,0.6667,0.6727,0.6663,-0.001120,8389,11965,30t ablation (IDs removed),2026-04-05,

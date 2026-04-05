@@ -90,16 +90,16 @@ def load_weather():
 
 
 def load_diabetes():
-    """DiabetesRecord (Natural Nulls). Best combo: weight + medical_specialty + A1Cresult ext."""
+    """DiabetesRecord (Natural Nulls). Best combo: medical_specialty + A1Cresult ext."""
     path = kagglehub.dataset_download("brandao/diabetes")
     df = pd.read_csv(os.path.join(path, "diabetic_data.csv"))
     df['readmitted'] = df['readmitted'].replace({'NO': 0, '<30': 1, '>30': 1}).astype(int)
-    df.drop(['number_inpatient', 'number_emergency', 'discharge_disposition_id'], axis=1, inplace=True)
+    df.drop(['encounter_id', 'patient_nbr', 'number_inpatient', 'number_emergency', 'discharge_disposition_id'], axis=1, inplace=True)
     df = pipeline.preprocessing(df)
     label = "readmitted"
     df[label] = df[label].astype(int)
 
-    ext_features = ['weight', 'medical_specialty', 'A1Cresult']
+    ext_features = ['medical_specialty', 'A1Cresult']
     return df, label, ext_features
 
 

@@ -19,7 +19,7 @@ set_all_seeds()
 # --- Config ---
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 NULL_THRESHOLD = 0.05  # Features with >5% nulls are candidates for extended
-MIN_GROUP_PCT = 0.02   # Min 2% of total population per test group
+MIN_GROUP_PCT = 0.07   # Min 7% of total population per test group
 
 pipeline = GenericDataPipeline()
 
@@ -32,7 +32,7 @@ df = pd.read_csv(csv_path)
 df['readmitted'] = df['readmitted'].replace({'NO': 0, '<30': 1, '>30': 1}).astype(int)
 
 # Drop columns as in notebook
-columns_to_drop = ['number_inpatient', 'number_emergency', 'discharge_disposition_id']
+columns_to_drop = ['encounter_id', 'patient_nbr', 'number_inpatient', 'number_emergency', 'discharge_disposition_id']
 df = df.drop(columns=columns_to_drop)
 df = pipeline.preprocessing(df)
 
@@ -114,7 +114,7 @@ for bits in itertools.product([0, 1], repeat=len(null_features)):
     test_counts = test_df.groupby([label, 'has_extended']).size()
     min_group = min(train_counts.min(), test_counts.min())
 
-    if min_group < 100:
+    if min_group < 2000:
         continue
 
     test_with = len(test_df[test_df['has_extended'] == 1])
@@ -161,8 +161,12 @@ print(f"RUNNING {len(unique_combos)} UNIQUE COMBINATIONS (n_trials={N_TRIALS})")
 print(f"{'='*100}")
 
 results = []
+SKIP_FIRST = int(sys.argv[2]) if len(sys.argv) > 2 else 0
 
 for i, combo in enumerate(unique_combos):
+    if i < SKIP_FIRST:
+        print(f"\nSkipping combo {i+1}/{len(unique_combos)}: {combo['name']} (already completed)")
+        continue
     ext_feats = combo['ext_feats']
     base_feats = [f for f in all_features if f not in ext_feats]
 
