@@ -151,6 +151,34 @@ def load_client_record_aug():
     return df, label, ext_features
 
 
+def load_client_record_v2():
+    """ClientRecord v2 (Augmented — independent 40% nulls). Best combo: Offer + Monthly Charge ext."""
+    path = kagglehub.dataset_download("shilongzhuang/telecom-customer-churn-by-maven-analytics")
+    csv_files = sorted([f for f in os.listdir(path) if f.endswith('.csv')])
+    data1 = pd.read_csv(os.path.join(path, csv_files[2]))
+    data2 = pd.read_csv(os.path.join(path, csv_files[0]))
+    df = pd.merge(data2, data1, on='Zip Code')
+    df['Customer Status'] = df['Customer Status'].apply(lambda x: 1 if x == 'Stayed' else 0)
+    drop_cols = ['Customer ID', 'Churn Category', 'Churn Reason', 'Total Charges',
+                 'Total Revenue', 'Total Refunds', 'Total Long Distance Charges',
+                 'Zip Code', 'City', 'Latitude', 'Longitude']
+    df.drop([c for c in drop_cols if c in df.columns], axis=1, inplace=True)
+    df = pipeline.preprocessing(df)
+    label = "Customer Status"
+    df[label] = df[label].astype(int)
+
+    # Augmentation: inject 40% independent nulls into Contract, Tenure, Monthly Charge
+    rng = np.random.RandomState(SEED)
+    augment_features = ['Contract', 'Tenure in Months', 'Monthly Charge']
+    n_null = int(0.40 * len(df))
+    for feat in augment_features:
+        null_idx = rng.choice(df.index, size=n_null, replace=False)
+        df.loc[null_idx, feat] = np.nan
+
+    ext_features = ['Offer', 'Monthly Charge']
+    return df, label, ext_features
+
+
 def load_movie_aug_v2():
     """Movie (Augmented v2 — Heavy). Best combo: rating_mean + rating_std ext."""
     path = kagglehub.dataset_download("grouplens/movielens-20m-dataset")
@@ -297,6 +325,7 @@ DATASETS = [
     ('WeatherAUS', load_weatheraus),
     ('WIDS', load_wids),
     ('FlightDelay', load_flight_delay),
+    ('ClientRecordV2', load_client_record_v2),
 ]
 
 # ============================================================================

@@ -4,6 +4,7 @@ Weather,Evapor+Sunshi+WindDir9am ext,"Evaporation,Sunshine,WindDir9am",3,10,optu
 DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,30,optuna,0.6734,0.6682,0.6727,0.6663,-0.002604,8389,11965,30t combo sweep (IDs removed),2026-04-05,30t optuna (negative)
 HRAnalytics,gender ext,gender,1,30,optuna,0.7735,0.8102,0.7727,0.8108,-0.000192,902,2930,upbeat-chandrasekhar (30t ablation),2026-03-25,30t optuna (negative)
 ClientRecordAug,Offer ext,Offer,1,30,optuna,0.9612,0.9608,0.9605,0.9612,-0.000361,775,634,upbeat-chandrasekhar (30t ablation),2026-03-25,30t optuna (negative)
+ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,30,optuna,0.9235,0.9186,0.9198,0.9177,-0.004647,305,1104,30t combo sweep,2026-04-05,30t optuna (negative)
 MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,30,optuna,0.9187,0.8726,0.9185,0.8726,-0.000147,5616,16878,upbeat-chandrasekhar (30t ablation),2026-03-25,30t optuna (negative)
 WeatherAUS,Cloud3 ext,Cloud3pm,1,30,optuna,0.8923,0.9016,0.8906,0.9021,-0.001144,11419,17020,frosty-pasteur (30t sweep),2026-04-03,30t optuna (negative)
 WIDS,h1_bilirub+h1_lactate+h1_pao2fio+h1_arteria,"h1_bilirubin_max,h1_bilirubin_min,h1_albumin_max,h1_albumin_min,h1_lactate_max,h1_lactate_min,h1_pao2fio2ratio_max,h1_pao2fio2ratio_min,h1_arterial_ph_max,h1_arterial_ph_min,h1_arterial_pco2_max,h1_arterial_pco2_min,h1_arterial_po2_max,h1_arterial_po2_min",14,30,optuna,0.8997,0.8967,0.8991,0.895,-0.002435,13632,4711,local main (30t b3u89jijt),2026-04-02,30t optuna (negative)
