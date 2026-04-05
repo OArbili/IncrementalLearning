@@ -437,24 +437,24 @@ These results underscore the generalizability and robustness of our two phase fr
 \end{figure}
 
 \begin{table*}[!t]
-\caption{AUROC Results Across All Datasets. Our model = two-phase incremental approach; Baseline = single combined model trained on all features. Objective measures total improvement: negative values indicate our method outperforms the baseline.}
+\caption{AUROC Results Across All Datasets. Our model = two-phase incremental approach; Baseline = single combined model trained on all features. Total Improvement measures the combined AUC gain of our method over the baseline across both test populations.}
 \label{tab:merged_auc_results}
 \centering
 \small
 \begin{tabular}{l r r c c c c c}
 \toprule
-\textbf{Dataset} & \textbf{Rows} & \textbf{Null\%} & \textbf{Our (base)} & \textbf{Baseline (base)} & \textbf{Our (ext)} & \textbf{Baseline (ext)} & \textbf{Objective} \\
+\textbf{Dataset} & \textbf{Rows} & \textbf{Null\%} & \textbf{Our (base)} & \textbf{Baseline (base)} & \textbf{Our (ext)} & \textbf{Baseline (ext)} & \textbf{Total Improvement} \\
 \midrule
-BankLoanSta & 100K & 19.1 & 0.6952 & 0.6495 & 0.7817 & 0.7531 & \textcolor{ForestGreen}{--0.0743} \\
-Weather & 25K & 49.3 & 0.8432 & 0.8314 & 0.8448 & 0.8469 & \textcolor{ForestGreen}{--0.0097} \\
-DiabetesRecord & 102K & 66.2 & 0.6734 & 0.6727 & 0.6682 & 0.6663 & \textcolor{ForestGreen}{--0.0026} \\
-HRAnalytics & 19K & 23.5 & 0.7735 & 0.7727 & 0.8102 & 0.8108 & \textcolor{ForestGreen}{--0.0002} \\
-ClientRecordAug & 7K & 55.0 & 0.9612 & 0.9605 & 0.9608 & 0.9612 & \textcolor{ForestGreen}{--0.0004} \\
-ClientRecordV2 & 7K & 47.5 & 0.9235 & 0.9198 & 0.9186 & 0.9177 & \textcolor{ForestGreen}{--0.0046} \\
-MovieAugV2 & 112K & 50.0 & 0.9187 & 0.9185 & 0.8726 & 0.8726 & \textcolor{ForestGreen}{--0.0001} \\
-WeatherAUS & 142K & 40.3 & 0.8865 & 0.8861 & 0.9024 & 0.9025 & \textcolor{ForestGreen}{--0.0003} \\
-WIDS & 92K & 87.7 & 0.8997 & 0.8991 & 0.8967 & 0.8950 & \textcolor{ForestGreen}{--0.0024} \\
-FlightDelay & 568K & 20.0 & 0.7478 & 0.7450 & 0.7188 & 0.7170 & \textcolor{ForestGreen}{--0.0046} \\
+BankLoanSta & 100K & 19.1 & 0.6952 & 0.6495 & 0.7817 & 0.7531 & \textcolor{ForestGreen}{+0.0743} \\
+Weather & 25K & 49.3 & 0.8432 & 0.8314 & 0.8448 & 0.8469 & \textcolor{ForestGreen}{+0.0097} \\
+DiabetesRecord & 102K & 66.2 & 0.6734 & 0.6727 & 0.6682 & 0.6663 & \textcolor{ForestGreen}{+0.0026} \\
+HRAnalytics & 19K & 23.5 & 0.7735 & 0.7727 & 0.8102 & 0.8108 & \textcolor{ForestGreen}{+0.0002} \\
+ClientRecordAug & 7K & 55.0 & 0.9612 & 0.9605 & 0.9608 & 0.9612 & \textcolor{ForestGreen}{+0.0004} \\
+ClientRecordV2 & 7K & 47.5 & 0.9235 & 0.9198 & 0.9186 & 0.9177 & \textcolor{ForestGreen}{+0.0046} \\
+MovieAugV2 & 112K & 50.0 & 0.9187 & 0.9185 & 0.8726 & 0.8726 & \textcolor{ForestGreen}{+0.0001} \\
+WeatherAUS & 142K & 40.3 & 0.8865 & 0.8861 & 0.9024 & 0.9025 & \textcolor{ForestGreen}{+0.0003} \\
+WIDS & 92K & 87.7 & 0.8997 & 0.8991 & 0.8967 & 0.8950 & \textcolor{ForestGreen}{+0.0024} \\
+FlightDelay & 568K & 20.0 & 0.7478 & 0.7450 & 0.7188 & 0.7170 & \textcolor{ForestGreen}{+0.0046} \\
 \bottomrule
 \end{tabular}
 \end{table*}
