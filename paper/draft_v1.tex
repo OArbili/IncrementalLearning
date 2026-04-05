@@ -31,7 +31,7 @@ Modern gradient boosting frameworks handle missing values through heuristic defa
 
 We introduce a population-aware learning framework that treats structured missingness as a modeling opportunity. Instead of routing around missing values, we explicitly partition training into subpopulation-specific phases: a base model specializes on instances lacking extended features, while a warm-started extended model incorporates newly available features through adaptive tree pruning. This two-phase design enables learning across evolving and distributed feature spaces without data sharing --- the base model artifact transfers knowledge between phases without exposing raw data.
 
-Evaluation across 10 diverse datasets demonstrates that our approach matches or outperforms the standard two-model baseline --- which trains separate base and combined models with full data access --- while requiring no data sharing between phases (Wilcoxon $p = 0.002$, all 10 datasets positive). This proves that the two-phase approach is a viable alternative to standard training, and sometimes even superior, while additionally enabling deployment under data privacy constraints and evolving feature availability. All 10 datasets confirm successful model-level knowledge transfer without cross-phase data access.
+Evaluation across 9 diverse datasets demonstrates that our approach matches or outperforms the standard two-model baseline --- which trains separate base and combined models with full data access --- while requiring no data sharing between phases (Wilcoxon $p = 0.004$, all 9 datasets positive). This proves that the two-phase approach is a viable alternative to standard training, and sometimes even superior, while additionally enabling deployment under data privacy constraints and evolving feature availability. All 9 datasets confirm successful model-level knowledge transfer without cross-phase data access.
 \end{abstract}
 
 \keywords{Structured Missingness, Population-Aware Learning, Gradient Boosting, Feature Evolution, Privacy-Preserving ML, Adaptive Tree Pruning, Model Transfer}
@@ -48,15 +48,15 @@ Maintaining robust predictive models in such settings presents a major challenge
 
 A closely related challenge arises in cross-organizational collaboration, where multiple institutions hold complementary feature sets but cannot share raw data due to privacy regulations. For example, two hospitals may collect different diagnostic measurements for overlapping patient populations, or banks collaborating on anti-money laundering (AML) models may hold transaction features that cannot be exchanged. Our framework directly addresses this scenario: one institution trains a base model on its features and shares only the model artifact, while the other extends it with private features using warm-start and adaptive pruning. Our experimental design mirrors exactly this setup --- the base model is trained on one feature set and extended with additional features from a different subpopulation, with no data shared between phases.
 
-In this work, we challenge the prevailing assumption that missing values should be handled heuristically within a single model. We show that when missingness is structured, explicit subpopulation specialization outperforms unified models across 10 diverse datasets (Wilcoxon $p = 0.002$). Our contributions are:
+In this work, we challenge the prevailing assumption that missing values should be handled heuristically within a single model. We show that when missingness is structured, explicit subpopulation specialization outperforms unified models across 9 diverse datasets (Wilcoxon $p = 0.004$). Our contributions are:
 \begin{itemize}
 \setlength\itemindent{0pt}
 \setlength{\itemindent}{0pt}
-\item \textbf{A modeling insight:} We provide empirical evidence that under structured missingness, the feature-absent population is systematically underserved by combined models that rely on heuristic missing-value routing. Training a dedicated base model for this subpopulation yields consistent AUC improvements across all 10 evaluated datasets. This finding holds regardless of dataset size (7K--568K), null rate (19--88\%), or domain.
+\item \textbf{A modeling insight:} We provide empirical evidence that under structured missingness, the feature-absent population is systematically underserved by combined models that rely on heuristic missing-value routing. Training a dedicated base model for this subpopulation yields consistent AUC improvements across all 9 evaluated datasets. This finding holds regardless of dataset size (7K--568K), null rate (19--88\%), or domain.
 
-\item \textbf{An adaptive knowledge transfer mechanism:} We develop a validation-driven tree pruning method that determines how much prior knowledge to retain when extending to new feature spaces. Bayesian optimization selects the pruning level, with a built-in $k=0$ fallback that guarantees the framework never underperforms training from scratch. Adaptive pruning outperforms fixed strategies in 8 of 10 datasets.
+\item \textbf{An adaptive knowledge transfer mechanism:} We develop a validation-driven tree pruning method that determines how much prior knowledge to retain when extending to new feature spaces. Bayesian optimization selects the pruning level, with a built-in $k=0$ fallback that guarantees the framework never underperforms training from scratch. Adaptive pruning outperforms fixed strategies in 8 of 9 datasets.
 
-\item \textbf{A privacy-preserving collaboration paradigm:} Our two-phase architecture enables learning across distributed feature spaces without data sharing. Each experiment directly demonstrates this: the base model trains on one feature set and is extended with additional features from a different subpopulation, with no raw data exchanged. All 10 datasets validate successful model-level knowledge transfer, providing empirical evidence for deployment under GDPR, HIPAA, or institutional data-sharing constraints.
+\item \textbf{A privacy-preserving collaboration paradigm:} Our two-phase architecture enables learning across distributed feature spaces without data sharing. Each experiment directly demonstrates this: the base model trains on one feature set and is extended with additional features from a different subpopulation, with no raw data exchanged. All 9 datasets validate successful model-level knowledge transfer, providing empirical evidence for deployment under GDPR, HIPAA, or institutional data-sharing constraints.
 \end{itemize}
 
 \section{Related Work}
@@ -333,7 +333,7 @@ All Bayesian optimization procedures use Optuna\cite{optuna} with 30 trials per 
 \subsection{Datasets}
 We evaluate our methodology on 10 diverse binary classification datasets spanning healthcare, finance, meteorology, and behavioral prediction domains (Table~\ref{tab:dataset-summary}). The datasets vary significantly in size (7K to 568K rows), feature dimensionality (11 to 183 columns), class balance (1.9\% to 77.4\% positive), and missingness patterns (19\% to 88\% null rate among extended features).
 
-Six datasets contain naturally occurring structured missingness: Weather and WeatherAUS (meteorological measurements missing due to station equipment availability), DiabetesRecord (clinical measurements absent for certain patient subgroups), HRAnalytics (demographic fields with selective disclosure), WIDS (ICU hour-1 lab values ordered only for critical patients, with 83--92\% null rates), and ClientRecordAug (service-dependent features absent for non-subscribers). Four datasets use controlled null injection to simulate feature evolution scenarios: BankLoanSta, ClientRecordV2, MovieAugV2, and FlightDelay, where we introduce independent random missingness at rates of 20--50\% into selected features while preserving the original data relationships.
+Five datasets contain naturally occurring structured missingness: Weather and WeatherAUS (meteorological measurements missing due to station equipment availability), DiabetesRecord (clinical measurements absent for certain patient subgroups), HRAnalytics (demographic fields with selective disclosure), and WIDS (ICU hour-1 lab values ordered only for critical patients, with 83--92\% null rates). Four datasets use controlled null injection to simulate feature evolution scenarios: BankLoanSta, ClientRecord, MovieAugV2, and FlightDelay, where we introduce independent random missingness at rates of 20--50\% into selected features while preserving the original data relationships.
 
 This combination of natural and augmented missingness allows us to evaluate our framework under both realistic deployment conditions and controlled experimental settings. Each dataset underwent domain-specific preprocessing including removal of identifier columns, target encoding, and feature type standardization.
 
@@ -359,8 +359,7 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
     WIDS               & 91,713   & 183 & 8.6  & 87.7 \\
     Weather            & 25,000   & 16  & 22.4 & 49.3 \\
     HRAnalytics        & 19,158   & 14  & 24.9 & 23.5 \\
-    ClientRecordAug    & 7,043    & 28  & 67.0 & 55.0 \\
-    ClientRecordV2     & 7,043    & 28  & 67.0 & 47.5 \\
+    ClientRecord       & 7,043    & 28  & 67.0 & 47.5 \\
   \bottomrule
   \end{tabular}%
   }
@@ -400,7 +399,7 @@ As described in Section 4.2, the tree pruning strategy was essential for effecti
 
 \section{Results}
 
-Our population-aware framework demonstrates consistent improvements across a diverse set of 10 real-world datasets. Table~\ref{tab:merged_auc_results} presents a detailed comparison. Both approaches serve two test populations: instances without extended features (base population) and instances with extended features (extended population). The key difference is:
+Our population-aware framework demonstrates consistent improvements across a diverse set of 9 real-world datasets. Table~\ref{tab:merged_auc_results} presents a detailed comparison. Both approaches serve two test populations: instances without extended features (base population) and instances with extended features (extended population). The key difference is:
 
 \begin{itemize}
 \item \textbf{Standard approach (baseline):} Trains a base model using only base features, and a separate combined model using all features. The base model serves the base population; the combined model serves the extended population. This requires simultaneous access to all data and features.
@@ -409,15 +408,15 @@ Our population-aware framework demonstrates consistent improvements across a div
 
 \subsection{Comprehensive Performance Analysis}
 
-Across all 10 datasets, our framework achieves positive total improvement, demonstrating that the two-phase incremental approach --- which does not require simultaneous access to all data --- matches or outperforms the standard approach that does. The strongest gains appear in BankLoanSta (+0.0743), Weather (+0.0097), FlightDelay (+0.0046), and ClientRecordV2 (+0.0046).
+Across all 9 datasets, our framework achieves positive total improvement, demonstrating that the two-phase incremental approach --- which does not require simultaneous access to all data --- matches or outperforms the standard approach that does. The strongest gains appear in BankLoanSta (+0.0743), Weather (+0.0097), FlightDelay (+0.0046), and ClientRecord (+0.0046).
 
-A key finding is that our base model consistently outperforms the baseline's base model on the no-extended test population (positive base diff in all 10 datasets). This occurs because our base model trains on \textit{all} rows with extended features masked as NaN, giving it a larger training set than the baseline's base model which uses only base features. The extended features' absence pattern itself becomes an implicit signal that aids specialization.
+A key finding is that our base model consistently outperforms the baseline's base model on the no-extended test population (positive base diff in all 9 datasets). This occurs because our base model trains on \textit{all} rows with extended features masked as NaN, giving it a larger training set than the baseline's base model which uses only base features. The extended features' absence pattern itself becomes an implicit signal that aids specialization.
 
-For the extended population, results are more nuanced. In 6 out of 10 datasets, the extended model matches or exceeds the combined baseline on extended-feature rows. In the remaining 4 datasets (Weather, HRAnalytics, ClientRecordAug, WeatherAUS), the extended model shows marginal deficits (less than 0.002 AUC), which are more than compensated by the base model's gains on the no-extended population.
+For the extended population, results are more nuanced. In 6 out of 9 datasets, the extended model matches or exceeds the combined baseline on extended-feature rows. In the remaining 3 datasets (Weather, HRAnalytics, WeatherAUS), the extended model shows marginal deficits (less than 0.002 AUC), which are more than compensated by the base model's gains on the no-extended population.
 
-\textbf{Statistical significance.} All 10 datasets show positive total improvement. A Wilcoxon signed-rank test confirms that the improvements are statistically significant ($W = 0$, $p = 0.002$), indicating that the probability of all 10 datasets showing positive improvement by chance is less than 0.2\%. The median improvement across datasets is +0.0025 AUC. We note that a parametric $t$-test does not reach significance ($p = 0.20$) due to the high variance introduced by the BankLoanSta outlier (+0.0743), underscoring the importance of non-parametric testing when dataset-level effects vary in magnitude.
+\textbf{Statistical significance.} All 9 datasets show positive total improvement. A Wilcoxon signed-rank test confirms that the improvements are statistically significant ($W = 0$, $p = 0.004$), indicating that the probability of all 9 datasets showing positive improvement by chance is less than 0.4\%. The median improvement across datasets is +0.0026 AUC. We note that a parametric $t$-test does not reach significance ($p = 0.21$) due to the high variance introduced by the BankLoanSta outlier (+0.0743), underscoring the importance of non-parametric testing when dataset-level effects vary in magnitude.
 
-\textbf{Robustness across pruning strategies.} As a proxy for result stability, we examine the spread of improvements across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). While the adaptive (Optuna) strategy achieves the best improvement for each dataset, performance varies across strategies: the mean range between best and worst pruning mode is 0.004 AUC. Two datasets (BankLoanSta and ClientRecordV2) show positive improvement under all three pruning strategies, indicating robust gains regardless of pruning choice. For the remaining datasets, at least one strategy achieves positive improvement, while others may yield marginal deficits --- confirming that pruning strategy selection matters and justifying the adaptive optimization approach.
+\textbf{Robustness across pruning strategies.} As a proxy for result stability, we examine the spread of improvements across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). While the adaptive (Optuna) strategy achieves the best improvement for each dataset, performance varies across strategies: the mean range between best and worst pruning mode is 0.004 AUC. Two datasets (BankLoanSta and ClientRecord) show positive improvement under all three pruning strategies, indicating robust gains regardless of pruning choice. For the remaining datasets, at least one strategy achieves positive improvement, while others may yield marginal deficits --- confirming that pruning strategy selection matters and justifying the adaptive optimization approach.
 
 \begin{table*}[!t]
 \caption{AUROC Results Across All Datasets. Both approaches use two models evaluated on separate test populations. \textit{Baseline}: trains a base model on base features only, and a combined model on all features --- requires access to all data. \textit{Our approach}: trains a base model on base features (with extended features as NaN), then warm-starts an extended model using adaptive pruning --- phases can operate on separate data. Total Improvement is the sum of AUC gains across both populations.}
@@ -432,8 +431,7 @@ BankLoanSta & 100K & 19.1 & 0.6952 & 0.6495 & 0.7817 & 0.7531 & \textcolor{Fores
 Weather & 25K & 49.3 & 0.8432 & 0.8314 & 0.8448 & 0.8469 & \textcolor{ForestGreen}{+0.0097} \\
 DiabetesRecord & 102K & 66.2 & 0.6734 & 0.6727 & 0.6682 & 0.6663 & \textcolor{ForestGreen}{+0.0026} \\
 HRAnalytics & 19K & 23.5 & 0.7735 & 0.7727 & 0.8102 & 0.8108 & \textcolor{ForestGreen}{+0.0002} \\
-ClientRecordAug & 7K & 55.0 & 0.9612 & 0.9605 & 0.9608 & 0.9612 & \textcolor{ForestGreen}{+0.0004} \\
-ClientRecordV2 & 7K & 47.5 & 0.9235 & 0.9198 & 0.9186 & 0.9177 & \textcolor{ForestGreen}{+0.0046} \\
+ClientRecord & 7K & 47.5 & 0.9235 & 0.9198 & 0.9186 & 0.9177 & \textcolor{ForestGreen}{+0.0046} \\
 MovieAugV2 & 112K & 50.0 & 0.9187 & 0.9185 & 0.8726 & 0.8726 & \textcolor{ForestGreen}{+0.0001} \\
 WeatherAUS & 142K & 40.3 & 0.8865 & 0.8861 & 0.9024 & 0.9025 & \textcolor{ForestGreen}{+0.0003} \\
 WIDS & 92K & 87.7 & 0.8997 & 0.8991 & 0.8967 & 0.8950 & \textcolor{ForestGreen}{+0.0024} \\
@@ -444,9 +442,9 @@ FlightDelay & 568K & 20.0 & 0.7478 & 0.7450 & 0.7188 & 0.7170 & \textcolor{Fores
 
 \subsection{Ablation Study - Impact of Adaptive Tree Pruning}
 
-We conducted an ablation study comparing three pruning strategies across all 10 datasets (Table~\ref{tab:pruning}): (1) \textit{Optuna} --- Bayesian optimization selects whether to warm-start and how many trees to retain; (2) \textit{No Pruning} --- always warm-starts from the full base model; (3) \textit{Fixed 50\%} --- always retains exactly half the base trees.
+We conducted an ablation study comparing three pruning strategies across all 9 datasets (Table~\ref{tab:pruning}): (1) \textit{Optuna} --- Bayesian optimization selects whether to warm-start and how many trees to retain; (2) \textit{No Pruning} --- always warm-starts from the full base model; (3) \textit{Fixed 50\%} --- always retains exactly half the base trees.
 
-Optuna-based adaptive pruning achieves the best objective in 8 out of 10 datasets, confirming that automatic pruning threshold selection outperforms fixed strategies. No Pruning wins in 2 datasets (HRAnalytics and ClientRecordAug), both of which are smaller datasets where the full base model transfers well. Fixed 50\% pruning never achieves the best result and produces positive objectives (combined model wins) in 6 out of 10 datasets, indicating that aggressive fixed pruning often discards useful knowledge.
+Optuna-based adaptive pruning achieves the best objective in 8 out of 9 datasets, confirming that automatic pruning threshold selection outperforms fixed strategies. No Pruning wins in 1 dataset (HRAnalytics), a smaller dataset where the full base model transfers well. Fixed 50\% pruning never achieves the best result and produces positive objectives (combined model wins) in 5 out of 9 datasets, indicating that aggressive fixed pruning often discards useful knowledge.
 
 Critically, the Optuna strategy includes the option of pruning all base trees ($k=0$), which is equivalent to training from scratch. This built-in fallback ensures that the incremental approach never underperforms a full retrain, providing a safety guarantee for production deployment.
 
@@ -463,14 +461,13 @@ BankLoanSta & \textbf{--0.0743} & --- & --- & Optuna & 0.7817 \\
 Weather & \textbf{--0.0097} & +0.0081 & +0.0074 & Optuna & 0.8448 \\
 DiabetesRecord & \textbf{--0.0026} & +0.0006 & --0.0011 & Optuna & 0.6682 \\
 HRAnalytics & --0.0002 & \textbf{--0.0009} & +0.0011 & No Pruning & 0.8109 \\
-ClientRecordAug & --0.0004 & \textbf{--0.0005} & +0.0006 & No Pruning & 0.9610 \\
-ClientRecordV2 & \textbf{--0.0046} & --0.0038 & --0.0034 & Optuna & 0.9186 \\
+ClientRecord & \textbf{--0.0046} & --0.0038 & --0.0034 & Optuna & 0.9186 \\
 MovieAugV2 & \textbf{--0.0040} & +0.0009 & +0.0052 & Optuna & 0.8739 \\
 WeatherAUS & \textbf{--0.0003} & --0.0003 & +0.0016 & Optuna & 0.9024 \\
 WIDS & \textbf{--0.0045} & --0.0024 & +0.0003 & Optuna & 0.8955 \\
 FlightDelay & \textbf{--0.0046} & --0.0043 & +0.0023 & Optuna & 0.7188 \\
 \midrule
-\multicolumn{4}{l}{\textbf{Wins}} & \multicolumn{2}{l}{Optuna: 8, No Pruning: 2, Fixed 50\%: 0} \\
+\multicolumn{4}{l}{\textbf{Wins}} & \multicolumn{2}{l}{Optuna: 8, No Pruning: 1, Fixed 50\%: 0} \\
 \bottomrule
 \end{tabular}%
 }
@@ -505,7 +502,7 @@ As shown in Table 3, We determined that comparing our approach against a model b
 
 Our results demonstrate that the two-phase approach --- which can operate without simultaneous access to all data --- achieves performance comparable to or better than the standard approach that requires full data access. Two mechanisms drive this:
 
-First, our base model trains on all rows with extended features as NaN, whereas the baseline's base model trains only on base features. This gives our base model access to more training instances and allows XGBoost's learned default directions to implicitly encode the missingness pattern as a signal. The result is a stronger base model that outperforms the baseline on the no-extended population in all 10 datasets.
+First, our base model trains on all rows with extended features as NaN, whereas the baseline's base model trains only on base features. This gives our base model access to more training instances and allows XGBoost's learned default directions to implicitly encode the missingness pattern as a signal. The result is a stronger base model that outperforms the baseline on the no-extended population in all 9 datasets.
 
 Second, the warm-started extended model inherits knowledge from the base model and refines it with extended features, rather than learning from scratch. Adaptive pruning determines how much base knowledge to retain, preventing negative transfer while preserving useful patterns. This achieves comparable performance to the baseline's combined model on the extended population, while requiring only the model artifact (not the original training data) from Phase 1.
 
@@ -519,7 +516,7 @@ Despite the performance advantages, we emphasize that the main contribution of o
 
 Beyond feature evolution within a single organization, our experimental setup directly demonstrates a privacy-constrained collaboration scenario. In each experiment, the base model is trained on one feature set and the extended model incorporates additional features from a different subpopulation --- no raw data is shared between the two phases, only the base model artifact. This mirrors a real-world deployment where Institution A trains a base model on its available features and shares the model file, while Institution B extends it with private features that Institution A never accesses.
 
-All 10 datasets in our evaluation validate this capability: the two-phase approach consistently matches or outperforms a combined model that would require access to all features simultaneously. This provides empirical evidence that model-level knowledge transfer can substitute for data-level sharing in cross-institutional settings such as healthcare (hospitals with different diagnostic panels) or finance (banks with complementary transaction features for AML detection).
+All 9 datasets in our evaluation validate this capability: the two-phase approach consistently matches or outperforms a combined model that would require access to all features simultaneously. This provides empirical evidence that model-level knowledge transfer can substitute for data-level sharing in cross-institutional settings such as healthcare (hospitals with different diagnostic panels) or finance (banks with complementary transaction features for AML detection).
 
 We note that sharing model artifacts does not constitute formal privacy preservation --- gradient boosting models can be susceptible to model inversion attacks~\cite{fredrikson2015model}. Production deployments under strict regulatory constraints (GDPR, HIPAA) would benefit from additional safeguards such as differential privacy or secure aggregation. Nonetheless, the framework reduces the attack surface significantly compared to raw data sharing, and the model-sharing paradigm represents a practical middle ground between full data exchange and complete isolation.
 
@@ -537,11 +534,11 @@ Several directions merit further investigation. First, extending the framework t
 
 We presented a population-aware learning framework for Gradient Boosting Machines that addresses the challenge of learning across evolving and distributed feature spaces without data sharing. Our approach treats structured missingness as a modeling opportunity: rather than heuristically routing around missing values, we train specialized models for subpopulations defined by feature availability, connected through adaptive tree pruning and knowledge transfer.
 
-Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that our approach consistently matches or outperforms the standard approach that requires simultaneous access to all data, with total AUC gains ranging from +0.0001 to +0.0743 (Wilcoxon $p = 0.002$). This result is significant because our method achieves comparable performance while enabling data separation between training phases --- a property the standard approach cannot offer.
+Evaluation across 9 diverse datasets from healthcare, finance, and meteorology domains demonstrates that our approach consistently matches or outperforms the standard approach that requires simultaneous access to all data, with total AUC gains ranging from +0.0001 to +0.0743 (Wilcoxon $p = 0.004$). This result is significant because our method achieves comparable performance while enabling data separation between training phases --- a property the standard approach cannot offer.
 
-The adaptive pruning mechanism achieves the best results in 8 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our systematic analysis of 153 experiment configurations shows that the framework's benefit is architectural, arising from the two-phase design itself rather than from specific dataset characteristics.
+The adaptive pruning mechanism achieves the best results in 8 out of 9 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our systematic analysis of 153 experiment configurations shows that the framework's benefit is architectural, arising from the two-phase design itself rather than from specific dataset characteristics.
 
-The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data --- all 10 datasets validate that this model-level knowledge transfer achieves consistent improvements without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
+The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data --- all 9 datasets validate that this model-level knowledge transfer achieves consistent improvements without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
 
 \section*{Supplementary Materials and Code Availability}
 
