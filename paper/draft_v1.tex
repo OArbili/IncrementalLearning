@@ -27,12 +27,12 @@ Beyond Missing at Random: Incremental Tree Ensembles for Expanding Feature Sets
 \begin{abstract}
 Machine learning applications in the healthcare and finance domains face an inherent challenge: feature spaces that evolve over time as new measurements, tests, or metrics become available. This evolution creates structured, non-random missingness patterns where newer features are systematically absent from historical records. Traditional approaches require costly retraining or maintaining multiple specialized models, leading to deployment complexity and potential inconsistencies.
 
-We introduce a two phase incremental learning framework for Gradient Boosting Machines (GBMs) that seamlessly integrates new features into existing models without full retraining. Our approach combines three key innovations: (1) strategic feature allocation that optimally assigns features to base or extended feature sets; (2) adaptive model transfer with validation driven tree pruning that preserves valuable knowledge while minimizing negative transfer; and (3) continued training that allows the model to learn relationships involving the extended feature set.
+We introduce a population-aware learning framework for Gradient Boosting Machines (GBMs) that explicitly models structured missingness by training specialized models for distinct subpopulations defined by feature availability. Our approach combines three key innovations: (1) strategic feature allocation that partitions features into base and extended sets based on availability patterns; (2) adaptive model transfer with validation-driven tree pruning that preserves valuable knowledge while minimizing negative transfer; and (3) population-specific specialization, where a base model serves instances lacking extended features while a warm-started extended model serves the enriched subpopulation.
 
 Through rigorous evaluation on 10 diverse real-world binary classification datasets, our method consistently outperforms full retrain approaches across all evaluated datasets. Moreover, our framework offers operational advantages including simplified model maintenance and graceful handling of partial feature availability at inference time. Notably, the two-phase design directly enables privacy-constrained collaboration: our experimental setup mirrors a scenario where Institution A trains a base model on its available features and shares only the model artifact, while Institution B extends it with additional features from a different subpopulation --- without either party accessing the other's raw data. All 10 evaluated datasets demonstrate this capability, achieving consistent improvements through model-level knowledge transfer. This approach provides a practical solution for organizations deploying predictive models in dynamic, evolving data environments with structured missingness, as well as for cross-institutional collaboration under data-sharing restrictions.
 \end{abstract}
 
-\keywords{Incremental Learning, Missing Data, GBM, Feature Evolution, Evolving Datasets, Scalable ML Architecture, Model Maintenance}
+\keywords{Structured Missingness, Population-Aware Learning, Gradient Boosting, Feature Evolution, Privacy-Preserving ML, Adaptive Tree Pruning, Model Transfer}
 
 \maketitle
 
@@ -46,16 +46,16 @@ Maintaining robust predictive models in such settings presents a major challenge
 
 A closely related challenge arises in cross-organizational collaboration, where multiple institutions hold complementary feature sets but cannot share raw data due to privacy regulations. For example, two hospitals may collect different diagnostic measurements for overlapping patient populations, or banks collaborating on anti-money laundering (AML) models may hold transaction features that cannot be exchanged. Our framework directly addresses this scenario: one institution trains a base model on its features and shares only the model artifact, while the other extends it with private features using warm-start and adaptive pruning. Our experimental design mirrors exactly this setup --- the base model is trained on one feature set and extended with additional features from a different subpopulation, with no data shared between phases.
 
-In this work, we introduce a feature-based incremental learning framework for Gradient Boosted Machines (GBMs) that addresses both evolving feature spaces and privacy-constrained model collaboration. Our approach enables models to evolve alongside feature availability while preserving performance, model maintainability, and deployment simplicity. We validate our framework on 10 diverse datasets spanning healthcare, finance, and meteorology domains, demonstrating consistent improvements over full retrain baselines across all evaluated datasets.
+In this work, we introduce a population-aware learning framework for Gradient Boosted Machines (GBMs) that treats structured missingness as a modeling opportunity rather than a nuisance. Instead of training a single model that heuristically routes around missing values, our approach explicitly trains specialized models for subpopulations defined by feature availability. We validate our framework on 10 diverse datasets spanning healthcare, finance, and meteorology domains, demonstrating statistically significant improvements (Wilcoxon $p = 0.002$) over combined baselines across all evaluated datasets.
 Our main contributions are:
 \begin{itemize}
 \setlength\itemindent{0pt}
 \setlength{\itemindent}{0pt}
-\item Feature-based incremental GBM framework: We implement a two-phase training procedure that integrates new features into existing models without full retraining. The method works by first establishing a base model on commonly available features, then selectively extending it to incorporate newly available features through a principled transfer learning approach.
+\item Population-aware modeling under structured missingness: We demonstrate that explicitly partitioning training into subpopulation-specific phases --- rather than relying on heuristic missing-value routing --- yields consistent improvements across 10 diverse datasets. Our analysis reveals that the primary benefit comes from the base model specializing on the feature-absent population, a subgroup that combined models systematically underserve.
 
-\item Adaptive tree pruning mechanism: We develop a validation-driven method to selectively retain useful base trees while discarding outdated ones, effectively managing knowledge transfer between feature spaces. This prevents negative transfer while preserving previously learned patterns that remain valid.
+\item Adaptive tree pruning for knowledge transfer: We develop a validation-driven mechanism to selectively retain useful base trees when extending to new feature spaces. Bayesian optimization determines the optimal pruning level, including a $k=0$ fallback that guarantees the framework never underperforms training from scratch.
 
-\item Feature allocation optimization: We introduce an optimization scheme that intelligently assigns features to base or extended phases, balancing predictive utility with missingness patterns and varying temporal update frequencies. This addresses the challenge of features becoming available at different intervals.
+\item Privacy-preserving model collaboration: Our experimental design directly validates a model-sharing paradigm where institutions exchange trained model artifacts rather than raw data. All 10 datasets demonstrate successful cross-phase knowledge transfer without data access between phases, providing empirical evidence for privacy-constrained deployment.
 \end{itemize}
 
 \section{Related Work}
@@ -223,7 +223,7 @@ availability.
 \section{METHODS}
 \label{sec:method}
 
-Our approach implements a structured two-phase gradient boosting framework designed specifically for evolving feature spaces with non-random missingness patterns, as illustrated in Figure~\ref{fig:framework}. The framework consists of two main components: Base Model Training and Extended Model Training. Using Bayesian optimization, we find the best feature allocation between these two phases to optimize overall performance.
+Our approach implements a population-aware gradient boosting framework for learning across evolving and distributed feature spaces without data sharing, as illustrated in Figure~\ref{fig:framework}. Rather than training a single model that heuristically handles missing values, we explicitly partition the learning process into subpopulation-specific phases. The framework consists of two main components: Base Model Training (specializing on the feature-absent population) and Extended Model Training (incorporating newly available features through knowledge transfer). Bayesian optimization determines the optimal feature allocation between phases.
 
 \subsection{Phase 1: Base Model Training}
 
@@ -332,7 +332,7 @@ This theoretical foundation ensures that our incremental approach is always a sa
 \end{figure}
 
 \section{Experiments}
-This section evaluates our incremental feature based learning approach across diverse real-world datasets. We demonstrate how our adaptive tree pruning mechanism effectively handles structured missingness while maintaining or improving model performance compared to traditional approaches. We also conduct ablation studies and sensitivity analysis to validate individual components within our framework.
+This section evaluates our population-aware learning framework across diverse real-world datasets. We demonstrate how explicit subpopulation specialization, combined with adaptive tree pruning, consistently outperforms a single combined model that relies on heuristic missing-value handling. We conduct ablation studies to validate the contribution of the adaptive pruning mechanism and present a systematic analysis of what drives the observed improvements.
 
 All Bayesian optimization procedures use Optuna\cite{optuna} with 30 trials per model (50 for select sensitivity experiments). Training and validation employ 3-fold stratified cross-validation to ensure robust performance estimates and prevent overfitting, particularly for the imbalanced class distributions in our datasets.
 \subsection{Datasets}
@@ -535,7 +535,7 @@ Several directions merit further investigation. First, extending the framework t
 
 \section{Conclusion}
 
-We presented an incremental feature-based learning framework for Gradient Boosting Machines that addresses the challenge of evolving feature spaces with structured missingness. Our two-phase approach establishes a base model on commonly available features and selectively extends it to incorporate newly available features through adaptive tree pruning and continued training.
+We presented a population-aware learning framework for Gradient Boosting Machines that addresses the challenge of learning across evolving and distributed feature spaces without data sharing. Our approach treats structured missingness as a modeling opportunity: rather than heuristically routing around missing values, we train specialized models for subpopulations defined by feature availability, connected through adaptive tree pruning and knowledge transfer.
 
 Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates consistent improvements over the combined baseline, with total AUC gains ranging from +0.0001 to +0.0743. Our analysis reveals that the primary source of improvement is population-specific specialization: the base model learns patterns tailored to instances lacking extended features, outperforming the combined baseline on this subgroup in 100\% of datasets.
 
