@@ -27,7 +27,7 @@ Objective = (combined_with_ext_auc - extended_auc) + (combined_no_ext_auc - base
 | ClientRecordAug | Offer | 1 | 30 | optuna | 0.9612 | 0.9608 | 0.9605 | 0.9612 | **-0.000361** |
 | ClientRecordV2 | Offer+MonthlyCharge | 2 | 30 | optuna | 0.9235 | 0.9186 | 0.9198 | 0.9177 | **-0.004647** |
 | MovieAugV2 | rating_mean+rating_std | 2 | 30 | optuna | 0.9187 | 0.8726 | 0.9185 | 0.8726 | **-0.000147** |
-| WeatherAUS | Cloud3pm | 1 | 30 | optuna | 0.8923 | 0.9016 | 0.8906 | 0.9021 | **-0.001144** |
+| WeatherAUS | Evapor+Cloud9 | 2 | 50 | optuna | 0.8865 | 0.9024 | 0.8861 | 0.9025 | **-0.000291** |
 | WIDS | h1_bilirub+h1_lactate+h1_pao2fio+h1_arteria | 14 | 30 | optuna | 0.8997 | 0.8967 | 0.8991 | 0.8950 | **-0.002435** |
 | FlightDelay | OP_CARRIER_FL_NUM | 1 | 30 | optuna | 0.7478 | 0.7188 | 0.7450 | 0.7170 | **-0.004602** |
 
@@ -46,7 +46,7 @@ Objective = (combined_with_ext_auc - extended_auc) + (combined_no_ext_auc - base
 | ClientRecordAug | **-0.000361** | Offer | 30 | optuna |
 | ClientRecordV2 | **-0.004647** | Offer, Monthly Charge | 30 | optuna |
 | MovieAugV2 | **-0.000147** | rating_mean, rating_std | 30 | optuna |
-| WeatherAUS | **-0.001144** | Cloud3pm | 30 | optuna |
+| WeatherAUS | **-0.000291** | Evaporation, Cloud9am | 50 | optuna |
 | WIDS | **-0.002435** | h1_bilirubin (max/min), h1_albumin (max/min), h1_lactate (max/min), h1_pao2fio2ratio (max/min), h1_arterial_ph (max/min), h1_arterial_pco2 (max/min), h1_arterial_po2 (max/min) — 14 features total | 30 | optuna |
 | FlightDelay | **-0.004602** | OP_CARRIER_FL_NUM | 30 | optuna |
 
@@ -63,7 +63,7 @@ Objective = (combined_with_ext_auc - extended_auc) + (combined_no_ext_auc - base
 | ClientRecordV2 | 7,043 | 0.9235 | 0.9186 | 0.9198 | 0.9177 | 305 | 1,104 | Yes |
 | ClientRecordAug | 7,043 | 0.9612 | 0.9608 | 0.9605 | 0.9612 | 775 | 634 | Yes |
 | MovieAugV2 | 112,466 | 0.9187 | 0.8726 | 0.9185 | 0.8726 | 5,616 | 16,878 | Yes |
-| WeatherAUS | 142,193 | 0.8923 | 0.9016 | 0.8906 | 0.9021 | 11,419 | 17,020 | No |
+| WeatherAUS | 142,193 | 0.8865 | 0.9024 | 0.8861 | 0.9025 | 8,815 | 19,624 | No |
 | WIDS | 91,713 | 0.8997 | 0.8967 | 0.8991 | 0.8950 | 13,632 | 4,711 | No |
 | FlightDelay | 100,000* | 0.7478 | 0.7188 | 0.7450 | 0.7170 | 6,011 | 13,989 | Yes |
 
@@ -103,16 +103,7 @@ All three modes show incremental wins.
 | HRAnalytics | -0.000192 | **-0.000855** | +0.001127 | no_pruning |
 | ClientRecordAug | -0.000361 | **-0.000534** | +0.000621 | no_pruning |
 | MovieAugV2 | **-0.000147** | +0.000933 | +0.005244 | optuna |
-| WeatherAUS | **+0.004080** | +0.004219 | +0.004856 | optuna |
 | WIDS | -0.000932 | **-0.001107** | +0.001987 | no_pruning |
-
-### WeatherAUS Ablation (frosty-pasteur, 30t, ext=Cloud3pm)
-
-| Mode | Objective | Ext AUC |
-|---|---|---|
-| optuna | -0.001144 | 0.9016 |
-| **no_pruning** | **-0.047474** | **0.9479** |
-| fixed_50 | -0.029520 | 0.9299 |
 
 ### WeatherAUS Ablation (keen-bassi, 50t, ext=Evaporation+Cloud9am, RainToday leakage fixed)
 

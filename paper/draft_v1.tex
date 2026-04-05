@@ -367,7 +367,7 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow for
     \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Label\%} & \textbf{Null (\%)} \\
     \midrule
     FlightDelay        & 567,630  & 14  & 17.4 & 20.0 \\
-    WeatherAUS         & 142,193  & 20  & 22.4 & 40.1 \\
+    WeatherAUS         & 142,193  & 20  & 22.4 & 40.3 \\
     MovieAugV2         & 112,466  & 11  & 1.9  & 50.0 \\
     DiabetesRecord     & 101,766  & 45  & 46.1 & 66.2 \\
     BankLoanSta        & 100,000  & 17  & 77.4 & 19.1 \\
@@ -452,7 +452,7 @@ HRAnalytics & 19K & 23.5 & 0.7735 & 0.7727 & 0.8102 & 0.8108 & \textcolor{Forest
 ClientRecordAug & 7K & 55.0 & 0.9612 & 0.9605 & 0.9608 & 0.9612 & \textcolor{ForestGreen}{--0.0004} \\
 ClientRecordV2 & 7K & 47.5 & 0.9235 & 0.9198 & 0.9186 & 0.9177 & \textcolor{ForestGreen}{--0.0046} \\
 MovieAugV2 & 112K & 50.0 & 0.9187 & 0.9185 & 0.8726 & 0.8726 & \textcolor{ForestGreen}{--0.0001} \\
-WeatherAUS & 142K & 40.1 & 0.8923 & 0.8906 & 0.9016 & 0.9021 & \textcolor{ForestGreen}{--0.0011} \\
+WeatherAUS & 142K & 40.3 & 0.8865 & 0.8861 & 0.9024 & 0.9025 & \textcolor{ForestGreen}{--0.0003} \\
 WIDS & 92K & 87.7 & 0.8997 & 0.8991 & 0.8967 & 0.8950 & \textcolor{ForestGreen}{--0.0024} \\
 FlightDelay & 568K & 20.0 & 0.7478 & 0.7450 & 0.7188 & 0.7170 & \textcolor{ForestGreen}{--0.0046} \\
 \bottomrule
@@ -483,11 +483,11 @@ HRAnalytics & --0.0002 & \textbf{--0.0009} & +0.0011 & No Pruning & 0.8109 \\
 ClientRecordAug & --0.0004 & \textbf{--0.0005} & +0.0006 & No Pruning & 0.9610 \\
 ClientRecordV2 & \textbf{--0.0046} & --0.0038 & --0.0034 & Optuna & 0.9186 \\
 MovieAugV2 & \textbf{--0.0040} & +0.0009 & +0.0052 & Optuna & 0.8739 \\
-WeatherAUS & --0.0011 & \textbf{--0.0475} & --0.0295 & No Pruning & 0.9479 \\
+WeatherAUS & \textbf{--0.0003} & --0.0003 & +0.0016 & Optuna & 0.9024 \\
 WIDS & \textbf{--0.0045} & --0.0024 & +0.0003 & Optuna & 0.8955 \\
 FlightDelay & \textbf{--0.0046} & --0.0043 & +0.0023 & Optuna & 0.7188 \\
 \midrule
-\multicolumn{4}{l}{\textbf{Wins}} & \multicolumn{2}{l}{Optuna: 7, No Pruning: 3, Fixed 50\%: 0} \\
+\multicolumn{4}{l}{\textbf{Wins}} & \multicolumn{2}{l}{Optuna: 8, No Pruning: 2, Fixed 50\%: 0} \\
 \bottomrule
 \end{tabular}%
 }
