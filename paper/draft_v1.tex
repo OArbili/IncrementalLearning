@@ -453,26 +453,24 @@ These results underscore the generalizability and robustness of our two phase fr
 \end{figure}
 
 \begin{table*}[!t]
-\caption{AUROC Results Across All Datasets. Our model = two-phase incremental approach; Baseline = single combined model trained on all features. Base diff and Extended diff show our improvement over baseline on the respective test populations. Positive values (green) indicate our method outperforms the baseline.}
+\caption{AUROC Results Across All Datasets. Our model = two-phase incremental approach; Baseline = single combined model trained on all features. Objective measures total improvement: negative values indicate our method outperforms the baseline.}
 \label{tab:merged_auc_results}
 \centering
 \small
-\begin{tabular}{l r r c c c c c c}
+\begin{tabular}{l r r c c c c c}
 \toprule
-\textbf{Dataset} & \textbf{Rows} & \textbf{Null\%} & \textbf{Extended Features} & \textbf{Our (base)} & \textbf{Baseline (base)} & \textbf{Base diff} & \textbf{Our (ext)} & \textbf{Baseline (ext)} & \textbf{Ext diff} \\
+\textbf{Dataset} & \textbf{Rows} & \textbf{Null\%} & \textbf{Our (base)} & \textbf{Baseline (base)} & \textbf{Our (ext)} & \textbf{Baseline (ext)} & \textbf{Objective} \\
 \midrule
-BankLoanSta & 100K & 19.1 & \makecell[l]{Current Loan Amount,\\Annual Income, Credit Score} & \textbf{0.6952} & 0.6495 & \textcolor{ForestGreen}{+0.0457} & \textbf{0.7817} & 0.7531 & \textcolor{ForestGreen}{+0.0286} \\
-Weather & 25K & 49.3 & \makecell[l]{Evaporation, Sunshine,\\WindDir9am} & \textbf{0.8432} & 0.8314 & \textcolor{ForestGreen}{+0.0118} & 0.8448 & \textbf{0.8469} & \textcolor{red}{--0.0021} \\
-DiabetesRecord & 102K & 66.2 & \makecell[l]{medical\_specialty,\\A1Cresult} & \textbf{0.6734} & 0.6727 & \textcolor{ForestGreen}{+0.0007} & \textbf{0.6682} & 0.6663 & \textcolor{ForestGreen}{+0.0019} \\
-HRAnalytics & 19K & 23.5 & gender & \textbf{0.7735} & 0.7727 & \textcolor{ForestGreen}{+0.0008} & 0.8102 & \textbf{0.8108} & \textcolor{red}{--0.0006} \\
-ClientRecordAug & 7K & 55.0 & Offer & \textbf{0.9612} & 0.9605 & \textcolor{ForestGreen}{+0.0007} & 0.9608 & \textbf{0.9612} & \textcolor{red}{--0.0004} \\
-ClientRecordV2 & 7K & 47.5 & Offer, Monthly Charge & \textbf{0.9235} & 0.9198 & \textcolor{ForestGreen}{+0.0037} & \textbf{0.9186} & 0.9177 & \textcolor{ForestGreen}{+0.0009} \\
-MovieAugV2 & 112K & 50.0 & rating\_mean, rating\_std & \textbf{0.9187} & 0.9185 & \textcolor{ForestGreen}{+0.0002} & \textbf{0.8726} & 0.8726 & \textcolor{ForestGreen}{+0.0000} \\
-WeatherAUS & 142K & 40.1 & Cloud3pm & \textbf{0.8923} & 0.8906 & \textcolor{ForestGreen}{+0.0017} & 0.9016 & \textbf{0.9021} & \textcolor{red}{--0.0005} \\
-WIDS & 92K & 87.7 & \makecell[l]{h1\_bilirubin, h1\_lactate,\\h1\_pao2fio2, h1\_arterial\\(14 features)} & \textbf{0.8997} & 0.8991 & \textcolor{ForestGreen}{+0.0006} & \textbf{0.8967} & 0.8950 & \textcolor{ForestGreen}{+0.0017} \\
-FlightDelay & 568K & 20.0 & OP\_CARRIER\_FL\_NUM & \textbf{0.7478} & 0.7450 & \textcolor{ForestGreen}{+0.0028} & \textbf{0.7188} & 0.7170 & \textcolor{ForestGreen}{+0.0018} \\
-\midrule
-\multicolumn{6}{l}{\textbf{Average}} & \textcolor{ForestGreen}{+0.0069} & & & \textcolor{ForestGreen}{+0.0031} \\
+BankLoanSta & 100K & 19.1 & 0.6952 & 0.6495 & 0.7817 & 0.7531 & \textcolor{ForestGreen}{--0.0743} \\
+Weather & 25K & 49.3 & 0.8432 & 0.8314 & 0.8448 & 0.8469 & \textcolor{ForestGreen}{--0.0097} \\
+DiabetesRecord & 102K & 66.2 & 0.6734 & 0.6727 & 0.6682 & 0.6663 & \textcolor{ForestGreen}{--0.0026} \\
+HRAnalytics & 19K & 23.5 & 0.7735 & 0.7727 & 0.8102 & 0.8108 & \textcolor{ForestGreen}{--0.0002} \\
+ClientRecordAug & 7K & 55.0 & 0.9612 & 0.9605 & 0.9608 & 0.9612 & \textcolor{ForestGreen}{--0.0004} \\
+ClientRecordV2 & 7K & 47.5 & 0.9235 & 0.9198 & 0.9186 & 0.9177 & \textcolor{ForestGreen}{--0.0046} \\
+MovieAugV2 & 112K & 50.0 & 0.9187 & 0.9185 & 0.8726 & 0.8726 & \textcolor{ForestGreen}{--0.0001} \\
+WeatherAUS & 142K & 40.1 & 0.8923 & 0.8906 & 0.9016 & 0.9021 & \textcolor{ForestGreen}{--0.0011} \\
+WIDS & 92K & 87.7 & 0.8997 & 0.8991 & 0.8967 & 0.8950 & \textcolor{ForestGreen}{--0.0024} \\
+FlightDelay & 568K & 20.0 & 0.7478 & 0.7450 & 0.7188 & 0.7170 & \textcolor{ForestGreen}{--0.0046} \\
 \bottomrule
 \end{tabular}
 \end{table*}
