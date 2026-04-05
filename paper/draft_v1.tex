@@ -344,9 +344,13 @@ This section evaluates our incremental feature based learning approach across di
 
 All Bayesian optimization procedures use Optuna\cite{optuna} with 20 iterations per task. Training and validation employ 3 fold stratified cross-validation to ensure robust performance estimates and prevent overfitting, particularly for the imbalanced class distributions in our datasets.
 \subsection{Datasets}
-To rigorously evaluate our proposed methodology, we selected a diverse collection of datasets that represent common challenges in real-world machine learning applications. These datasets share several important characteristics relevant to our research: (1) all involve binary classification problems; (2) most exhibit class imbalance, reflecting real-world distribution patterns; (3) they contain data from multiple sources or subsystems with varying feature availability; and (4) they span different domains where feature evolution naturally occurs. The datasets used in our experiments span multiple domains, including healthcare (hospital readmission prediction), finance (credit risk assessment and loan status prediction), and emergency medicine (ICU patient survival). These collections vary significantly in size (from under 1,000 to over 1.4 million records) and feature dimensionality (from 14 to 392 features). Most importantly, they display varying degrees of missingness from relatively complete datasets (approximately 2\% missing values) to those with extensive missingness (over 40\%) which allows for comprehensive testing under different missing data scenarios. Each dataset underwent specific preprocessing and adjustments tailored to our experimental requirements.
+We evaluate our methodology on 10 diverse binary classification datasets spanning healthcare, finance, meteorology, and behavioral prediction domains (Table~\ref{tab:dataset-summary}). The datasets vary significantly in size (7K to 568K rows), feature dimensionality (11 to 183 columns), class balance (1.9\% to 77.4\% positive), and missingness patterns (19\% to 88\% null rate among extended features).
 
-Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow for evaluating the incremental feature based learning approach. The workflow demonstrates how we partition the original dataset, separate base and extended features, and implement our two phase model training process. The base model is initially trained on commonly available features, then strategically extended to incorporate the expanded feature set through adaptive pruning. This methodology enables comprehensive performance evaluation across different feature availability scenarios, directly addressing the challenge of structured missingness in evolving datasets.
+Six datasets contain naturally occurring structured missingness: Weather and WeatherAUS (meteorological measurements missing due to station equipment availability), DiabetesRecord (clinical measurements absent for certain patient subgroups), HRAnalytics (demographic fields with selective disclosure), WIDS (ICU hour-1 lab values ordered only for critical patients, with 83--92\% null rates), and ClientRecordAug (service-dependent features absent for non-subscribers). Four datasets use controlled null injection to simulate feature evolution scenarios: BankLoanSta, ClientRecordV2, MovieAugV2, and FlightDelay, where we introduce independent random missingness at rates of 20--50\% into selected features while preserving the original data relationships.
+
+This combination of natural and augmented missingness allows us to evaluate our framework under both realistic deployment conditions and controlled experimental settings. Each dataset underwent domain-specific preprocessing including removal of identifier columns, target encoding, and feature type standardization.
+
+Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. The process partitions each dataset, separates base and extended features according to missingness patterns, and implements the two-phase training procedure with adaptive pruning.
 
 \begin{figure}
   \centering
@@ -413,28 +417,17 @@ As described in Section 4.2, the tree pruning strategy was essential for effecti
 
 \textbf{Ablation Study}: To isolate the contribution of our adaptive tree pruning mechanism, we conducted an ablation study comparing models with and without the pruning component. This analysis evaluated the effectiveness of selectively retaining base trees versus preserving the entire base model when incorporating extended features.
 
-\textbf{Sensitivity Analysis}: We performed a pruning sensitivity analysis on the WeatherAUS dataset to examine how the number of retained base trees affects model performance. This experiment tested different fixed pruning intervals and compared them against our adaptive pruning algorithm to validate the necessity of automatic threshold optimization.
-
 \section{Results}
 
-Our proposed incremental feature based learning framework demonstrates consistent improvements in AUC across a diverse set of real-world datasets. Table~\ref{tab:merged_auc_results} and Figure~\ref{fig:auc_improvments} presents a detailed comparison between our method and baseline model in both base only and extended feature configurations.
+Our proposed incremental feature-based learning framework demonstrates consistent improvements across a diverse set of 10 real-world datasets. Table~\ref{tab:merged_auc_results} presents a detailed comparison between our two-phase method and the combined baseline on both test populations.
 
 \subsection{Comprehensive Performance Analysis}
 
-Overall, our framework shows measurable AUC gains in both phases. In the phase 1 (base phase), notable improvements were observed in datasets such as Banking (+0.0215), WeatherAUS (+0.0210), and WeatherUS (+0.0198), indicating the strength of our approach.
+Across all 10 datasets, our framework achieves positive total improvement, confirming that the two-phase incremental approach matches or outperforms training a single model on all features simultaneously. The strongest gains appear in BankLoanSta (+0.0743), where the base model's specialization on the no-extended population yields a substantial AUC advantage (+0.0457) over the combined baseline. Weather (+0.0097), FlightDelay (+0.0046), and ClientRecordV2 (+0.0046) also show meaningful improvements.
 
-Interestingly, the WiDS and LoanDefault datasets showed no improvement in the phase 1 (base phase) (AUC gains of 0.0000). However, when extended features became available in the second phase, both datasets exhibited  improvements +0.0345 AUC for WiDS and +0.0241 AUC for LoanDefault demonstrating the framework's ability to effectively incorporate newly available features without discarding prior learning.
+An important observation is that the base model consistently outperforms the combined baseline on the no-extended test population (positive base diff in all 10 datasets). This demonstrates a key advantage of our approach: by training the base model exclusively on instances where extended features are absent, it learns patterns specific to this subpopulation that a combined model dilutes across all data.
 
-The most prominent gain in the extended phase was seen in WeatherUS (+0.0412 AUC), followed by WiDS, CreditRisk (+0.0282), and LoanDefault. Notably, across all 11 evaluated datasets, our method achieved positive AUC gains in the extended phase, ranging from +0.0055 (ClientAttendance) to +0.0412 (WeatherUS).
-
-These results underscore the generalizability and robustness of our two phase framework across varied domains including healthcare, finance, and behavioral prediction and confirm its utility in dynamic environments where feature sets evolve over time.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{auc_improvments.png}
-    \caption{AUC improvements over baseline for Base (blue) and Extended (green) models across datasets.}
-    \label{fig:auc_improvments}
-\end{figure}
+For the extended population, results are more nuanced. In 6 out of 10 datasets, the extended model matches or exceeds the combined baseline on extended-feature rows. In the remaining 4 datasets (Weather, HRAnalytics, ClientRecordAug, WeatherAUS), the extended model shows marginal deficits (less than 0.002 AUC), which are more than compensated by the base model's gains on the no-extended population.
 
 \begin{table*}[!t]
 \caption{AUROC Results Across All Datasets. Our model = two-phase incremental approach; Baseline = single combined model trained on all features. Total Improvement measures the combined AUC gain of our method over the baseline across both test populations.}
@@ -461,11 +454,11 @@ FlightDelay & 568K & 20.0 & 0.7478 & 0.7450 & 0.7188 & 0.7170 & \textcolor{Fores
 
 \subsection{Ablation Study - Impact of Adaptive Tree Pruning}
 
-We conducted an ablation study to assess the effectiveness of our adaptive tree pruning strategy across five real-world datasets. Table~\ref{tab:pruning} and Figure~4 summarize the AUC gains achieved by incorporating pruning into the incremental learning framework.
+We conducted an ablation study comparing three pruning strategies across all 10 datasets (Table~\ref{tab:pruning}): (1) \textit{Optuna} --- Bayesian optimization selects whether to warm-start and how many trees to retain; (2) \textit{No Pruning} --- always warm-starts from the full base model; (3) \textit{Fixed 50\%} --- always retains exactly half the base trees.
 
-The results show consistent performance improvements from pruning across all datasets. The Airline dataset exhibits the highest gain (+0.01186 AUC), followed by WeatherAUS (+0.00730), MovieLens  (+0.00430), and Diabetes (+0.00340). In contrast, the LoanDefault dataset shows a marginal improvement (+0.00031 AUC), indicating limited benefit from pruning under certain conditions.
+Optuna-based adaptive pruning achieves the best objective in 8 out of 10 datasets, confirming that automatic pruning threshold selection outperforms fixed strategies. No Pruning wins in 2 datasets (HRAnalytics and ClientRecordAug), both of which are smaller datasets where the full base model transfers well. Fixed 50\% pruning never achieves the best result and produces positive objectives (combined model wins) in 6 out of 10 datasets, indicating that aggressive fixed pruning often discards useful knowledge.
 
-These findings highlight the utility of pruning in transferring relevant knowledge while mitigating negative transfer from obsolete base trees. The improvements across varied datasets validate pruning as a critical component of our feature adaptive learning framework.
+Critically, the Optuna strategy includes the option of pruning all base trees ($k=0$), which is equivalent to training from scratch. This built-in fallback ensures that the incremental approach never underperforms a full retrain, providing a safety guarantee for production deployment.
 
 \begin{table}[h]
 \centering
@@ -493,35 +486,15 @@ FlightDelay & \textbf{--0.0046} & --0.0043 & +0.0023 & Optuna & 0.7188 \\
 }
 \end{table}
 
-\subsection{Pruning Sensitivity}
+\subsection{Analysis: What Drives Incremental Learning Success?}
 
-We conducted a pruning sensitivity analysis on the Weather in AUS dataset to evaluate how the number of retained base trees affects model performance. Table~\ref{tab:pruning_sensitivity} reports the AUC improvement over a static baseline across different pruning intervals. As illustrated in Figure~\ref{fig:sens}, the results indicate a non linear and non monotonic relationship between pruning ratio and model performance: pruning too aggressively or too conservatively may degrade AUC. For example, retaining 0--20 trees yielded an AUC improvement of 0.0151, whereas pruning 20--100 or 200--400 trees resulted in slight performance drops (AUC differences of --0.00078 and --0.00136, respectively). The best fixed pruning outcome (0.0197) was still outperformed by our adaptive pruning algorithm, which achieved an AUC gain of 0.0270. These findings reinforce the need for automatic pruning threshold optimization, as manual selection is unlikely to generalize across datasets.
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{sens4.png}
-    \caption{Sensitivity of incremental GBM performance on the Weather in AUS dataset to the number of base trees retained during pruning.}
-    \label{fig:sens}
-\end{figure}
+To understand when and why our incremental approach outperforms the combined baseline, we conducted a systematic correlation analysis across all 153 experiment configurations. We examined whether measurable dataset or experiment properties --- including null rates, dataset size, label distribution, feature importance ratios, and population shift between extended and non-extended subgroups --- predict the objective.
 
-\begin{table}[h]
-\centering
-\caption{AUC improvement on the Weather in AUS dataset under different pruning ranges.}
-\label{tab:pruning_sensitivity}
-\begin{tabular}{l r}
-\toprule
-\textbf{Pruning Range} & \textbf{AUC Improvement} \\
-\midrule
-No Pruning           & 0.019715 \\
-0--20 Trees          & 0.015127 \\
-20--100 Trees        & --0.000780 \\
-100--200 Trees       & 0.002695 \\
-200--400 Trees       & --0.001363 \\
-400--600 Trees       & 0.012201 \\
-Our Full Algorithm   & \textbf{0.027011} \\
-\bottomrule
-\end{tabular}
-\end{table}
+Our analysis reveals that no single dataset-level property strongly predicts the improvement magnitude ($R^2 = 0.019$ for a multivariate regression on all measured properties). Feature importance of extended features in the combined model shows no correlation with the objective ($r = -0.035$, $p = 0.68$). Similarly, covariate shift between the extended and non-extended populations, measured via Kolmogorov-Smirnov statistics and label rate differences, shows no significant relationship.
 
+A decomposition of the objective into its two components provides an important insight. The base model outperforms the combined baseline on the no-extended population in 59.5\% of experiments, while the extended model outperforms the combined baseline on the extended population in only 31.4\% of experiments. This indicates that the primary source of improvement is the \textit{specialization of the base model} on instances lacking extended features --- a population that the combined model must share capacity across both subgroups to serve.
+
+These findings suggest that the benefit of our framework is architectural rather than data-dependent: the two-phase design inherently enables population-specific specialization that a single combined model cannot achieve, regardless of the specific dataset characteristics.
 
 \section{Discussion}
 
@@ -540,27 +513,33 @@ As shown in Table 3, We determined that comparing our approach against a model b
 
 Despite the performance advantages, we emphasize that the main contribution of our work is the framework itself, which offers improved maintainability. The modular design allows for easier updates, monitoring, and extension compared to existing incremental learning solutions. Our framework also incorporates a critical rollback mechanism by concept, where in cases of significant data drift, it will rebuild the model from scratch rather than using the base model as input. This is accomplished by pruning all trees in the base model, effectively ensuring that outdated or irrelevant patterns don't negatively impact performance when data characteristics change substantially. This automatic adaptation mechanism provides an important safeguard for maintaining model reliability in dynamic environments.
 
+\subsection{Application to Privacy-Preserving Model Collaboration}
+
+Beyond feature evolution within a single organization, our framework naturally extends to scenarios where data sharing is restricted by privacy regulations. Consider two hospitals that each collect different diagnostic measurements for overlapping patient populations, or banks collaborating on anti-money laundering (AML) models where transaction features from one institution cannot be shared with another due to regulatory constraints such as GDPR or HIPAA.
+
+In such settings, our two-phase approach offers a practical alternative to federated learning or secure multi-party computation. Institution A trains a base model on its available features and shares only the model artifact (not the underlying data). Institution B then extends this model with its private features using our warm-start and adaptive pruning mechanism. The resulting extended model leverages knowledge from both institutions without either party exposing raw data. This model-sharing paradigm preserves data sovereignty while enabling cross-institutional knowledge transfer --- a capability that is increasingly important as regulatory frameworks tighten around data portability and privacy.
+
 \subsection{Generalizability and Limitations}
 
-While all datasets used in our experiments focused on binary classification problems, the proposed methodology can naturally extend to regression and multi-label tasks. For regression, the same adaptive tree pruning mechanism applies with appropriate loss functions, though the optimal pruning level may differ. For multi-label classification, our approach can be implemented using either problem transformation methods or algorithm adaptation techniques with minimal modification.
+While all datasets in our experiments focus on binary classification, the methodology naturally extends to regression and multi-class tasks. For regression, the same adaptive pruning mechanism applies with appropriate loss functions. For multi-class classification, the approach can be implemented via one-vs-rest decomposition or native multi-class boosting with minimal modification.
+
+A limitation of the current framework is that the optimal feature allocation between base and extended phases must be determined empirically through Bayesian optimization. Our analysis shows that no measurable dataset property predicts which allocation will succeed, suggesting that this search step cannot be easily shortcut. Additionally, run-to-run variance from the hyperparameter search process can be substantial, particularly for smaller datasets, requiring multiple runs for stable estimates.
 
 \subsection{Future Work}
 
-Future research should focus on improving the pruning mechanism to better handle various data scenarios and distribution shifts. Currently, our adaptive pruning approach works well for gradual concept drift, but more sophisticated techniques could be developed to handle abrupt changes in data distribution.
-
-Additionally, future work should investigate theoretical guarantees for convergence under different missingness patterns and explore how to automatically determine the optimal pruning strategy based on feature characteristics rather than through validation based optimization. This would further enhance the framework's adaptability and reduce the need for manual intervention in the learning process.
+Several directions merit further investigation. First, extending the framework to support \textit{multiple sequential feature expansions} (Phase 3, Phase 4, etc.) would better reflect real-world scenarios where features arrive in multiple waves over time. Second, developing theoretical guarantees for when warm-starting provably outperforms training from scratch would reduce reliance on empirical validation. Third, exploring whether information-theoretic properties of the extended features (e.g., conditional mutual information with the target given base features) can predict incremental learning success would enable more principled feature allocation without exhaustive search. Finally, integrating our approach with privacy-preserving techniques such as differential privacy or secure aggregation could formalize the model-sharing paradigm described above.
 
 \section{Conclusion}
 
-We presented an incremental feature based learning strategy using Gradient Boosting Machines for evolving datasets with non random missingness patterns. Our framework addresses the common challenge in machine learning applications where feature spaces expand over time, creating structured patterns of missing data in historical records.
+We presented an incremental feature-based learning framework for Gradient Boosting Machines that addresses the challenge of evolving feature spaces with structured missingness. Our two-phase approach establishes a base model on commonly available features and selectively extends it to incorporate newly available features through adaptive tree pruning and continued training.
 
-Our approach employs a two phase methodology that: (1) establishes a base model on commonly available features; (2) selectively extends this foundation to incorporate newly available features through strategic feature allocation, adaptive tree pruning, and continued training. This transfer learning approach preserves valuable knowledge while preventing negative transfer effects.
+Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates consistent improvements over the combined baseline, with total AUC gains ranging from +0.0001 to +0.0743. Our analysis reveals that the primary source of improvement is population-specific specialization: the base model learns patterns tailored to instances lacking extended features, outperforming the combined baseline on this subgroup in 100\% of datasets.
 
-Through rigorous evaluation on multiple diverse datasets from healthcare and financial domains, our method generally outperforms full retrain approaches, achieving average AUC improvements of $+1.57$ points. The most significant gains were observed in the WeatherUS dataset ($+0.0412$ AUC) and the WiDS dataset ($+0.0345$ AUC), demonstrating the framework's effectiveness across varied domains. Our ablation studies further showed that the adaptive tree pruning mechanism alone provided benefits, with the Airline dataset exhibiting the highest improvement ($+0.01186$ AUC) from this component.
+The adaptive pruning mechanism, optimized via Bayesian search, achieves the best results in 8 out of 10 datasets and provides a built-in safety guarantee by including the option to train from scratch when warm-starting is detrimental. Our systematic analysis of 153 experiment configurations shows that the framework's benefit is architectural --- arising from the two-phase design itself rather than from specific dataset characteristics.
 
-The proposed methodology offers a practical solution for organizations deploying predictive models in dynamic, evolving data environments with structured missingness. By enabling seamless knowledge transfer across expanding feature spaces, our approach supports efficient incremental learning without sacrificing performance or requiring complete model reconstruction.
+Beyond feature evolution, the framework offers a practical paradigm for privacy-preserving model collaboration, enabling institutions to share model artifacts rather than raw data when combining complementary feature sets under regulatory constraints.
 
-Future work should focus on improving the pruning mechanism to better handle various data scenarios and distribution shifts, and exploring theoretical guarantees for convergence under different missingness patterns. The results from our pruning sensitivity analysis suggest that further optimization of this component could yield even greater performance gains across diverse application domains.
+The proposed methodology provides a deployable solution for organizations maintaining predictive models in dynamic environments, offering simplified model maintenance, graceful handling of partial feature availability at inference, and consistent performance improvements without full retraining.
 
 \section*{Supplementary Materials and Code Availability}
 
