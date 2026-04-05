@@ -453,37 +453,26 @@ These results underscore the generalizability and robustness of our two phase fr
 \end{figure}
 
 \begin{table*}[!t]
-\caption{AUROC Results Across All Datasets}
+\caption{AUROC Results Across All Datasets. Our model = two-phase incremental approach; Baseline = single combined model trained on all features. Base diff and Extended diff show our improvement over baseline on the respective test populations. Positive values (green) indicate our method outperforms the baseline.}
 \label{tab:merged_auc_results}
 \centering
 \small
-\begin{tabular}{lcccccccc}
+\begin{tabular}{l r r c c c c c c}
 \toprule
-\textbf{Dataset} & \textbf{Our model (base)} & \textbf{Baseline (base)} & \textbf{Base diff} & \textbf{Our model (extended)} & \textbf{Baseline (extended)} & \textbf{Extended diff} \\
+\textbf{Dataset} & \textbf{Rows} & \textbf{Null\%} & \textbf{Extended Features} & \textbf{Our (base)} & \textbf{Baseline (base)} & \textbf{Base diff} & \textbf{Our (ext)} & \textbf{Baseline (ext)} & \textbf{Ext diff} \\
 \midrule
-Diabetes  & $\mathbf{0.6215 \pm 0.0016}$ & 0.6117 & \textcolor{ForestGreen}{+0.0098} & $\mathbf{0.6503 \pm 0.0047}$ &0.6278 & \textcolor{ForestGreen}{+0.0225} \\
-
-CreditRisk & $\mathbf{0.6789 \pm 0.0044}$ & 0.6659 & \textcolor{ForestGreen}{+0.0130} & $\mathbf{0.7235 \pm 0.0038}$ &0.6953 &
-\textcolor{ForestGreen}{+0.0282} \\
-
-WiDS   & $\mathbf{0.8291 \pm 0.0045}$ & 0.8291 & \textcolor{ForestGreen}{+0.0000} & $\mathbf{0.8393 \pm 0.0016}$ &0.8048 & \textcolor{ForestGreen}{+0.0345} \\
-
-MovieLens  & $\mathbf{0.8482\pm 0.0031}$& 0.8387 & \textcolor{ForestGreen}{+0.0095} & $\mathbf{0.9075 \pm 0.0087}$ & 0.8980 & \textcolor{ForestGreen}{+0.0095} \\
-
-Airline & $\mathbf{0.5544\pm 0.0013}$& 0.5425 & \textcolor{ForestGreen}{+0.0119} & $\mathbf{0.5698 \pm 0.0029}$ & 0.5587 & \textcolor{ForestGreen}{+0.0111} \\
-
-Banking  & $\mathbf{0.6331\pm 0.0043}$& 0.6116 & \textcolor{ForestGreen}{+0.0215} & $\mathbf{0.7640 \pm 0.0063}$ & 0.7548 & \textcolor{ForestGreen}{+0.0092} \\
-ClientAttendance   & $\mathbf{0.9716 \pm 0.0134}$ & 0.9698 & \textcolor{ForestGreen}{+0.0018} & $\mathbf{0.9202 \pm 0.0064}$ & 0.9147 & \textcolor{ForestGreen}{+0.0055} \\
-
-LoanDefault  & $\mathbf{0.6495 \pm 0.0003}$ & 0.6495 & \textcolor{ForestGreen}{+0.0000} & $\mathbf{0.6694 \pm 0.0027}$ & 0.6453 & \textcolor{ForestGreen}{+0.0241} \\
-
-HR  & $\mathbf{0.7966\pm 0.0116}$& 0.7791 & \textcolor{ForestGreen}{+0.0175} & $\mathbf{0.8047 \pm 0.0023}$ & 0.7898 & \textcolor{ForestGreen}{+0.0149} \\
-
-WeatherAUS	  & $\mathbf{0.7814 \pm 0.0058}$ &0.7604  & \textcolor{ForestGreen}{+0.0210} &
-$\mathbf{0.8453 \pm 0.0033}$ & 0.8260 & \textcolor{ForestGreen}{+0.0193} \\
-
-WeatherUS  & $\mathbf{0.7880 \pm 0.0006}$ & 0.7682 & \textcolor{ForestGreen}{+0.0198} &
-$\mathbf{0.8110 \pm 0.0004}$ & 0.7698 & \textcolor{ForestGreen}{+0.0412} \\
+BankLoanSta & 100K & 19.1 & \makecell[l]{Current Loan Amount,\\Annual Income, Credit Score} & \textbf{0.6952} & 0.6495 & \textcolor{ForestGreen}{+0.0457} & \textbf{0.7817} & 0.7531 & \textcolor{ForestGreen}{+0.0286} \\
+Weather & 25K & 49.3 & \makecell[l]{Evaporation, Sunshine,\\WindDir9am} & \textbf{0.8432} & 0.8314 & \textcolor{ForestGreen}{+0.0118} & 0.8448 & \textbf{0.8469} & \textcolor{red}{--0.0021} \\
+DiabetesRecord & 102K & 66.2 & \makecell[l]{medical\_specialty,\\A1Cresult} & \textbf{0.6734} & 0.6727 & \textcolor{ForestGreen}{+0.0007} & \textbf{0.6682} & 0.6663 & \textcolor{ForestGreen}{+0.0019} \\
+HRAnalytics & 19K & 23.5 & gender & \textbf{0.7735} & 0.7727 & \textcolor{ForestGreen}{+0.0008} & 0.8102 & \textbf{0.8108} & \textcolor{red}{--0.0006} \\
+ClientRecordAug & 7K & 55.0 & Offer & \textbf{0.9612} & 0.9605 & \textcolor{ForestGreen}{+0.0007} & 0.9608 & \textbf{0.9612} & \textcolor{red}{--0.0004} \\
+ClientRecordV2 & 7K & 47.5 & Offer, Monthly Charge & \textbf{0.9235} & 0.9198 & \textcolor{ForestGreen}{+0.0037} & \textbf{0.9186} & 0.9177 & \textcolor{ForestGreen}{+0.0009} \\
+MovieAugV2 & 112K & 50.0 & rating\_mean, rating\_std & \textbf{0.9187} & 0.9185 & \textcolor{ForestGreen}{+0.0002} & \textbf{0.8726} & 0.8726 & \textcolor{ForestGreen}{+0.0000} \\
+WeatherAUS & 142K & 40.1 & Cloud3pm & \textbf{0.8923} & 0.8906 & \textcolor{ForestGreen}{+0.0017} & 0.9016 & \textbf{0.9021} & \textcolor{red}{--0.0005} \\
+WIDS & 92K & 87.7 & \makecell[l]{h1\_bilirubin, h1\_lactate,\\h1\_pao2fio2, h1\_arterial\\(14 features)} & \textbf{0.8997} & 0.8991 & \textcolor{ForestGreen}{+0.0006} & \textbf{0.8967} & 0.8950 & \textcolor{ForestGreen}{+0.0017} \\
+FlightDelay & 568K & 20.0 & OP\_CARRIER\_FL\_NUM & \textbf{0.7478} & 0.7450 & \textcolor{ForestGreen}{+0.0028} & \textbf{0.7188} & 0.7170 & \textcolor{ForestGreen}{+0.0018} \\
+\midrule
+\multicolumn{6}{l}{\textbf{Average}} & \textcolor{ForestGreen}{+0.0069} & & & \textcolor{ForestGreen}{+0.0031} \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -498,27 +487,29 @@ These findings highlight the utility of pruning in transferring relevant knowled
 
 \begin{table}[h]
 \centering
-\caption{Impact of Adaptive Tree Pruning on AUC Improvement}
+\caption{Ablation Study: Pruning Mode Comparison. Objective = (combined$_\text{ext}$ -- extended AUC) + (combined$_\text{no}$ -- base AUC). Negative values indicate incremental learning outperforms the combined baseline. Bold marks the best mode per dataset.}
 \label{tab:pruning}
-\begin{tabular}{l r}
+\resizebox{0.95\columnwidth}{!}{%
+\begin{tabular}{l r r r l r}
 \toprule
-\textbf{Dataset} & \textbf{Benefit of Pruning (AUC)} \\
+\textbf{Dataset} & \textbf{Optuna} & \textbf{No Pruning} & \textbf{Fixed 50\%} & \textbf{Best} & \textbf{Ext AUC} \\
 \midrule
-Airline 	 & 0.01186 \\
-Diabetes       & 0.00340 \\
-MovieLens         & 0.00430 \\
-WeatherAUS    & 0.00730 \\
-LoanDefault    & 0.00031 \\
+BankLoanSta & \textbf{--0.0743} & --- & --- & Optuna & 0.7817 \\
+Weather & \textbf{--0.0097} & +0.0081 & +0.0074 & Optuna & 0.8448 \\
+DiabetesRecord & \textbf{--0.0026} & +0.0006 & --0.0011 & Optuna & 0.6682 \\
+HRAnalytics & --0.0002 & \textbf{--0.0009} & +0.0011 & No Pruning & 0.8109 \\
+ClientRecordAug & --0.0004 & \textbf{--0.0005} & +0.0006 & No Pruning & 0.9610 \\
+ClientRecordV2 & \textbf{--0.0046} & --0.0038 & --0.0034 & Optuna & 0.9186 \\
+MovieAugV2 & \textbf{--0.0040} & +0.0009 & +0.0052 & Optuna & 0.8739 \\
+WeatherAUS & --0.0011 & \textbf{--0.0475} & --0.0295 & No Pruning & 0.9479 \\
+WIDS & \textbf{--0.0045} & --0.0024 & +0.0003 & Optuna & 0.8955 \\
+FlightDelay & \textbf{--0.0046} & --0.0043 & +0.0023 & Optuna & 0.7188 \\
+\midrule
+\multicolumn{4}{l}{\textbf{Wins}} & \multicolumn{2}{l}{Optuna: 7, No Pruning: 3, Fixed 50\%: 0} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{ATP.png}
-    \caption{AUC gains from adaptive tree pruning across datasets. Airline Customer dataset shows the largest improvement (0.012), while Loan Defaulter shows minimal gain (0.0003).}
-    \label{fig:enter-label}
-\end{figure}
 
 \subsection{Pruning Sensitivity}
 
