@@ -13,6 +13,8 @@
 \newcommand{\xmark}{\ding{55}}
 \usepackage{graphicx}
 \usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, fit, backgrounds, calc}
 \DeclareMathOperator*{\argmax}{argmax}
 \title{
 Beyond Missing at Random: Incremental Tree Ensembles for Expanding Feature Sets
@@ -322,13 +324,7 @@ This theoretical foundation ensures that our incremental approach is always a sa
 \end{algorithm}
 
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{1inc.png}
-  \caption{A two-phase framework: (1) Base Model Training builds a foundation using common features; (2) Extended Model Training enhances this with newly available features using adaptive pruning and drift detection. During inference, data routes to either model based on feature availability.}
-
-  \label{fig:framework}
-\end{figure}
+\input{fig_framework.tex}
 
 \section{Experiments}
 This section evaluates our population-aware learning framework across diverse real-world datasets. We demonstrate how explicit subpopulation specialization, combined with adaptive tree pruning, consistently outperforms a single combined model that relies on heuristic missing-value handling. We conduct ablation studies to validate the contribution of the adaptive pruning mechanism and present a systematic analysis of what drives the observed improvements.
@@ -343,13 +339,7 @@ This combination of natural and augmented missingness allows us to evaluate our 
 
 Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. The process partitions each dataset, separates base and extended features according to missingness patterns, and implements the two-phase training procedure with adaptive pruning.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.48\textwidth]{incremental-tree-diagram_2.png}
-  \caption{Experimental workflow for incremental feature-based learning. The process begins with splitting an original dataset into training and test sets (top), followed by separating base and extended features. The base model is trained on commonly available features, then extended through adaptive pruning to incorporate newly available features. Performance evaluation compares AUC between our method and a baseline}
-
-  \label{fig:experimental_workflow}
-\end{figure}
+\input{fig_workflow.tex}
 
 \begin{table}[h]
 \centering

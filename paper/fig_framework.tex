@@ -1,0 +1,88 @@
+% Framework figure (Figure 1) - standalone TikZ
+% Include in main paper with \input{fig_framework.tex}
+\begin{figure}[t]
+\centering
+\resizebox{0.48\textwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=0.6cm and 1.2cm,
+    box/.style={rectangle, draw=#1, fill=#1!8, rounded corners=3pt,
+                minimum width=3.2cm, minimum height=0.8cm,
+                font=\small, align=center, line width=0.8pt},
+    phase/.style={rectangle, draw=#1, fill=#1!5, rounded corners=6pt,
+                  minimum width=3.8cm, inner sep=10pt, line width=1.2pt},
+    arrow/.style={-{Stealth[length=5pt]}, line width=0.8pt, #1},
+    dasharrow/.style={-{Stealth[length=5pt]}, line width=0.8pt, dashed, #1},
+    diamond/.style={diamond, draw=orange!80, fill=orange!10,
+                    minimum width=1.2cm, minimum height=1.2cm,
+                    font=\small, align=center, inner sep=1pt, line width=0.8pt},
+    label/.style={font=\footnotesize\itshape, text=gray!70!black},
+]
+
+% ===== TRAINING SECTION =====
+\node[font=\large\bfseries] (title) {Training};
+
+% Phase 1
+\node[box=blue!60, below=0.5cm of title, xshift=-2.5cm] (data1) {Training Data\\{\footnotesize (Base Features)}};
+\node[box=blue!60, below=0.5cm of data1] (train1) {Train Base Model\\{\footnotesize Bayesian optimization}};
+\node[box=blue!60, below=0.5cm of train1] (save1) {Save Base Model\\{\footnotesize (model artifact)}};
+
+% Phase 1 background
+\begin{scope}[on background layer]
+\node[phase=blue!60, fit=(data1)(train1)(save1),
+      label={[font=\small\bfseries, text=blue!70]above:Phase 1: Base Model}] (p1bg) {};
+\end{scope}
+
+% Phase 2
+\node[box=green!60!black, below=0.5cm of title, xshift=2.5cm] (load2) {Load Base Model\\{\footnotesize (artifact only)}};
+\node[box=green!60!black, below=0.5cm of load2] (train2) {Train with\\Extended Features\\{\footnotesize Adaptive tree pruning}};
+\node[box=green!60!black, below=0.5cm of train2] (save2) {Save Extended\\Model};
+
+% Phase 2 background
+\begin{scope}[on background layer]
+\node[phase=green!60!black, fit=(load2)(train2)(save2),
+      label={[font=\small\bfseries, text=green!60!black]above:Phase 2: Extended Model}] (p2bg) {};
+\end{scope}
+
+% Training arrows
+\draw[arrow=blue!60] (data1) -- (train1);
+\draw[arrow=blue!60] (train1) -- (save1);
+\draw[arrow=green!60!black] (load2) -- (train2);
+\draw[arrow=green!60!black] (train2) -- (save2);
+
+% Transfer arrow
+\draw[dasharrow=purple!70, line width=1pt] (save1.east) -- ++(0.4,0) |- (load2.west)
+    node[pos=0.25, above, label] {model transfer};
+
+% No data sharing annotation
+\node[font=\scriptsize, text=red!70!black, align=center,
+      below=0.1cm of p1bg.south east, xshift=0.8cm]
+      {no raw data\\shared};
+
+% ===== SEPARATOR =====
+\draw[dashed, gray!50, line width=0.5pt]
+    ([yshift=-0.4cm]p1bg.south west) -- ++(10.5,0);
+
+% ===== INFERENCE SECTION =====
+\node[font=\large\bfseries, below=1.2cm of save1, xshift=2.5cm] (inftitle) {Inference};
+
+\node[box=gray!50, below=0.4cm of inftitle] (newdata) {New Data};
+\node[diamond, below=0.5cm of newdata] (decision) {\footnotesize Extended\\[-2pt]\footnotesize features?};
+
+\node[box=blue!60, below left=0.6cm and 0.8cm of decision] (basemodel) {Base Model};
+\node[box=green!60!black, below right=0.6cm and 0.8cm of decision] (extmodel) {Extended Model};
+\node[box=purple!60, below=0.6cm of decision, yshift=-0.8cm] (pred) {Prediction};
+
+% Inference arrows
+\draw[arrow=gray!60] (newdata) -- (decision);
+\draw[arrow=blue!60] (decision.west) -| (basemodel)
+    node[pos=0.25, above, font=\footnotesize] {No};
+\draw[arrow=green!60!black] (decision.east) -| (extmodel)
+    node[pos=0.25, above, font=\footnotesize] {Yes};
+\draw[arrow=blue!60] (basemodel) |- (pred);
+\draw[arrow=green!60!black] (extmodel) |- (pred);
+
+\end{tikzpicture}%
+}
+\caption{Population-aware two-phase framework. \textbf{Training:} Phase~1 builds a base model on commonly available features; Phase~2 loads only the model artifact (no raw data) and extends it with newly available features using adaptive tree pruning. \textbf{Inference:} data routes to the appropriate specialized model based on feature availability.}
+\label{fig:framework}
+\end{figure}
