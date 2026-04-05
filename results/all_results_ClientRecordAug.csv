@@ -1,5 +1,5 @@
-dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
-ClientRecordAug,Offer ext,"Offer",1,10,optuna,0.9505,0.9560,0.9503,0.9558,-0.000341,775,634,summary.txt (10t full sweep),2026-03-15
-ClientRecordAug,Offer ext,"Offer",1,30,optuna,0.9612,0.9608,0.9605,0.9612,-0.000361,775,634,upbeat-chandrasekhar (30t ablation),2026-03-25
-ClientRecordAug,Offer ext,"Offer",1,30,no_pruning,0.9612,0.9610,0.9605,0.9612,-0.000534,775,634,upbeat-chandrasekhar (30t ablation),2026-03-25
-ClientRecordAug,Offer ext,"Offer",1,30,fixed_50,0.9612,0.9598,0.9605,0.9612,0.000621,775,634,upbeat-chandrasekhar (30t ablation),2026-03-25
+dataset,combo_name,ext_features,n_ext_features,ext_null_pct,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,n_rows,label_name,label_0_count,label_1_count,label_1_pct,source,date
+ClientRecordAug,Offer ext,Offer,1,55.0,10,optuna,0.9505,0.956,0.9503,0.9558,-0.000341,775,634,7043,Customer Status,2323,4720,67.0,summary.txt (10t full sweep),2026-03-15
+ClientRecordAug,Offer ext,Offer,1,55.0,30,optuna,0.9612,0.9608,0.9605,0.9612,-0.000361,775,634,7043,Customer Status,2323,4720,67.0,upbeat-chandrasekhar (30t ablation),2026-03-25
+ClientRecordAug,Offer ext,Offer,1,55.0,30,no_pruning,0.9612,0.961,0.9605,0.9612,-0.000534,775,634,7043,Customer Status,2323,4720,67.0,upbeat-chandrasekhar (30t ablation),2026-03-25
+ClientRecordAug,Offer ext,Offer,1,55.0,30,fixed_50,0.9612,0.9598,0.9605,0.9612,0.000621,775,634,7043,Customer Status,2323,4720,67.0,upbeat-chandrasekhar (30t ablation),2026-03-25

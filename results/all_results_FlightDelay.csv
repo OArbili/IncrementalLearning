@@ -1,7 +1,7 @@
-dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
-FlightDelay,DAY_OF_MONTH ext,"DAY_OF_MONTH",1,10,optuna,0.6935,0.7360,0.6858,0.7534,0.009717,22705,90821,summary.txt (10t full sweep),2026-03-20
-FlightDelay,TAIL_NUM ext,"TAIL_NUM",1,10,optuna,0.7484,0.7399,0.7449,0.7404,-0.002970,22705,90821,summary.txt (10t full sweep),2026-03-20
-FlightDelay,OP_CARRIER_FL_NUM ext,"OP_CARRIER_FL_NUM",1,10,optuna,0.7399,0.7475,0.7363,0.7469,-0.004340,22705,90821,summary.txt (10t full sweep),2026-03-20
-FlightDelay,OP_CARRIER_FL_NUM ext,"OP_CARRIER_FL_NUM",1,30,optuna,0.7478,0.7188,0.7450,0.7170,-0.004602,6011,13989,local main (30t bqulrp3zv),2026-04-01
-FlightDelay,OP_CARRIER_FL_NUM ext,"OP_CARRIER_FL_NUM",1,30,no_pruning,0.7478,0.7185,0.7450,0.7170,-0.004277,6011,13989,local main (30t bqulrp3zv),2026-04-01
-FlightDelay,OP_CARRIER_FL_NUM ext,"OP_CARRIER_FL_NUM",1,30,fixed_50,0.7478,0.7119,0.7450,0.7170,0.002310,6011,13989,local main (30t bqulrp3zv),2026-04-01
+dataset,combo_name,ext_features,n_ext_features,ext_null_pct,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,n_rows,label_name,label_0_count,label_1_count,label_1_pct,source,date
+FlightDelay,DAY_OF_MONTH ext,DAY_OF_MONTH,1,20.0,10,optuna,0.6935,0.736,0.6858,0.7534,0.009717,22705,90821,567630,DEP_DEL15,468703,98927,17.4,summary.txt (10t full sweep),2026-03-20
+FlightDelay,TAIL_NUM ext,TAIL_NUM,1,20.0,10,optuna,0.7484,0.7399,0.7449,0.7404,-0.00297,22705,90821,567630,DEP_DEL15,468703,98927,17.4,summary.txt (10t full sweep),2026-03-20
+FlightDelay,OP_CARRIER_FL_NUM ext,OP_CARRIER_FL_NUM,1,20.0,10,optuna,0.7399,0.7475,0.7363,0.7469,-0.00434,22705,90821,567630,DEP_DEL15,468703,98927,17.4,summary.txt (10t full sweep),2026-03-20
+FlightDelay,OP_CARRIER_FL_NUM ext,OP_CARRIER_FL_NUM,1,20.0,30,optuna,0.7478,0.7188,0.745,0.717,-0.004602,6011,13989,567630,DEP_DEL15,468703,98927,17.4,local main (30t bqulrp3zv),2026-04-01
+FlightDelay,OP_CARRIER_FL_NUM ext,OP_CARRIER_FL_NUM,1,20.0,30,no_pruning,0.7478,0.7185,0.745,0.717,-0.004277,6011,13989,567630,DEP_DEL15,468703,98927,17.4,local main (30t bqulrp3zv),2026-04-01
+FlightDelay,OP_CARRIER_FL_NUM ext,OP_CARRIER_FL_NUM,1,20.0,30,fixed_50,0.7478,0.7119,0.745,0.717,0.00231,6011,13989,567630,DEP_DEL15,468703,98927,17.4,local main (30t bqulrp3zv),2026-04-01

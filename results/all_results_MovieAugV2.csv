@@ -1,24 +1,24 @@
-dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
-MovieAugV2,rating_count+rating_mean ext,"rating_count,rating_mean",2,10,optuna,0.8845,0.9066,0.8812,0.9138,0.003951,5617,16877,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_count+rating_std ext,"rating_count,rating_std",2,10,optuna,0.8789,0.8860,0.8754,0.8899,0.000317,5592,16902,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_count+days_active ext,"rating_count,days_active",2,10,optuna,0.8623,0.9086,0.8604,0.9154,0.004928,5594,16900,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_count+rating_frequency ext,"rating_count,rating_frequency",2,10,optuna,0.8431,0.8986,0.8389,0.8999,-0.002898,5617,16877,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_count+tags ext,"rating_count,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,10,optuna,0.8153,0.9169,0.8149,0.9196,0.002303,10816,11678,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_count ext,"rating_count",1,10,optuna,0.8807,0.9123,0.8791,0.9100,-0.003813,11247,11247,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,10,optuna,0.9209,0.8739,0.9199,0.8709,-0.004046,5616,16878,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_mean+days_active ext,"rating_mean,days_active",2,10,optuna,0.8948,0.9023,0.8965,0.9027,0.001982,5630,16864,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_mean+rating_frequency ext,"rating_mean,rating_frequency",2,10,optuna,0.8717,0.8922,0.8729,0.8976,0.006616,5644,16850,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_mean+tags ext,"rating_mean,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,10,optuna,0.8393,0.9088,0.8375,0.9112,0.000544,10830,11664,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_mean ext,"rating_mean",1,10,optuna,0.8841,0.8970,0.8839,0.8988,0.001604,11247,11247,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_std+days_active ext,"rating_std,days_active",2,10,optuna,0.8635,0.8951,0.8667,0.8963,0.004461,5641,16853,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_std+rating_frequency ext,"rating_std,rating_frequency",2,10,optuna,0.8758,0.9026,0.8752,0.9082,0.004951,5628,16866,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_std+tags ext,"rating_std,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,10,optuna,0.8103,0.9200,0.8133,0.9236,0.006579,10822,11672,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_std ext,"rating_std",1,10,optuna,0.9035,0.8905,0.9034,0.8968,0.006153,11248,11246,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,days_active+rating_frequency ext,"days_active,rating_frequency",2,10,optuna,0.8334,0.8985,0.8255,0.9029,-0.003511,5642,16852,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,days_active+tags ext,"days_active,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,10,optuna,0.8163,0.9306,0.8156,0.9326,0.001303,10814,11680,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,days_active ext,"days_active",1,10,optuna,0.8682,0.8957,0.8657,0.8991,0.000991,11247,11247,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_frequency+tags ext,"rating_frequency,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,10,optuna,0.8067,0.9201,0.8026,0.9234,-0.000784,10819,11675,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_frequency ext,"rating_frequency",1,10,optuna,0.8563,0.8995,0.8544,0.9062,0.004781,11247,11247,summary.txt (10t full sweep),2026-03-15
-MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,30,optuna,0.9187,0.8726,0.9185,0.8726,-0.000147,5616,16878,upbeat-chandrasekhar (30t ablation),2026-03-25
-MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,30,no_pruning,0.9187,0.8715,0.9185,0.8726,0.000933,5616,16878,upbeat-chandrasekhar (30t ablation),2026-03-25
-MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,30,fixed_50,0.9187,0.8672,0.9185,0.8726,0.005244,5616,16878,upbeat-chandrasekhar (30t ablation),2026-03-25
+dataset,combo_name,ext_features,n_ext_features,ext_null_pct,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,n_rows,label_name,label_0_count,label_1_count,label_1_pct,source,date
+MovieAugV2,rating_count+rating_mean ext,"rating_count,rating_mean",2,50.0,10,optuna,0.8845,0.9066,0.8812,0.9138,0.003951,5617,16877,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_count+rating_std ext,"rating_count,rating_std",2,50.0,10,optuna,0.8789,0.886,0.8754,0.8899,0.000317,5592,16902,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_count+days_active ext,"rating_count,days_active",2,50.0,10,optuna,0.8623,0.9086,0.8604,0.9154,0.004928,5594,16900,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_count+rating_frequency ext,"rating_count,rating_frequency",2,50.0,10,optuna,0.8431,0.8986,0.8389,0.8999,-0.002898,5617,16877,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_count+tags ext,"rating_count,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,88.5,10,optuna,0.8153,0.9169,0.8149,0.9196,0.002303,10816,11678,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_count ext,rating_count,1,50.0,10,optuna,0.8807,0.9123,0.8791,0.91,-0.003813,11247,11247,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,50.0,10,optuna,0.9209,0.8739,0.9199,0.8709,-0.004046,5616,16878,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_mean+days_active ext,"rating_mean,days_active",2,50.0,10,optuna,0.8948,0.9023,0.8965,0.9027,0.001982,5630,16864,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_mean+rating_frequency ext,"rating_mean,rating_frequency",2,50.0,10,optuna,0.8717,0.8922,0.8729,0.8976,0.006616,5644,16850,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_mean+tags ext,"rating_mean,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,88.5,10,optuna,0.8393,0.9088,0.8375,0.9112,0.000544,10830,11664,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_mean ext,rating_mean,1,50.0,10,optuna,0.8841,0.897,0.8839,0.8988,0.001604,11247,11247,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_std+days_active ext,"rating_std,days_active",2,50.0,10,optuna,0.8635,0.8951,0.8667,0.8963,0.004461,5641,16853,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_std+rating_frequency ext,"rating_std,rating_frequency",2,50.0,10,optuna,0.8758,0.9026,0.8752,0.9082,0.004951,5628,16866,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_std+tags ext,"rating_std,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,88.5,10,optuna,0.8103,0.92,0.8133,0.9236,0.006579,10822,11672,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_std ext,rating_std,1,50.0,10,optuna,0.9035,0.8905,0.9034,0.8968,0.006153,11248,11246,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,days_active+rating_frequency ext,"days_active,rating_frequency",2,50.0,10,optuna,0.8334,0.8985,0.8255,0.9029,-0.003511,5642,16852,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,days_active+tags ext,"days_active,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,88.5,10,optuna,0.8163,0.9306,0.8156,0.9326,0.001303,10814,11680,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,days_active ext,days_active,1,50.0,10,optuna,0.8682,0.8957,0.8657,0.8991,0.000991,11247,11247,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_frequency+tags ext,"rating_frequency,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,88.5,10,optuna,0.8067,0.9201,0.8026,0.9234,-0.000784,10819,11675,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_frequency ext,rating_frequency,1,50.0,10,optuna,0.8563,0.8995,0.8544,0.9062,0.004781,11247,11247,112466,TARGET,110339,2127,1.9,summary.txt (10t full sweep),2026-03-15
+MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,50.0,30,optuna,0.9187,0.8726,0.9185,0.8726,-0.000147,5616,16878,112466,TARGET,110339,2127,1.9,upbeat-chandrasekhar (30t ablation),2026-03-25
+MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,50.0,30,no_pruning,0.9187,0.8715,0.9185,0.8726,0.000933,5616,16878,112466,TARGET,110339,2127,1.9,upbeat-chandrasekhar (30t ablation),2026-03-25
+MovieAugV2,rating_mean+rating_std ext,"rating_mean,rating_std",2,50.0,30,fixed_50,0.9187,0.8672,0.9185,0.8726,0.005244,5616,16878,112466,TARGET,110339,2127,1.9,upbeat-chandrasekhar (30t ablation),2026-03-25

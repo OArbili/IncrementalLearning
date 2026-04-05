@@ -1,11 +1,11 @@
-dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
-ClientRecordV2,Tenure+Offer ext,"Tenure in Months,Offer",2,30,optuna,0.8595,0.9245,0.8532,0.9322,0.001391,313,1096,30t combo sweep,2026-04-05
-ClientRecordV2,Tenure ext,"Tenure in Months",1,30,optuna,0.8783,0.9387,0.8690,0.9452,-0.002748,564,845,30t combo sweep,2026-04-05
-ClientRecordV2,Offer+Contract ext,"Offer,Contract",2,30,optuna,0.9192,0.9296,0.9167,0.9307,-0.001377,309,1100,30t combo sweep,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,30,optuna,0.9235,0.9186,0.9198,0.9177,-0.004647,305,1104,30t combo sweep,2026-04-05
-ClientRecordV2,Offer ext,"Offer",1,30,optuna,0.9218,0.9451,0.9205,0.9467,0.000291,775,634,30t combo sweep,2026-04-05
-ClientRecordV2,Contract ext,"Contract",1,30,optuna,0.9227,0.9320,0.9202,0.9349,0.000345,564,845,30t combo sweep,2026-04-05
-ClientRecordV2,MonthlyCharge ext,"Monthly Charge",1,30,optuna,0.9202,0.9349,0.9210,0.9357,0.001570,563,846,30t combo sweep,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,30,optuna,0.9235,0.9186,0.9198,0.9177,-0.004647,305,1104,30t ablation,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,30,no_pruning,0.9235,0.9178,0.9198,0.9177,-0.003799,305,1104,30t ablation,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,30,fixed_50,0.9235,0.9174,0.9198,0.9177,-0.003429,305,1104,30t ablation,2026-04-05
+dataset,combo_name,ext_features,n_ext_features,ext_null_pct,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,n_rows,label_name,label_0_count,label_1_count,label_1_pct,source,date
+ClientRecordV2,Tenure+Offer ext,"Tenure in Months,Offer",2,47.5,30,optuna,0.8595,0.9245,0.8532,0.9322,0.001391,313,1096,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
+ClientRecordV2,Tenure ext,Tenure in Months,1,40.0,30,optuna,0.8783,0.9387,0.869,0.9452,-0.002748,564,845,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
+ClientRecordV2,Offer+Contract ext,"Offer,Contract",2,47.5,30,optuna,0.9192,0.9296,0.9167,0.9307,-0.001377,309,1100,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
+ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,optuna,0.9235,0.9186,0.9198,0.9177,-0.004647,305,1104,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
+ClientRecordV2,Offer ext,Offer,1,55.0,30,optuna,0.9218,0.9451,0.9205,0.9467,0.000291,775,634,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
+ClientRecordV2,Contract ext,Contract,1,40.0,30,optuna,0.9227,0.932,0.9202,0.9349,0.000345,564,845,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
+ClientRecordV2,MonthlyCharge ext,Monthly Charge,1,40.0,30,optuna,0.9202,0.9349,0.921,0.9357,0.00157,563,846,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
+ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,optuna,0.9235,0.9186,0.9198,0.9177,-0.004647,305,1104,7043,Customer Status,2323,4720,67.0,30t ablation,2026-04-05
+ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,no_pruning,0.9235,0.9178,0.9198,0.9177,-0.003799,305,1104,7043,Customer Status,2323,4720,67.0,30t ablation,2026-04-05
+ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,fixed_50,0.9235,0.9174,0.9198,0.9177,-0.003429,305,1104,7043,Customer Status,2323,4720,67.0,30t ablation,2026-04-05

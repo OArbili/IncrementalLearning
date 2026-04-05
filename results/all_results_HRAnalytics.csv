@@ -1,9 +1,9 @@
-dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,source,date
-HRAnalytics,gender ext,"gender",1,10,optuna,0.7739,0.8105,0.7742,0.8100,-0.000177,902,2930,summary.txt (10t full sweep),2026-03-15
-HRAnalytics,major_discipline ext,"major_discipline",1,10,optuna,0.8044,0.8053,0.8078,0.8047,0.002787,563,3269,summary.txt (10t full sweep),2026-03-15
-HRAnalytics,company_size+company_type ext,"company_size,company_type",2,10,optuna,0.7319,0.7796,0.7469,0.7854,0.020799,1072,2760,summary.txt (10t full sweep),2026-03-15
-HRAnalytics,company_size ext,"company_size",1,10,optuna,0.7393,0.7950,0.7420,0.7946,0.002301,1188,2644,summary.txt (10t full sweep),2026-03-15
-HRAnalytics,company_type ext,"company_type",1,10,optuna,0.7596,0.7746,0.7616,0.7809,0.008352,1228,2604,summary.txt (10t full sweep),2026-03-15
-HRAnalytics,gender ext,"gender",1,30,optuna,0.7735,0.8102,0.7727,0.8108,-0.000192,902,2930,upbeat-chandrasekhar (30t ablation),2026-03-25
-HRAnalytics,gender ext,"gender",1,30,no_pruning,0.7735,0.8109,0.7727,0.8108,-0.000855,902,2930,upbeat-chandrasekhar (30t ablation),2026-03-25
-HRAnalytics,gender ext,"gender",1,30,fixed_50,0.7735,0.8089,0.7727,0.8108,0.001127,902,2930,upbeat-chandrasekhar (30t ablation),2026-03-25
+dataset,combo_name,ext_features,n_ext_features,ext_null_pct,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,n_rows,label_name,label_0_count,label_1_count,label_1_pct,source,date
+HRAnalytics,gender ext,gender,1,23.5,10,optuna,0.7739,0.8105,0.7742,0.81,-0.000177,902,2930,19158,target,14381,4777,24.9,summary.txt (10t full sweep),2026-03-15
+HRAnalytics,major_discipline ext,major_discipline,1,14.7,10,optuna,0.8044,0.8053,0.8078,0.8047,0.002787,563,3269,19158,target,14381,4777,24.9,summary.txt (10t full sweep),2026-03-15
+HRAnalytics,company_size+company_type ext,"company_size,company_type",2,31.5,10,optuna,0.7319,0.7796,0.7469,0.7854,0.020799,1072,2760,19158,target,14381,4777,24.9,summary.txt (10t full sweep),2026-03-15
+HRAnalytics,company_size ext,company_size,1,31.0,10,optuna,0.7393,0.795,0.742,0.7946,0.002301,1188,2644,19158,target,14381,4777,24.9,summary.txt (10t full sweep),2026-03-15
+HRAnalytics,company_type ext,company_type,1,32.0,10,optuna,0.7596,0.7746,0.7616,0.7809,0.008352,1228,2604,19158,target,14381,4777,24.9,summary.txt (10t full sweep),2026-03-15
+HRAnalytics,gender ext,gender,1,23.5,30,optuna,0.7735,0.8102,0.7727,0.8108,-0.000192,902,2930,19158,target,14381,4777,24.9,upbeat-chandrasekhar (30t ablation),2026-03-25
+HRAnalytics,gender ext,gender,1,23.5,30,no_pruning,0.7735,0.8109,0.7727,0.8108,-0.000855,902,2930,19158,target,14381,4777,24.9,upbeat-chandrasekhar (30t ablation),2026-03-25
+HRAnalytics,gender ext,gender,1,23.5,30,fixed_50,0.7735,0.8089,0.7727,0.8108,0.001127,902,2930,19158,target,14381,4777,24.9,upbeat-chandrasekhar (30t ablation),2026-03-25
