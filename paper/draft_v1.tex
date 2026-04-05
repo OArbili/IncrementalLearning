@@ -360,38 +360,22 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow for
 \centering
   \label{tab:dataset-summary}
  \caption{
-    Datasets.
-    references:
-    \cite{loan_default,airline_booking,weather_aus,movielens_25m_dataset,diabetes_data,KaggleCreditRisk2021,my_dataset,wids,weather_us,hr_analytics,no_show}
+    Datasets used in experiments. Label\% shows positive class proportion. Null\% is the average missingness of the extended features used in each experiment.
   }\resizebox{0.95\columnwidth}{!}{%
-  \begin{tabular}{l r r r}
+  \begin{tabular}{l r r r r}
     \toprule
-    \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Missing (\%)} \\
+    \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Label\%} & \textbf{Null (\%)} \\
     \midrule
-    LoanDefault       & 1,413,701 & 158 & 22.84 \\
-
-    Airline        & 202,813 & 32 & 2.73 \\
-
-
-    WeatherAUS         & 142,193   & 24  & 9.28 \\
-
-    MovieLens          & 137,883 & 11 & 41.68 \\
-
-    Diabetes               & 101,766   & 50  & 7.35  \\
-
-
-    Banking              & 100,000   & 17  & 5.64  \\
-
-
-    WiDS & 91,713    & 186 & 33.67 \\
-    CreditRisk          & 80,000   & 192  &43.45  \\
-
-    WeatherUS                 & 25,000    & 25  & 13.25 \\
-
-    HR  & 19,158 & 14 & 7.73\\
-
-    ClientAttendance 	  & 7,043 & 39 & 11.23 \\
-
+    FlightDelay        & 567,630  & 14  & 17.4 & 20.0 \\
+    WeatherAUS         & 142,193  & 20  & 22.4 & 40.1 \\
+    MovieAugV2         & 112,466  & 11  & 1.9  & 50.0 \\
+    DiabetesRecord     & 101,766  & 45  & 46.1 & 66.2 \\
+    BankLoanSta        & 100,000  & 17  & 77.4 & 19.1 \\
+    WIDS               & 91,713   & 183 & 8.6  & 87.7 \\
+    Weather            & 25,000   & 16  & 22.4 & 49.3 \\
+    HRAnalytics        & 19,158   & 14  & 24.9 & 23.5 \\
+    ClientRecordAug    & 7,043    & 28  & 67.0 & 55.0 \\
+    ClientRecordV2     & 7,043    & 28  & 67.0 & 47.5 \\
   \bottomrule
   \end{tabular}%
   }
