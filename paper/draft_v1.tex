@@ -1,0 +1,618 @@
+\documentclass[sigconf]{acmart}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{multirow}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{svg}
+\usepackage{amsmath}
+\usepackage{makecell}
+\usepackage{pifont}
+\newcommand{\xmark}{\ding{55}}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\DeclareMathOperator*{\argmax}{argmax}
+\title{
+Learning to Grow: Incremental Trees over Expanding Features
+}
+
+\author{Anonymous Author(s)}
+\affiliation{\institution{Under Double-Blind Review} \country{Unknown}}
+\email{anonymous@example.com}
+
+\begin{document}
+
+\begin{abstract}
+Machine learning applications in the healthcare and finance domains face an inherent challenge: feature spaces that evolve over time as new measurements, tests, or metrics become available. This evolution creates structured, non-random missingness patterns where newer features are systematically absent from historical records. Traditional approaches require costly retraining or maintaining multiple specialized models, leading to deployment complexity and potential inconsistencies.
+
+We introduce a two phase incremental learning framework for Gradient Boosting Machines (GBMs) that seamlessly integrates new features into existing models without full retraining. Our approach combines three key innovations: (1) strategic feature allocation that optimally assigns features to base or extended feature sets; (2) adaptive model transfer with validation driven tree pruning that preserves valuable knowledge while minimizing negative transfer; and (3) continued training that allows the model to learn relationships involving the extended feature set.
+
+Through rigorous evaluation on diverse real-world binary classification datasets, our method consistently outperforms full retrain approaches, achieving an average AUC improvement by +$1.57$ points. Moreover, our framework offers operational advantages including simplified model maintenance and graceful handling of partial feature availability at inference time. This approach provides a practical solution for organizations deploying predictive models in dynamic, evolving data environments with structured missingness.
+\end{abstract}
+
+\keywords{Incremental Learning, Missing Data, GBM, Feature Evolution, Evolving Datasets, Scalable ML Architecture, Model Maintenance}
+
+\maketitle
+
+\section{Introduction}
+
+Machine learning models are increasingly deployed in dynamic environments where the feature space evolves over time. In healthcare, patients may undergo new diagnostic tests during hospitalization, leading to heterogeneous feature availability across records \cite{healthcare-cite}. In finance, regulatory changes and behavioral metrics are introduced incrementally and collected only for certain user segments \cite{finance-cite}. These evolving schemas lead to structured, non-random missingness where new features are systematically absent from earlier records not due to noise, but as a result of how data is acquired. Importantly, these features do not update at uniform intervals, creating temporal asymmetry in data availability.
+
+Tree-based models, particularly GBMs, remain the dominant choice in these domains due to their strong performance on tabular data \cite{rana2023comparative,langenberger2023hcp}, natural handling of mixed data types and missing values, and inherent explainability - a critical requirement in healthcare and finance applications.
+
+Maintaining robust predictive models in such settings presents a major challenge. Organizations often resort to training multiple specialized models aligned with different feature subsets. However, this strategy introduces substantial maintenance burden, complicates deployment workflows, and risks version drift across models. Moreover, it is incompatible with real-world scenarios involving partial feature availability at inference time, particularly under privacy constraints such as GDPR where feature usage may vary at the user level.
+
+%An ideal alternative is a single adaptive model that dynamically adjusts to the features available at inference.
+In this work, we introduce a feature-based incremental learning framework for Gradient Boosted Machines (GBMs) that addresses this need. Our approach enables models to evolve alongside feature availability while preserving performance, model maintainability, and deployment simplicity. We validate our framework on diverse healthcare and finance datasets, demonstrating average AUC gain of  +1.57 points over static and retrained baselines.
+Our main contributions are:
+\begin{itemize}
+\setlength\itemindent{0pt}
+\setlength{\itemindent}{0pt}
+\item Feature-based incremental GBM framework: We implement a two-phase training procedure that integrates new features into existing models without full retraining. The method works by first establishing a base model on commonly available features, then selectively extending it to incorporate newly available features through a principled transfer learning approach.
+
+\item Adaptive tree pruning mechanism: We develop a validation-driven method to selectively retain useful base trees while discarding outdated ones, effectively managing knowledge transfer between feature spaces. This prevents negative transfer while preserving previously learned patterns that remain valid.
+
+\item Feature allocation optimization: We introduce an optimization scheme that intelligently assigns features to base or extended phases, balancing predictive utility with missingness patterns and varying temporal update frequencies. This addresses the challenge of features becoming available at different intervals.
+\end{itemize}
+
+\section{Related Work}
+% Missing data is traditionally addressed either by discarding incomplete instances or by imputing missing values, but each strategy has drawbacks~\cite{citation7}. Common strategies include MICE, which iteratively imputes values using regression under MAR assumptions, and tree based methods like CART and MIA, which handle missingness via surrogate splits or by treating missing values as informative categories \cite{twala2008good}. These embedded strategies allow models to handle missing inputs without preprocessing, enabling predictions on new data with missing values. Advanced ensemble methods have also integrated missing-data handling: for example, XGBoost learns optimal default directions for missing values during tree training~\cite{citation2}, and Bayesian Additive Regression Trees (BART) can be augmented with MIA to natively support incomplete data without imputation~\cite{citation7}. However, most such methods assume missingness is random or independent. They struggle when missingness is structured -- e.g. correlated with other features or the target -- potentially biasing models that fail to capture the underlying pattern of why data are missing. This limitation motivates approaches (like ours) that explicitly model missing-value patterns within the learning algorithm.
+% Recent research has begun addressing more complex streaming and evolving-feature scenarios, where both the data distribution and feature space can change over time~\cite{citation8}. While traditional stream learners assume a fixed set of input columns, real-world systems often experience column-wise feature drift with new sensors, logs, or sources introducing features that were previously unavailable.
+% A number of ensemble-based methods, such as Adaptive XGBoost (AXGB) and Aditer, adapt to row-wise concept drift by updating trees incrementally, often using sliding windows or tree replacement strategies. However, these models typically assume a static input space and cannot gracefully integrate new feature columns without full retraining. Other frameworks like Online learning from Capricious Data Streams (OCDS) \cite{citation4} attempt to bridge feature sets by learning mappings between old and new features using generative models, but they still rely on conventional missing-value treatments and may struggle with structured missingness---when the absence of data is systematic and correlated with the target. These limitations motivate our approach. Rather than retraining from scratch, we incrementally integrate new feature columns into an existing gradient boosting model, preserving previously learned structure and enabling adaptation to evolving schemas and feature sets - even as data distributions shift.
+Missing data are traditionally addressed either by discarding incomplete instances or by imputing missing values, but each strategy has drawbacks~\cite{chen2016xgboost}. Common strategies include MICE~\cite{vanbuuren2011mice}, which iteratively imputes values using regression under MAR assumptions, and tree-based methods like CART~\cite{loh2011cart} and MIA~\cite{twala2008mia}, which handle missingness via surrogate splits or by treating missing values as informative categories. These embedded strategies allow models to handle missing inputs without preprocessing, enabling predictions on new data with missing values. Advanced ensemble methods have also integrated missing-data handling: for example, XGBoost learns optimal default directions for missing values during tree training, and Bayesian Additive Regression Trees (BART)~\cite{chipman2010bart} can be augmented with MIA to natively support incomplete data without imputation. However, most such methods assume that missingness is random or independent. They struggle when missingness is structured - e.g. correlated with other features or the target - potentially biasing models that fail to capture the underlying pattern of why data are missing. This limitation motivates approaches (like ours) that explicitly model missing-value patterns within the learning algorithm.
+Recent research has begun addressing more complex streaming and evolving-feature scenarios, where both the data distribution and feature space can change over time. While traditional stream learners assume a fixed set of input features, real-world systems often experience column-wise feature drift with new sensors, logs, or sources introducing features that were previously unavailable.
+Several ensemble based methods, such as Adaptive XGBoost (AXGB) and Aditer, adapt to row-wise concept drift by updating trees incrementally, often using sliding windows or tree replacement strategies. However, these models typically assume a static input space and cannot gracefully integrate new feature columns without full retraining. Other frameworks like Online learning from Capricious Data Streams (OCDS) \cite{citation4} attempt to bridge feature sets by learning mappings between old and new features using generative models, but they still rely on conventional missing-value treatments and may struggle with structured missingness when the absence of data is systematic and correlated with the target. These limitations motivate our approach. Rather than retraining from scratch, we incrementally integrate new feature columns into an existing gradient boosting model, preserving previously learned structure and enabling adaptation to evolving schemas and feature sets - even as data distributions shift.
+
+ORF3V is an online forest-based model designed to handle data streams with changing feature spaces~\cite{citation10}. Each feature is tracked by its own mini-ensemble of shallow trees, allowing the model to add or remove features dynamically. Unlike our method, ORF3V maintains a separate model per feature and does not distinguish between base and extended phases. Our approach focuses on structured feature allocation and controlled model updates for deployment simplicity.
+Adaptive XGBoost (AXGB)\cite{citation8} updates an ensemble online by adding/replacing trees on mini-batches and triggering concept-drift detectors but assumes a fixed feature space, while Streaming Gradient Boosted Trees (SGBT)\cite{citation3} embeds a tree-replacement mechanism for tracking distribution shifts in data streams with unchanged features; in contrast, our method tackles the complementary problem with a static population but growing columns, grafting additional features into the booster through extra boosting rounds and targeted pruning.
+% Online GBDT with In-Place Updates introduces a unified framework for adding and removing data points from a trained GBDT model without retraining~\cite{citation6}. The method updates internal tree structures directly (``in-place'') to reduce cost. Unlike our approach, it aims to support full data modification over time, not partial feature availability at inference.
+GBDT-IL is an incremental boosting method that updates the model over time by adding new trees and removing outdated ones~\cite{citation13}. It selects useful features using the Fisher Score, but does not handle situations where some features are missing. In contrast, our method is designed for evolving feature sets and can adapt when only part of the features are available.
+PUFE~\cite{citation5} and Evolving Metric Learning (EML)~\cite{dong2021eml} both deal with changing feature spaces over time. PUFE fills missing overlaps using matrix completion and combines predictions from multiple models in an ensemble, while EML transforms vanished features into a compact form and integrates new ones using a learned distance metric in two stages. In contrast to these approaches, our method focuses on structured missingness in static tabular data where new features are added rather than vanishing. Our method extends a base GBM with new features in a second phase, preserving the original model without retraining or ensembling.
+LIR-eGB. LIR-eGB~\cite{citation11} is designed for data streams where the distribution changes over time (concept drift). It improves a GBM by pruning weak trees that no longer help, based on a loss improvement ratio (LIR). The model switches between naive and statistical pruning, and adds new trees incrementally to adapt to the changing data. In contrast, our method focuses on static tabular data with structured missing features. We extend an existing GBM by adding new features in a second phase while preserving useful base trees, without retraining or handling concept drift.
+% Note: You'll need to add the actual citations in your bibliography file.
+% For example:
+% @article{citation1,
+%   title={GBDT-IL: An incremental learning approach for gradient boosted decision trees},
+%   author={...},
+%   journal={...},
+%   year={...}
+% }
+\begin{table}[ht]
+  \caption{Capability matrix (rows = method, columns = key capability)}
+  \label{tab:method-comparison-transposed}
+  \centering
+  \resizebox{0.95\columnwidth}{!}{%
+  \begin{tabular}{l c c c c c}
+    \toprule
+    & \makecell[c]{\textbf{Column-wise}\\\textbf{incremental}\\\textbf{learning}}
+    & \makecell[c]{\textbf{Persistent}\\\textbf{feature}\\\textbf{support}}
+    & \makecell[c]{\textbf{Handles}\\\textbf{structured}\\\textbf{missingness}}
+    & \makecell[c]{\textbf{Single}\\\textbf{unified}\\\textbf{model}}
+    & \makecell[c]{\textbf{Code}\\\textbf{Provided}}\\
+    \midrule
+    \textbf{AXGB} & \large\times & \large\times & \large\times &  \checkmark & \checkmark \\
+    \textbf{SGBT} & \large\times & \large\times & \large\times & \checkmark & \checkmark \\
+    \textbf{OCDS} & \checkmark & \checkmark & \checkmark & \large\times & \large\times \\
+    \textbf{ORF3V} & \checkmark & \checkmark & \large\times & \large\times & \large\times\\
+    \textbf{GBDT-IL} & \large\times & \checkmark & \large\times & \checkmark & \large\times \\
+    \textbf{PUFE} & \checkmark & \large\times & \checkmark &  \checkmark & \large\times \\
+    \textbf{LIR-eGB} & \large\times & \large\times & \large\times & \checkmark & \checkmark \\
+    \textbf{EML}  & \checkmark & \large\times & \checkmark &  \checkmark & \large\times \\
+    \textbf{Our}         &  \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+% CIKM format methods section
+\section{Problem Formulation}
+\label{sec:problem}
+
+We formalise the setting in which column-wise incremental learning is required and specify the objectives that our method must meet.
+
+\subsection{Data Model and Notation}
+
+Let
+\[
+\mathcal D=\{(\mathbf{x}_i,y_i)\}_{i=1}^{N},
+\qquad
+y_i\in\{0,1\},
+\]
+be a binary-classification dataset collected over a time horizon
+\(0<t_1<t_2<\dots<t_N\).
+Each input vector \(\mathbf{x}_i\in\mathbb R^{p_B+p_E}\) is partitioned into
+\[
+\mathbf{x}_i=\bigl[\;\mathbf{b}_i\;\|\;\mathbf{e}_i\bigr],
+\qquad
+\mathbf{b}_i\in\mathbb R^{p_B},\;
+\mathbf{e}_i\in\mathbb R^{p_E},
+\]
+where \(\mathbf{b}_i\) is the base-feature block that is always observed, and
+\(\mathbf{e}_i\) is the extended-feature block, present only for instances that arrive
+after a feature-release time \(t_E\) (or when acquisition conditions are met).
+
+A binary missingness mask
+\(\mathbf{m}_i\in\{0,1\}^{p_E}\) is defined by
+\(m_{ij}=1\) if the \(j\)-th extended feature of instance \(i\) is observed and
+\(m_{ij}=0\) otherwise.
+We assume structured (NMAR) missingness:
+\[
+P(\mathbf{m}_i \mid \mathbf{b}_i,\mathbf{e}_i,y_i)
+\;\neq\;
+P(\mathbf{m}_i \mid \mathbf{e}_i,y_i),
+\]
+i.e.\ the probability that a value is missing may depend on observed base features (
+In healthcare, advanced laboratory tests are ordered only when certain vitals exceed thresholds; in finance, premium behavioural metrics are gathered only for high-value customers).
+
+\subsection{Predictive Objective}
+
+We seek a single probabilistic classifier
+\[
+f_\theta:\;
+  \mathbb R^{p_B+p_E}\times\{0,1\}^{p_E}
+  \;\longrightarrow\;[0,1],
+\]
+parameterised by \(\theta\), that satisfies:
+
+\begin{enumerate}[label=(\alph*)}
+\item \textbf{Validity under partial information.}\;
+For any instance \(i\), inference uses only the available features:
+\[
+\hat y_i
+  = f_\theta\!\Bigl(
+      \bigl[\mathbf{b}_i \,\|\, \mathbf{m}_i\odot\mathbf{e}_i\bigr],
+      \mathbf{m}_i
+    \Bigr),
+\]
+where "\(\odot\)" denotes element-wise multiplication (missing entries are zeroed).
+
+\item \textbf{Minimisation of predictive error.}\;
+The optimisation target is the binary log-loss evaluated on a validation set:
+\[
+\mathcal L_{\mathrm{pred}}(\theta)=
+\frac{1}{|\mathcal D_{\mathrm{val}}|}
+\sum_{(\mathbf{x}_i,y_i)\in\mathcal D_{\mathrm{val}}}
+\Bigl[
+  -y_i\log\!\bigl(\hat y_i\bigr)
+  -(1-y_i)\log\!\bigl(1-\hat y_i\bigr)
+\Bigr],
+\]
+with \(\hat y_i\) defined as above.
+\end{enumerate}
+
+\subsection{Incremental-Learning Constraint}
+
+Model training proceeds in two phases.  Let \(\theta^{(0)}\) denote the parameters of
+a base model trained solely on \(\{\mathbf{b}_i\}\).  Extending this model
+yields
+\[
+\theta^{\star}
+=
+\arg\!\min_{\theta}
+\;
+\underbrace{\mathcal L_{\mathrm{pred}}(\theta)}_{\text{predictive performance}}
+\;+\;
+\lambda\,\underbrace{C_{\mathrm{inc}}\!\bigl(\theta\mid\theta^{(0)}\bigr)}_{\text{incremental cost}},
+\tag{1}\label{eq:inc-opt}
+\]
+where \(C_{\mathrm{inc}}(\theta\mid\theta^{(0)})\) measures the additional computation
+required to transform \(\theta^{(0)}\) into the extended-feature model \(\theta\),
+and \(\lambda>0\) trades off predictive gain against update cost.
+
+\paragraph{Deployment guarantees.}
+For optimisation~\eqref{eq:inc-opt} to be acceptable in production we require:
+
+\begin{enumerate}[label=(\Roman*)]
+\item No degradation on legacy traffic:
+\[
+\operatorname{AUC}\!\bigl(f_{\theta^{\star}};\{\mathbf{m}_i=\mathbf 0\}\bigr)
+\;\ge\;
+\operatorname{AUC}\!\bigl(f_{\theta^{(0)}};\{\mathbf{m}_i=\mathbf 0\}\bigr).
+\]
+
+\item \emph{Monotonic benefit on enriched traffic:}
+for the subset with any \(m_{ij}=1\),
+\[
+\operatorname{AUC}\!\bigl(f_{\theta^{\star}}\bigr)
+\;\ge\;
+\operatorname{AUC}\!\bigl(f_{\theta^{(0)}}\bigr).
+\]
+\end{enumerate}
+
+Given \((\mathcal D,\mathbf m)\) and trade-off \(\lambda\), our goal is to design an
+\textbf{incremental training procedure} that solves~\eqref{eq:inc-opt} whenever new
+columns appear, thereby delivering a single deployable model
+\(f_{\theta^{\star}}\) that: (i) attains near-optimal AUC on both basic and
+extended cohorts, (ii) controls incremental cost through adaptive pruning and
+continued boosting, and (iii) gracefully handles heterogeneous features
+availability.
+
+\section{METHODS}
+\label{sec:method}
+
+Our approach implements a structured two-phase gradient boosting framework designed specifically for evolving feature spaces with non-random missingness patterns, as illustrated in Figure~\ref{fig:framework}. The framework consists of two main components: Base Model Training and Extended Model Training. Using Bayesian optimization, we find the best feature allocation between these two phases to optimize overall performance.
+
+\subsection{Phase 1: Base Model Training}
+
+First, we construct a base model using a gradient boosting machine (GBM) trained exclusively on commonly available features. This foundation model undergoes thorough hyperparameter tuning through Bayesian optimization to maximize performance on the initial feature set. The optimized hyperparameters include learning rate, tree depth, regularization parameters, and other model-specific configurations to ensure optimal validation set performance and generalizability.
+
+The underlying predictive model utilizes gradient boosting machines (GBMs), an ensemble learning method that builds a series of decision trees sequentially, with each tree correcting errors made by previous trees. The base model is formulated as:
+
+\begin{equation}
+F_{base}(x) = \sum_{i=1}^{n} \alpha_i h_i(x_{F_{base}})
+\end{equation}
+
+Where $h_i$ are decision trees trained on the base features $F_{base}$, and $\alpha_i$ are tree weights.
+
+\subsection{Phase 2: Extended Model Training}
+
+The second phase develops an extended model that incorporates newly available features present in only a subset of instances, corresponding to Phase 2 in Figure~\ref{fig:framework}. Rather than training from scratch, we employ a transfer learning approach with three key mechanisms:
+
+\begin{enumerate}
+\item \textbf{Warm-start initialization} from the base model, preserving knowledge gained from widely available features
+
+\item \textbf{Adaptive tree pruning} to determine the optimal subset of base trees to retain, strategically balancing prior knowledge with flexibility for new patterns
+
+\item \textbf{Continued training} that allows the model to learn relationships involving the extended feature set
+\end{enumerate}
+
+The pruning level determining exactly how many trees $k$ to preserve from the base model is itself optimized through Bayesian optimization against a validation set. This process evaluates different pruning thresholds to identify the configuration that best transfers relevant knowledge while avoiding concept drift between the feature spaces.
+
+The extended model builds upon this foundation through transfer learning:
+
+\begin{equation}
+F_{ext}(x) = \sum_{i=1}^{k} \alpha_i h_i(x_{F_{base}}) + \sum_{j=1}^{m} \beta_j g_j(x_{F_{base} \cup F_{ext}})
+\end{equation}
+
+Where $k \leq n$ is the optimal number of base trees to retain (determined through pruning), and $g_j$ are additional trees trained on the combined feature space.
+
+\subsection{Feature Allocation using Bayesian Optimization}
+
+We optimize the allocation of features between base and extended sets by running both Phase 1 and Phase 2 with different feature allocation configurations using Bayesian optimization. This optimization process evaluates different partitioning of features between base and extended sets to determine the optimal feature allocation strategy.
+
+The feature allocation optimization aims to minimize the objective function:
+
+\begin{equation}
+\mathcal{L} = \text{AUC}_{\text{baseline}} - \text{AUC}_{\text{two-phase}}
+\end{equation}
+
+Where $\text{AUC}_{\text{baseline}}$ is the validation area under the ROC curve for a model trained with all features at once, and $\text{AUC}_{\text{two-phase}}$ is the validation performance of our two-phase approach. The Bayesian optimization process systematically explores different feature allocation strategies to identify the configuration that maximizes the performance advantage of our two-phase method over the baseline approach.
+
+In real-world scenarios, feature allocation is subject to the availability of data sources at training time, making this optimization crucial for determining the most effective partitioning strategy given the constraints of data accessibility and acquisition timing.
+
+\subsection{Inference}
+
+The inference process, depicted in the lower section of Figure~\ref{fig:framework}, demonstrates how new data is routed to either the base or extended model depending on feature availability. During inference, the system automatically determines which model configuration to use based on the available features for each instance:
+
+\begin{itemize}
+\item \textbf{Base model inference}: Applied when only base features are available
+\item \textbf{Extended model inference}: Applied when both base and extended features are present
+\item \textbf{Adaptive routing}: The system seamlessly switches between models based on real-time feature availability
+\end{itemize}
+
+This comprehensive approach enables ongoing model enhancement as new features emerge, without requiring complete retraining or sacrificing performance on instances with limited feature availability.
+
+\subsection{Theoretical Analysis - Performance Guarantee}
+
+Our two-phase incremental learning framework provides a fundamental performance guarantee: the extended model will not perform worse than training a new model from scratch. This guarantee is ensured by our adaptive pruning mechanism in Algorithm 1.
+
+The algorithm evaluates pruning levels $k \in \{0, 1, 2, \ldots, |T_{\text{base}}|\}$ on validation data and selects the optimal $k$ that maximizes performance. Crucially, $k=0$ corresponds to using no base trees and training a completely new model from scratch on the extended dataset.
+
+This theoretical foundation ensures that our incremental approach is always a safe choice - it will either successfully transfer useful knowledge from the base model (when $k > 0$ is selected) or automatically fall back to the baseline performance of training from scratch (when $k = 0$ is selected).
+
+\begin{algorithm}[t]
+\caption{Adaptive Tree Pruning for Incremental Learning in Gradient Boosting}
+\begin{algorithmic}[1]
+\Require Base model $M_{base}$ with trees $T_{base} = \{t_1,...,t_n\}$
+\Require New data batch $D_{new}$ with features $F$
+\Ensure Updated model $M_{updated}$
+\Function{FindOptimalPruning}{$M_{base}$, $D_{new}$}
+    \State $D_{train}, D_{val} \gets$ SplitData($D_{new}$)
+    \State $scores \gets [\ ]$
+
+    \For{$k = 0$ \textbf{to} $|T_{base}|$}
+        \State $M_k \gets$ Initialize with first $k$ trees (empty if $k=0$)
+        \State $scores[k] \gets$ Evaluate($M_k$, $D_{val}$)
+    \EndFor
+
+    \State \Return $\argmax_k(scores)$
+\EndFunction
+\State $k_{opt} \gets$ \Call{FindOptimalPruning}{$M_{base}$, $D_{new}$}
+\If{$k_{opt} = 0$}
+    \State $M_{updated} \gets$ Train new model from scratch on $D_{new}$
+\Else
+    \State $M_{updated} \gets$ Initialize with trees $\{t_1,...,t_{k_{opt}}\}$
+    \State Add new trees to $M_{updated}$ by training on $D_{new}$
+
+\EndIf
+\State \Return $M_{updated}$
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{1inc.png}
+  \caption{A two-phase framework: (1) Base Model Training builds a foundation using common features; (2) Extended Model Training enhances this with newly available features using adaptive pruning and drift detection. During inference, data routes to either model based on feature availability.}
+
+  \label{fig:framework}
+\end{figure}
+
+\section{Experiments}
+This section evaluates our incremental feature based learning approach across diverse real-world datasets. We demonstrate how our adaptive tree pruning mechanism effectively handles structured missingness while maintaining or improving model performance compared to traditional approaches. We also conduct ablation studies and sensitivity analysis to validate individual components within our framework.
+
+All Bayesian optimization procedures use Optuna\cite{optuna} with 20 iterations per task. Training and validation employ 3 fold stratified cross-validation to ensure robust performance estimates and prevent overfitting, particularly for the imbalanced class distributions in our datasets.
+\subsection{Datasets}
+To rigorously evaluate our proposed methodology, we selected a diverse collection of datasets that represent common challenges in real-world machine learning applications. These datasets share several important characteristics relevant to our research: (1) all involve binary classification problems; (2) most exhibit class imbalance, reflecting real-world distribution patterns; (3) they contain data from multiple sources or subsystems with varying feature availability; and (4) they span different domains where feature evolution naturally occurs. The datasets used in our experiments span multiple domains, including healthcare (hospital readmission prediction), finance (credit risk assessment and loan status prediction), and emergency medicine (ICU patient survival). These collections vary significantly in size (from under 1,000 to over 1.4 million records) and feature dimensionality (from 14 to 392 features). Most importantly, they display varying degrees of missingness from relatively complete datasets (approximately 2\% missing values) to those with extensive missingness (over 40\%) which allows for comprehensive testing under different missing data scenarios. Each dataset underwent specific preprocessing and adjustments tailored to our experimental requirements.
+
+Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow for evaluating the incremental feature based learning approach. The workflow demonstrates how we partition the original dataset, separate base and extended features, and implement our two phase model training process. The base model is initially trained on commonly available features, then strategically extended to incorporate the expanded feature set through adaptive pruning. This methodology enables comprehensive performance evaluation across different feature availability scenarios, directly addressing the challenge of structured missingness in evolving datasets.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.48\textwidth]{incremental-tree-diagram_2.png}
+  \caption{Experimental workflow for incremental feature-based learning. The process begins with splitting an original dataset into training and test sets (top), followed by separating base and extended features. The base model is trained on commonly available features, then extended through adaptive pruning to incorporate newly available features. Performance evaluation compares AUC between our method and a baseline}
+
+  \label{fig:experimental_workflow}
+\end{figure}
+
+\begin{table}[h]
+\centering
+  \label{tab:dataset-summary}
+ \caption{
+    Datasets.
+    references:
+    \cite{loan_default,airline_booking,weather_aus,movielens_25m_dataset,diabetes_data,KaggleCreditRisk2021,my_dataset,wids,weather_us,hr_analytics,no_show}
+  }\resizebox{0.95\columnwidth}{!}{%
+  \begin{tabular}{l r r r}
+    \toprule
+    \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Missing (\%)} \\
+    \midrule
+    LoanDefault       & 1,413,701 & 158 & 22.84 \\
+
+    Airline        & 202,813 & 32 & 2.73 \\
+
+
+    WeatherAUS         & 142,193   & 24  & 9.28 \\
+
+    MovieLens          & 137,883 & 11 & 41.68 \\
+
+    Diabetes               & 101,766   & 50  & 7.35  \\
+
+
+    Banking              & 100,000   & 17  & 5.64  \\
+
+
+    WiDS & 91,713    & 186 & 33.67 \\
+    CreditRisk          & 80,000   & 192  &43.45  \\
+
+    WeatherUS                 & 25,000    & 25  & 13.25 \\
+
+    HR  & 19,158 & 14 & 7.73\\
+
+    ClientAttendance 	  & 7,043 & 39 & 11.23 \\
+
+  \bottomrule
+  \end{tabular}%
+  }
+
+
+\end{table}
+
+
+\subsection{Experimental Set}
+For each dataset, we implemented a five step experimental process to evaluate our incremental feature based learning approach:
+
+\begin{enumerate}
+\item \textbf{Preprocessing and Feature Optimization}: We performed an optimization routine to determine the most effective allocation between base and extended feature sets, balancing predictive power against missing value patterns.
+
+\item \textbf{Base Model Construction}: We trained an XGBoost model using only the optimized base feature set. Hyperparameters were tuned using an  bayesian optimization, resulting in optimal configurations for each dataset.
+
+\item \textbf{Extended Model Development}: We constructed an extended model by:
+\begin{itemize}
+    \item Using the base model as initialization
+    \item Applying adaptive tree pruning to selectively retain beneficial trees from the base model
+    \item Determining the optimal pruning level through validation performance
+    \item Continuing training with instances containing extended features
+\end{itemize}
+
+\item \textbf{Test Group Stratification}: We divided the test dataset into two groups:
+\begin{itemize}
+    \item Base Group: Instances without extended features
+    \item Extended Group: Instances with non-null extended features
+\end{itemize}
+
+\item \textbf{Performance Evaluation}: We calculated AUC for each test group, comparing our approach against a fully trained model on all features at once.
+\end{enumerate}
+
+As described in Section 4.2, the tree pruning strategy was essential for effective model combination, allowing us to identify and retain only the most relevant decision trees when transitioning from the base to the extended model.
+
+\textbf{Ablation Study}: To isolate the contribution of our adaptive tree pruning mechanism, we conducted an ablation study comparing models with and without the pruning component. This analysis evaluated the effectiveness of selectively retaining base trees versus preserving the entire base model when incorporating extended features.
+
+\textbf{Sensitivity Analysis}: We performed a pruning sensitivity analysis on the WeatherAUS dataset to examine how the number of retained base trees affects model performance. This experiment tested different fixed pruning intervals and compared them against our adaptive pruning algorithm to validate the necessity of automatic threshold optimization.
+
+\section{Results}
+
+Our proposed incremental feature based learning framework demonstrates consistent improvements in AUC across a diverse set of real-world datasets. Table~\ref{tab:merged_auc_results} and Figure~\ref{fig:auc_improvments} presents a detailed comparison between our method and baseline model in both base only and extended feature configurations.
+
+\subsection{Comprehensive Performance Analysis}
+
+Overall, our framework shows measurable AUC gains in both phases. In the phase 1 (base phase), notable improvements were observed in datasets such as Banking (+0.0215), WeatherAUS (+0.0210), and WeatherUS (+0.0198), indicating the strength of our approach.
+
+Interestingly, the WiDS and LoanDefault datasets showed no improvement in the phase 1 (base phase) (AUC gains of 0.0000). However, when extended features became available in the second phase, both datasets exhibited  improvements +0.0345 AUC for WiDS and +0.0241 AUC for LoanDefault demonstrating the framework's ability to effectively incorporate newly available features without discarding prior learning.
+
+The most prominent gain in the extended phase was seen in WeatherUS (+0.0412 AUC), followed by WiDS, CreditRisk (+0.0282), and LoanDefault. Notably, across all 11 evaluated datasets, our method achieved positive AUC gains in the extended phase, ranging from +0.0055 (ClientAttendance) to +0.0412 (WeatherUS).
+
+These results underscore the generalizability and robustness of our two phase framework across varied domains including healthcare, finance, and behavioral prediction and confirm its utility in dynamic environments where feature sets evolve over time.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{auc_improvments.png}
+    \caption{AUC improvements over baseline for Base (blue) and Extended (green) models across datasets.}
+    \label{fig:auc_improvments}
+\end{figure}
+
+\begin{table*}[!t]
+\caption{AUROC Results Across All Datasets}
+\label{tab:merged_auc_results}
+\centering
+\small
+\begin{tabular}{lcccccccc}
+\toprule
+\textbf{Dataset} & \textbf{Our model (base)} & \textbf{Baseline (base)} & \textbf{Base diff} & \textbf{Our model (extended)} & \textbf{Baseline (extended)} & \textbf{Extended diff} \\
+\midrule
+Diabetes  & $\mathbf{0.6215 \pm 0.0016}$ & 0.6117 & \textcolor{ForestGreen}{+0.0098} & $\mathbf{0.6503 \pm 0.0047}$ &0.6278 & \textcolor{ForestGreen}{+0.0225} \\
+
+CreditRisk & $\mathbf{0.6789 \pm 0.0044}$ & 0.6659 & \textcolor{ForestGreen}{+0.0130} & $\mathbf{0.7235 \pm 0.0038}$ &0.6953 &
+\textcolor{ForestGreen}{+0.0282} \\
+
+WiDS   & $\mathbf{0.8291 \pm 0.0045}$ & 0.8291 & \textcolor{ForestGreen}{+0.0000} & $\mathbf{0.8393 \pm 0.0016}$ &0.8048 & \textcolor{ForestGreen}{+0.0345} \\
+
+MovieLens  & $\mathbf{0.8482\pm 0.0031}$& 0.8387 & \textcolor{ForestGreen}{+0.0095} & $\mathbf{0.9075 \pm 0.0087}$ & 0.8980 & \textcolor{ForestGreen}{+0.0095} \\
+
+Airline & $\mathbf{0.5544\pm 0.0013}$& 0.5425 & \textcolor{ForestGreen}{+0.0119} & $\mathbf{0.5698 \pm 0.0029}$ & 0.5587 & \textcolor{ForestGreen}{+0.0111} \\
+
+Banking  & $\mathbf{0.6331\pm 0.0043}$& 0.6116 & \textcolor{ForestGreen}{+0.0215} & $\mathbf{0.7640 \pm 0.0063}$ & 0.7548 & \textcolor{ForestGreen}{+0.0092} \\
+ClientAttendance   & $\mathbf{0.9716 \pm 0.0134}$ & 0.9698 & \textcolor{ForestGreen}{+0.0018} & $\mathbf{0.9202 \pm 0.0064}$ & 0.9147 & \textcolor{ForestGreen}{+0.0055} \\
+
+LoanDefault  & $\mathbf{0.6495 \pm 0.0003}$ & 0.6495 & \textcolor{ForestGreen}{+0.0000} & $\mathbf{0.6694 \pm 0.0027}$ & 0.6453 & \textcolor{ForestGreen}{+0.0241} \\
+
+HR  & $\mathbf{0.7966\pm 0.0116}$& 0.7791 & \textcolor{ForestGreen}{+0.0175} & $\mathbf{0.8047 \pm 0.0023}$ & 0.7898 & \textcolor{ForestGreen}{+0.0149} \\
+
+WeatherAUS	  & $\mathbf{0.7814 \pm 0.0058}$ &0.7604  & \textcolor{ForestGreen}{+0.0210} &
+$\mathbf{0.8453 \pm 0.0033}$ & 0.8260 & \textcolor{ForestGreen}{+0.0193} \\
+
+WeatherUS  & $\mathbf{0.7880 \pm 0.0006}$ & 0.7682 & \textcolor{ForestGreen}{+0.0198} &
+$\mathbf{0.8110 \pm 0.0004}$ & 0.7698 & \textcolor{ForestGreen}{+0.0412} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Ablation Study - Impact of Adaptive Tree Pruning}
+
+We conducted an ablation study to assess the effectiveness of our adaptive tree pruning strategy across five real-world datasets. Table~\ref{tab:pruning} and Figure~4 summarize the AUC gains achieved by incorporating pruning into the incremental learning framework.
+
+The results show consistent performance improvements from pruning across all datasets. The Airline dataset exhibits the highest gain (+0.01186 AUC), followed by WeatherAUS (+0.00730), MovieLens  (+0.00430), and Diabetes (+0.00340). In contrast, the LoanDefault dataset shows a marginal improvement (+0.00031 AUC), indicating limited benefit from pruning under certain conditions.
+
+These findings highlight the utility of pruning in transferring relevant knowledge while mitigating negative transfer from obsolete base trees. The improvements across varied datasets validate pruning as a critical component of our feature adaptive learning framework.
+
+\begin{table}[h]
+\centering
+\caption{Impact of Adaptive Tree Pruning on AUC Improvement}
+\label{tab:pruning}
+\begin{tabular}{l r}
+\toprule
+\textbf{Dataset} & \textbf{Benefit of Pruning (AUC)} \\
+\midrule
+Airline 	 & 0.01186 \\
+Diabetes       & 0.00340 \\
+MovieLens         & 0.00430 \\
+WeatherAUS    & 0.00730 \\
+LoanDefault    & 0.00031 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{ATP.png}
+    \caption{AUC gains from adaptive tree pruning across datasets. Airline Customer dataset shows the largest improvement (0.012), while Loan Defaulter shows minimal gain (0.0003).}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Pruning Sensitivity}
+
+We conducted a pruning sensitivity analysis on the Weather in AUS dataset to evaluate how the number of retained base trees affects model performance. Table~\ref{tab:pruning_sensitivity} reports the AUC improvement over a static baseline across different pruning intervals. As illustrated in Figure~\ref{fig:sens}, the results indicate a non linear and non monotonic relationship between pruning ratio and model performance: pruning too aggressively or too conservatively may degrade AUC. For example, retaining 0--20 trees yielded an AUC improvement of 0.0151, whereas pruning 20--100 or 200--400 trees resulted in slight performance drops (AUC differences of --0.00078 and --0.00136, respectively). The best fixed pruning outcome (0.0197) was still outperformed by our adaptive pruning algorithm, which achieved an AUC gain of 0.0270. These findings reinforce the need for automatic pruning threshold optimization, as manual selection is unlikely to generalize across datasets.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{sens4.png}
+    \caption{Sensitivity of incremental GBM performance on the Weather in AUS dataset to the number of base trees retained during pruning.}
+    \label{fig:sens}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\caption{AUC improvement on the Weather in AUS dataset under different pruning ranges.}
+\label{tab:pruning_sensitivity}
+\begin{tabular}{l r}
+\toprule
+\textbf{Pruning Range} & \textbf{AUC Improvement} \\
+\midrule
+No Pruning           & 0.019715 \\
+0--20 Trees          & 0.015127 \\
+20--100 Trees        & --0.000780 \\
+100--200 Trees       & 0.002695 \\
+200--400 Trees       & --0.001363 \\
+400--600 Trees       & 0.012201 \\
+Our Full Algorithm   & \textbf{0.027011} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\section{Discussion}
+
+Our experimental results demonstrate the effectiveness of incremental feature based learning across diverse datasets. However, several important considerations merit further discussion regarding the method's applicability and limitations.
+
+\subsection{Comparison with Existing Approaches}
+
+Our experimental evaluation compared the proposed incremental feature based learning approach against baseline implementations from the River Python package\cite{montiel2021river}, specifically using a two phase ARFClassifier and AdaBoostClassifier. However, The underlying algorithmic differences between our Gradient Boosting Machine approach and the Random Forest/AdaBoost baselines introduce factors to isolate the specific contribution of our incremental learning strategy. Experimental results, and comparative analyses can be found in the supplementary materials.
+
+
+In Addition, we emulate PUFE's ensemble approach by training two separate GBM models on disjoint feature subset. One on the base features and one on the extended features. During inference, we use whichever model's features are available. For instances where both feature sets are present, we average the predictions from both models. This approximation captures PUFE's late fusion strategy while avoiding the complexity of matrix completion.
+
+Our experimental results (included in the supplementary materials) show that the PUFE-style ensemble yields slightly lower AUC on datasets with extended features compared to a single GBM trained on the full feature set. This may be attributed to PUFE's original design being more tailored to scenarios involving vanishing features, rather than expanding feature spaces. Thus, while PUFE is effective in handling fragmented or missing views, it may be less suitable when the feature set grows over time and unified training is feasible.
+
+As shown in Table 3, We determined that comparing our approach against a model built from scratch on all features provides the most appropriate benchmark for evaluating our method. This comparison framework maintains consistency in the underlying algorithms and implementation details, with the only difference being the application of our two phase mechanism. This controlled experimental design allows us to isolate and quantify the specific impact of our incremental learning strategy across multiple diverse datasets and feature configurations.
+
+Despite the performance advantages, we emphasize that the main contribution of our work is the framework itself, which offers improved maintainability. The modular design allows for easier updates, monitoring, and extension compared to existing incremental learning solutions. Our framework also incorporates a critical rollback mechanism by concept, where in cases of significant data drift, it will rebuild the model from scratch rather than using the base model as input. This is accomplished by pruning all trees in the base model, effectively ensuring that outdated or irrelevant patterns don't negatively impact performance when data characteristics change substantially. This automatic adaptation mechanism provides an important safeguard for maintaining model reliability in dynamic environments.
+
+\subsection{Generalizability and Limitations}
+
+While all datasets used in our experiments focused on binary classification problems, the proposed methodology can naturally extend to regression and multi-label tasks. For regression, the same adaptive tree pruning mechanism applies with appropriate loss functions, though the optimal pruning level may differ. For multi-label classification, our approach can be implemented using either problem transformation methods or algorithm adaptation techniques with minimal modification.
+
+\subsection{Future Work}
+
+Future research should focus on improving the pruning mechanism to better handle various data scenarios and distribution shifts. Currently, our adaptive pruning approach works well for gradual concept drift, but more sophisticated techniques could be developed to handle abrupt changes in data distribution.
+
+Additionally, future work should investigate theoretical guarantees for convergence under different missingness patterns and explore how to automatically determine the optimal pruning strategy based on feature characteristics rather than through validation based optimization. This would further enhance the framework's adaptability and reduce the need for manual intervention in the learning process.
+
+\section{Conclusion}
+
+We presented an incremental feature based learning strategy using Gradient Boosting Machines for evolving datasets with non random missingness patterns. Our framework addresses the common challenge in machine learning applications where feature spaces expand over time, creating structured patterns of missing data in historical records.
+
+Our approach employs a two phase methodology that: (1) establishes a base model on commonly available features; (2) selectively extends this foundation to incorporate newly available features through strategic feature allocation, adaptive tree pruning, and continued training. This transfer learning approach preserves valuable knowledge while preventing negative transfer effects.
+
+Through rigorous evaluation on multiple diverse datasets from healthcare and financial domains, our method generally outperforms full retrain approaches, achieving average AUC improvements of $+1.57$ points. The most significant gains were observed in the WeatherUS dataset ($+0.0412$ AUC) and the WiDS dataset ($+0.0345$ AUC), demonstrating the framework's effectiveness across varied domains. Our ablation studies further showed that the adaptive tree pruning mechanism alone provided benefits, with the Airline dataset exhibiting the highest improvement ($+0.01186$ AUC) from this component.
+
+The proposed methodology offers a practical solution for organizations deploying predictive models in dynamic, evolving data environments with structured missingness. By enabling seamless knowledge transfer across expanding feature spaces, our approach supports efficient incremental learning without sacrificing performance or requiring complete model reconstruction.
+
+Future work should focus on improving the pruning mechanism to better handle various data scenarios and distribution shifts, and exploring theoretical guarantees for convergence under different missingness patterns. The results from our pruning sensitivity analysis suggest that further optimization of this component could yield even greater performance gains across diverse application domains.
+
+\section*{Supplementary Materials and Code Availability}
+
+To support reproducibility and facilitate further research, we provide supplementary materials that include:
+
+\begin{itemize}
+  \item The full implementation of our two-phase incremental GBM framework.
+  \item Experiments code, logs and hyperparameter configurations for all datasets.
+  \item Sensitivity analysis.
+  \item Ablation study.
+  \item Link: https://anonymous.4open.science/r/Learning-to-Grow-Incremental-Trees-over-Expanding-Features-818A/
+\end{itemize}
+
+\section*{Generative AI Usage Disclosure}
+
+In accordance with ACM's Policy on Authorship and the guidelines for disclosure of generative AI usage, the authors hereby declare the following:
+
+
+\noindent\textbullet\ \textbf{Language editing.} We used OpenAI ChatGPT and Anthropic Claude solely to improve spelling, grammar, punctuation, clarity, and overall readability of the manuscript. All suggested edits were critically reviewed, revised as necessary, and confirmed by the authors to ensure that the text remains an accurate and faithful representation of our original intellectual contributions.\\[0.5em]
+\noindent\textbullet\ \textbf{Code development.} We employed OpenAI ChatGPT and Anthropic Claude to help scaffold boilerplate and to accelerate routine implementation tasks. Every line of code generated or suggested by these tools was examined, adapted, and tested by the authors to guarantee that it performs exactly as intended.\\[0.5em]
+
+\noindent The authors take full responsibility for the veracity and correctness of all material in this Work, and no generative AI system is listed as an author.
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\end{document}
