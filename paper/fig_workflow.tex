@@ -5,53 +5,60 @@
 \resizebox{0.48\textwidth}{!}{%
 \begin{tikzpicture}[
     node distance=0.5cm and 0.6cm,
-    box/.style={rectangle, draw=#1, fill=#1!8!white, rounded corners=2pt,
+    bluebox/.style={rectangle, draw=blue!60, fill=blue!10, rounded corners=2pt,
                 minimum width=2.4cm, minimum height=0.7cm,
                 font=\small, align=center, line width=0.7pt},
-    widebox/.style={rectangle, draw=#1, fill=#1!8!white, rounded corners=2pt,
+    greenbox/.style={rectangle, draw=green!50!black, fill=green!8, rounded corners=2pt,
+                minimum width=2.4cm, minimum height=0.7cm,
+                font=\small, align=center, line width=0.7pt},
+    purplebox/.style={rectangle, draw=purple!60, fill=purple!10, rounded corners=2pt,
+                minimum width=2.8cm, minimum height=0.7cm,
+                font=\small, align=center, line width=0.7pt},
+    widebox/.style={rectangle, draw=blue!50, fill=blue!8, rounded corners=2pt,
                     minimum width=5.4cm, minimum height=0.7cm,
                     font=\small, align=center, line width=0.7pt},
-    arrow/.style={-{Stealth[length=4pt]}, line width=0.7pt, #1},
-    label/.style={font=\scriptsize\itshape, text=gray!60!black},
+    bluearrow/.style={-{Stealth[length=4pt]}, line width=0.7pt, blue!60},
+    greenarrow/.style={-{Stealth[length=4pt]}, line width=0.7pt, green!50!black},
+    notelabel/.style={font=\scriptsize\itshape, text=gray!60!black},
 ]
 
 % Original dataset
-\node[widebox=blue!50] (orig) {Original Dataset};
+\node[widebox] (orig) {Original Dataset};
 
 % Train-test split
-\node[box=blue!50, below left=0.8cm and 0.6cm of orig] (train) {Training Set};
-\node[box=blue!50, below right=0.8cm and 0.6cm of orig] (test) {Test Set};
+\node[bluebox, below left=0.8cm and 0.6cm of orig] (train) {Training Set};
+\node[bluebox, below right=0.8cm and 0.6cm of orig] (test) {Test Set};
 
-\draw[arrow=blue!50] (orig.south) -- ++(0,-0.25) -| (train.north)
-    node[pos=0.0, right, label] {Train-Test Split};
-\draw[arrow=blue!50] (orig.south) -- ++(0,-0.25) -| (test.north);
+\draw[bluearrow] (orig.south) -- ++(0,-0.25) -| (train.north)
+    node[pos=0.0, right, notelabel] {Train-Test Split};
+\draw[bluearrow] (orig.south) -- ++(0,-0.25) -| (test.north);
 
 % Feature split - training side
-\node[box=blue!70, below left=0.8cm and 0.3cm of train] (basefeat) {Base\\Features};
-\node[box=green!60!black, below right=0.8cm and 0.3cm of train] (extfeat) {Extended\\Features};
+\node[bluebox, below left=0.8cm and 0.3cm of train] (basefeat) {Base\\Features};
+\node[greenbox, below right=0.8cm and 0.3cm of train] (extfeat) {Extended\\Features};
 
-\draw[arrow=blue!50] (train.south) -- ++(0,-0.25) -| (basefeat.north)
-    node[pos=0.0, right, label] {Feature Split};
-\draw[arrow=blue!50] (train.south) -- ++(0,-0.25) -| (extfeat.north);
+\draw[bluearrow] (train.south) -- ++(0,-0.25) -| (basefeat.north)
+    node[pos=0.0, right, notelabel] {Feature Split};
+\draw[bluearrow] (train.south) -- ++(0,-0.25) -| (extfeat.north);
 
 % Feature split - test side
-\node[box=blue!70, below left=0.8cm and 0.3cm of test] (testbase) {Base Test\\Cases};
-\node[box=green!60!black, below right=0.8cm and 0.3cm of test] (testext) {Extended\\Test Cases};
+\node[bluebox, below left=0.8cm and 0.3cm of test] (testbase) {Base Test\\Cases};
+\node[greenbox, below right=0.8cm and 0.3cm of test] (testext) {Extended\\Test Cases};
 
-\draw[arrow=blue!50] (test.south) -- ++(0,-0.25) -| (testbase.north)
-    node[pos=0.0, right, label] {Feature Split};
-\draw[arrow=blue!50] (test.south) -- ++(0,-0.25) -| (testext.north);
+\draw[bluearrow] (test.south) -- ++(0,-0.25) -| (testbase.north)
+    node[pos=0.0, right, notelabel] {Feature Split};
+\draw[bluearrow] (test.south) -- ++(0,-0.25) -| (testext.north);
 
 % Phase labels
-\node[left=0.1cm of basefeat, label, rotate=90, anchor=south] {Phase 1};
-\node[right=0.1cm of extfeat, label, rotate=-90, anchor=south] {Phase 2};
+\node[left=0.1cm of basefeat, notelabel, rotate=90, anchor=south] {Phase 1};
+\node[right=0.1cm of extfeat, notelabel, rotate=-90, anchor=south] {Phase 2};
 
 % Models
-\node[box=blue!70, below=1.0cm of basefeat] (basemodel) {Base Model};
-\node[box=purple!60, below=1.0cm of extfeat, minimum width=2.8cm] (extmodel) {Extended Model\\{\footnotesize (w/ Adaptive Pruning)}};
+\node[bluebox, below=1.0cm of basefeat] (basemodel) {Base Model};
+\node[purplebox, below=1.0cm of extfeat] (extmodel) {Extended Model\\{\footnotesize (w/ Adaptive Pruning)}};
 
-\draw[arrow=blue!70] (basefeat) -- (basemodel);
-\draw[arrow=green!60!black] (extfeat) -- (extmodel);
+\draw[bluearrow] (basefeat) -- (basemodel);
+\draw[greenarrow] (extfeat) -- (extmodel);
 
 % Transfer arrow
 \draw[-{Stealth[length=4pt]}, line width=0.9pt, dashed, purple!70]
@@ -59,11 +66,11 @@
     node[midway, above, font=\scriptsize\itshape, text=purple!70] {Transfer};
 
 % Evaluation
-\node[box=purple!60, below=1.5cm of test, minimum width=3.2cm] (eval)
+\node[purplebox, below=1.5cm of test, minimum width=3.2cm] (eval)
     {Model Evaluation\\{\footnotesize (AUC Comparison)}};
 
-\draw[arrow=blue!70] (testbase.south) |- ([yshift=0.3cm]eval.west) -- (eval.west);
-\draw[arrow=green!60!black] (testext.south) |- ([yshift=-0.3cm]eval.east) -- (eval.east);
+\draw[bluearrow] (testbase.south) |- ([yshift=0.3cm]eval.west) -- (eval.west);
+\draw[greenarrow] (testext.south) |- ([yshift=-0.3cm]eval.east) -- (eval.east);
 
 \end{tikzpicture}%
 }
