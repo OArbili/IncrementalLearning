@@ -17,7 +17,7 @@
 \usetikzlibrary{positioning, arrows.meta, shapes.geometric, fit, backgrounds, calc}
 \DeclareMathOperator*{\argmax}{argmax}
 \title{
-Beyond Missing at Random: Incremental Tree Ensembles for Expanding Feature Sets
+Incremental Tree Ensembles for Evolving Feature Spaces Under Structured Missingness
 }
 
 \author{Anonymous Author(s)}
@@ -27,14 +27,14 @@ Beyond Missing at Random: Incremental Tree Ensembles for Expanding Feature Sets
 \begin{document}
 
 \begin{abstract}
-Modern gradient boosting frameworks handle missing values through heuristic default-direction routing, treating absence as a nuisance rather than a signal. This approach fails under \textit{structured missingness} --- the common real-world pattern where features are systematically absent for identifiable subpopulations (e.g., diagnostic tests ordered only for critical patients, or financial metrics collected only for premium segments). Under structured missingness, the feature-absent and feature-present populations may exhibit fundamentally different predictive patterns, yet a single model must serve both through the same tree structure.
+Machine learning models deployed in healthcare, finance, and other dynamic environments face a persistent challenge: feature spaces that evolve over time as new measurements, tests, or data sources become available. This creates \textit{structured missingness} --- newer features are systematically absent from historical records, requiring models to serve heterogeneous subpopulations with different feature availability. Traditional approaches require full retraining or maintaining multiple specialized models, both costly and incompatible with privacy-constrained settings where data cannot be centralized.
 
-We introduce a population-aware learning framework that treats structured missingness as a modeling opportunity. Instead of routing around missing values, we explicitly partition training into subpopulation-specific phases: a base model specializes on instances lacking extended features, while a warm-started extended model incorporates newly available features through adaptive tree pruning. This two-phase design enables learning across evolving and distributed feature spaces without data sharing --- the base model artifact transfers knowledge between phases without exposing raw data.
+We introduce an incremental learning framework for Gradient Boosting Machines that seamlessly integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features, then warm-starts an extended model that incorporates newly available features through adaptive tree pruning. Crucially, the phases operate independently --- only the model artifact is transferred, not raw data --- enabling deployment under privacy constraints and evolving feature availability.
 
-Evaluation across 10 diverse datasets demonstrates that our approach matches or outperforms the standard two-model baseline --- which trains separate base and combined models with full data access --- while requiring no data sharing between phases (Wilcoxon $p = 0.002$, all 10 datasets positive). This proves that the two-phase approach is a viable alternative to standard training, and sometimes even superior, while additionally enabling deployment under data privacy constraints and evolving feature availability. All 9 datasets confirm successful model-level knowledge transfer without cross-phase data access.
+Our analysis reveals why this incremental approach succeeds: under structured missingness, the two-phase design enables population-specific specialization that a single retrained model cannot achieve. The base model outperforms the combined baseline on the feature-absent population in all 10 evaluated datasets, because it learns patterns that a unified model dilutes across both subpopulations. Evaluation across 10 diverse datasets confirms statistically significant improvements (Wilcoxon $p = 0.002$), with adaptive pruning outperforming fixed strategies in 8 of 10 datasets.
 \end{abstract}
 
-\keywords{Structured Missingness, Population-Aware Learning, Gradient Boosting, Feature Evolution, Privacy-Preserving ML, Adaptive Tree Pruning, Model Transfer}
+\keywords{Incremental Learning, Structured Missingness, Gradient Boosting, Feature Evolution, Adaptive Tree Pruning, Privacy-Preserving ML, Model Transfer}
 
 \maketitle
 
@@ -48,15 +48,17 @@ Maintaining robust predictive models in such settings presents a major challenge
 
 A closely related challenge arises in cross-organizational collaboration, where multiple institutions hold complementary feature sets but cannot share raw data due to privacy regulations. For example, two hospitals may collect different diagnostic measurements for overlapping patient populations, or banks collaborating on anti-money laundering (AML) models may hold transaction features that cannot be exchanged. Our framework directly addresses this scenario: one institution trains a base model on its features and shares only the model artifact, while the other extends it with private features using warm-start and adaptive pruning. Our experimental design mirrors exactly this setup --- the base model is trained on one feature set and extended with additional features from a different subpopulation, with no data shared between phases.
 
-In this work, we challenge the prevailing assumption that missing values should be handled heuristically within a single model. We show that when missingness is structured, explicit subpopulation specialization outperforms unified models across 10 diverse datasets (Wilcoxon $p = 0.002$). Our contributions are:
+In this work, we introduce an incremental learning framework for GBMs that integrates new features without full retraining, and show it consistently matches or outperforms standard training across 10 diverse datasets (Wilcoxon $p = 0.002$). Our contributions are:
 \begin{itemize}
 \setlength\itemindent{0pt}
 \setlength{\itemindent}{0pt}
-\item \textbf{A modeling insight:} We provide empirical evidence that under structured missingness, the feature-absent population is systematically underserved by combined models that rely on heuristic missing-value routing. Training a dedicated base model for this subpopulation yields consistent AUC improvements across all 10 evaluated datasets. This finding holds regardless of dataset size (7K--568K), null rate (19--88\%), or domain.
+\item \textbf{An incremental learning framework for evolving feature spaces:} We implement a two-phase training procedure where a base model is trained on commonly available features, then incrementally extended with newly available features through warm-starting and continued training. The two phases operate independently --- only the model artifact is shared --- enabling both incremental updates and privacy-constrained deployment.
 
-\item \textbf{An adaptive knowledge transfer mechanism:} We develop a validation-driven tree pruning method that determines how much prior knowledge to retain when extending to new feature spaces. Bayesian optimization selects the pruning level, with a built-in $k=0$ fallback that guarantees the framework never underperforms training from scratch. Adaptive pruning outperforms fixed strategies in 8 of 10 datasets.
+\item \textbf{Adaptive tree pruning for knowledge transfer:} We develop a validation-driven pruning mechanism that determines how much prior knowledge to retain when extending to new feature spaces. Bayesian optimization selects the optimal pruning level, with a built-in $k=0$ fallback that guarantees the framework never underperforms training from scratch. Adaptive pruning outperforms fixed strategies in 8 of 10 datasets.
 
-\item \textbf{A privacy-preserving collaboration paradigm:} Our two-phase architecture enables learning across distributed feature spaces without data sharing. Each experiment directly demonstrates this: the base model trains on one feature set and is extended with additional features from a different subpopulation, with no raw data exchanged. All 9 datasets validate successful model-level knowledge transfer, providing empirical evidence for deployment under GDPR, HIPAA, or institutional data-sharing constraints.
+\item \textbf{An empirical insight on why incremental learning succeeds under structured missingness:} Our analysis reveals that the base model outperforms the combined baseline on the feature-absent population in all 10 datasets. Under structured missingness, the two-phase design enables population-specific specialization that a single retrained model cannot achieve --- the feature-absent subpopulation is systematically underserved by unified models.
+
+\item \textbf{Privacy-preserving model collaboration:} Each experiment directly validates a model-sharing paradigm where only model artifacts are exchanged between phases, with no raw data access. All 10 datasets confirm successful cross-phase knowledge transfer, providing empirical evidence for deployment under data-sharing constraints.
 \end{itemize}
 
 \section{Related Work}
@@ -224,7 +226,7 @@ availability.
 \section{METHODS}
 \label{sec:method}
 
-Our approach implements a population-aware gradient boosting framework for learning across evolving and distributed feature spaces without data sharing, as illustrated in Figure~\ref{fig:framework}. Rather than training a single model that heuristically handles missing values, we explicitly partition the learning process into subpopulation-specific phases. The framework consists of two main components: Base Model Training (specializing on the feature-absent population) and Extended Model Training (incorporating newly available features through knowledge transfer). Bayesian optimization determines the optimal feature allocation between phases.
+Our approach implements a two-phase incremental learning framework for Gradient Boosting Machines, designed for evolving feature spaces with structured missingness (Figure~\ref{fig:framework}). Rather than retraining from scratch when new features become available, we incrementally extend an existing model through warm-starting and adaptive pruning. The framework consists of two components: \textbf{Phase~1} trains a base model on commonly available features; \textbf{Phase~2} transfers knowledge from the base model and extends it with newly available features. Critically, the two phases operate independently --- only the model artifact is shared --- enabling both incremental updates over time and privacy-constrained collaboration across institutions.
 
 \subsection{Phase 1: Base Model Training}
 
@@ -327,7 +329,7 @@ This theoretical foundation ensures that our incremental approach is always a sa
 \input{fig_framework.tex}
 
 \section{Experiments}
-This section evaluates our population-aware learning framework across diverse real-world datasets. We demonstrate how explicit subpopulation specialization, combined with adaptive tree pruning, consistently outperforms a single combined model that relies on heuristic missing-value handling. We conduct ablation studies to validate the contribution of the adaptive pruning mechanism and present a systematic analysis of what drives the observed improvements.
+This section evaluates our incremental learning framework across diverse real-world datasets. We demonstrate that the two-phase approach --- which enables incremental model updates without full retraining or data sharing --- consistently matches or outperforms standard training that requires simultaneous access to all data. We conduct ablation studies to validate the adaptive pruning mechanism and present a systematic analysis explaining why incremental learning succeeds under structured missingness.
 
 All Bayesian optimization procedures use Optuna\cite{optuna} with 30 trials per model (50 for select sensitivity experiments). Training and validation employ 3-fold stratified cross-validation to ensure robust performance estimates and prevent overfitting, particularly for the imbalanced class distributions in our datasets.
 \subsection{Datasets}
@@ -400,7 +402,7 @@ As described in Section 4.2, the tree pruning strategy was essential for effecti
 
 \section{Results}
 
-Our population-aware framework demonstrates consistent improvements across a diverse set of 10 real-world datasets. Table~\ref{tab:merged_auc_results} presents a detailed comparison. Both approaches serve two test populations: instances without extended features (base population) and instances with extended features (extended population). The key difference is:
+Our incremental learning framework demonstrates consistent improvements across a diverse set of 10 real-world datasets. Table~\ref{tab:merged_auc_results} presents a detailed comparison. Both approaches serve two test populations: instances without extended features (base population) and instances with extended features (extended population). The key difference is:
 
 \begin{itemize}
 \item \textbf{Standard approach (baseline):} Trains a base model using only base features, and a separate combined model using all features. The base model serves the base population; the combined model serves the extended population. This requires simultaneous access to all data and features.
@@ -501,15 +503,15 @@ Our experimental results (included in the supplementary materials) show that the
 
 As shown in Table 3, We determined that comparing our approach against a model built from scratch on all features provides the most appropriate benchmark for evaluating our method. This comparison framework maintains consistency in the underlying algorithms and implementation details, with the only difference being the application of our two phase mechanism. This controlled experimental design allows us to isolate and quantify the specific impact of our incremental learning strategy across multiple diverse datasets and feature configurations.
 
-\subsection{Why Two-Phase Matches or Outperforms the Standard Approach}
+\subsection{Why Incremental Learning Succeeds Under Structured Missingness}
 
-Our results demonstrate that the two-phase approach --- which can operate without simultaneous access to all data --- achieves performance comparable to or better than the standard approach that requires full data access. Two mechanisms drive this:
+Our results demonstrate that the incremental two-phase approach --- which does not require simultaneous access to all data or full retraining --- achieves performance comparable to or better than standard training. Two mechanisms from the incremental design drive this:
 
-First, our base model trains on all rows with extended features as NaN, whereas the baseline's base model trains only on base features. This gives our base model access to more training instances and allows XGBoost's learned default directions to implicitly encode the missingness pattern as a signal. The result is a stronger base model that outperforms the baseline on the no-extended population in all 10 datasets.
+\textbf{Effective knowledge transfer through warm-starting.} The extended model inherits learned patterns from the base model and refines them with newly available features, rather than learning from scratch. Adaptive pruning determines how much base knowledge to retain, preventing negative transfer while preserving useful patterns. This achieves comparable performance to training a combined model from scratch on the extended population, while requiring only the model artifact (not the original training data) from Phase~1.
 
-Second, the warm-started extended model inherits knowledge from the base model and refines it with extended features, rather than learning from scratch. Adaptive pruning determines how much base knowledge to retain, preventing negative transfer while preserving useful patterns. This achieves comparable performance to the baseline's combined model on the extended population, while requiring only the model artifact (not the original training data) from Phase 1.
+\textbf{Population specialization as a byproduct of incremental design.} The base model trains on all rows with extended features as NaN, learning patterns specific to the feature-absent subpopulation. This is not an explicit design goal but an emergent benefit: because the base model never sees extended feature values, it specializes naturally on the population that lacks them. Our analysis confirms this outperforms the baseline's base model on the no-extended population in all 10 datasets. Modern GBMs handle this through heuristic default-direction routing, but our results show that dedicated training outperforms heuristic routing under structured missingness.
 
-The broader implication is significant for deployment: organizations can achieve standard-approach performance levels while maintaining data separation between phases --- enabling privacy-constrained collaboration and incremental model updates as new features become available over time.
+The broader implication is that incremental learning under structured missingness provides a ``free'' specialization benefit: organizations can update models as new features arrive, avoid full retraining, maintain data separation between phases --- and achieve equal or better performance in the process.
 
 \subsection{Framework Contributions}
 
@@ -535,11 +537,11 @@ Several directions merit further investigation. First, extending the framework t
 
 \section{Conclusion}
 
-We presented a population-aware learning framework for Gradient Boosting Machines that addresses the challenge of learning across evolving and distributed feature spaces without data sharing. Our approach treats structured missingness as a modeling opportunity: rather than heuristically routing around missing values, we train specialized models for subpopulations defined by feature availability, connected through adaptive tree pruning and knowledge transfer.
+We presented an incremental learning framework for Gradient Boosting Machines that integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features and incrementally extends it with newly available features through warm-starting and adaptive tree pruning --- with only the model artifact shared between phases, enabling both incremental updates and privacy-constrained deployment.
 
 Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that our approach consistently matches or outperforms the standard approach that requires simultaneous access to all data, with total AUC gains ranging from +0.0001 to +0.0743 (Wilcoxon $p = 0.002$). This result is significant because our method achieves comparable performance while enabling data separation between training phases --- a property the standard approach cannot offer.
 
-The adaptive pruning mechanism achieves the best results in 8 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our systematic analysis of 166 experiment configurations shows that the framework's benefit is architectural, arising from the two-phase design itself rather than from specific dataset characteristics.
+The adaptive pruning mechanism --- which determines how much prior knowledge to retain during incremental extension --- achieves the best results in 8 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our analysis of 166 experiment configurations reveals why incremental learning succeeds under structured missingness: the two-phase design enables population-specific specialization as an emergent benefit, with the base model outperforming unified baselines on the feature-absent subpopulation in 100\% of datasets.
 
 The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data --- all 10 datasets validate that this model-level knowledge transfer achieves consistent improvements without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
 
