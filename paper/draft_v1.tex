@@ -478,7 +478,7 @@ FlightDelay & \textbf{--0.0046} & --0.0043 & +0.0023 & Optuna & 0.7188 \\
 
 \subsection{Analysis: What Drives Incremental Learning Success?}
 
-To understand when and why our incremental approach outperforms the combined baseline, we conducted a systematic correlation analysis across all 153 experiment configurations. We examined whether measurable dataset or experiment properties --- including null rates, dataset size, label distribution, feature importance ratios, and population shift between extended and non-extended subgroups --- predict the objective.
+To understand when and why our incremental approach outperforms the combined baseline, we conducted a systematic correlation analysis across all 166 experiment configurations. We examined whether measurable dataset or experiment properties --- including null rates, dataset size, label distribution, feature importance ratios, and population shift between extended and non-extended subgroups --- predict the objective.
 
 Our analysis reveals that no single dataset-level property strongly predicts the improvement magnitude ($R^2 = 0.019$ for a multivariate regression on all measured properties). Feature importance of extended features in the combined model shows no correlation with the objective ($r = -0.035$, $p = 0.68$). Similarly, covariate shift between the extended and non-extended populations, measured via Kolmogorov-Smirnov statistics and label rate differences, shows no significant relationship.
 
@@ -539,7 +539,7 @@ We presented a population-aware learning framework for Gradient Boosting Machine
 
 Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that our approach consistently matches or outperforms the standard approach that requires simultaneous access to all data, with total AUC gains ranging from +0.0001 to +0.0743 (Wilcoxon $p = 0.002$). This result is significant because our method achieves comparable performance while enabling data separation between training phases --- a property the standard approach cannot offer.
 
-The adaptive pruning mechanism achieves the best results in 8 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our systematic analysis of 153 experiment configurations shows that the framework's benefit is architectural, arising from the two-phase design itself rather than from specific dataset characteristics.
+The adaptive pruning mechanism achieves the best results in 8 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our systematic analysis of 166 experiment configurations shows that the framework's benefit is architectural, arising from the two-phase design itself rather than from specific dataset characteristics.
 
 The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data --- all 10 datasets validate that this model-level knowledge transfer achieves consistent improvements without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
 
