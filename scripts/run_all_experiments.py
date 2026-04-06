@@ -68,22 +68,17 @@ def load_bankloansta():
     label = "Loan Status"
     df[label] = df[label].astype(int)
 
-    # Augmentation: inject nulls into selected features
-    inject_features = ['Current Loan Amount', 'Annual Income', 'Monthly Debt',
-                       'Home Ownership', 'Purpose']
+    # Augmentation: inject nulls into selected features (independent masks)
+    inject_features = ['Current Loan Amount', 'Annual Income', 'Credit Score']
     inject_rate = 0.20
     np.random.seed(SEED)
-    mask = np.random.rand(len(df)) < inject_rate
     for col in inject_features:
+        mask = np.random.rand(len(df)) < inject_rate
         df.loc[mask, col] = np.nan
-
-    # Also inject into Credit Score
-    mask_cs = np.random.rand(len(df)) < inject_rate
-    df.loc[mask_cs, 'Credit Score'] = np.nan
 
     return df, label, {
         'mode': 'augmented',
-        'inject_features': inject_features + ['Credit Score'],
+        'inject_features': inject_features,
     }
 
 
@@ -200,7 +195,7 @@ def load_weatheraus():
     df = pd.read_csv(csv_path)
     label = "RainTomorrow"
     df.dropna(subset=[label], inplace=True)
-    df.drop(columns=['Date', 'Location', 'RainToday'], errors='ignore', inplace=True)
+    df.drop(columns=['Date', 'Location', 'RainToday', 'RISK_MM'], errors='ignore', inplace=True)
     df = pipeline.preprocessing(df)
     df[label] = df[label].astype(int)
     return df, label, {'mode': 'natural'}
@@ -416,7 +411,8 @@ def run_combo(df, label, ext_features, n_trials):
     comb_ext_auc = roc_auc_score(test_with[label],
                                   dm.combined_model.predict(test_with[feature_cols]))
 
-    objective = (comb_ext_auc - ext_auc) + (comb_no_auc - base_auc)
+    n_total = len(test_with) + len(test_without)
+    objective = (len(test_without) * (comb_no_auc - base_auc) + len(test_with) * (comb_ext_auc - ext_auc)) / n_total
 
     return {
         'objective': objective,
@@ -459,7 +455,8 @@ def run_ablation(dm, ext_train, test_with, test_without, label,
 
         ext_auc = roc_auc_score(test_with[label],
                                  dm.extended_model.predict(test_with[feature_cols]))
-        objective = (comb_ext_auc - ext_auc) + (comb_no_auc - base_auc)
+        n_total = len(test_with) + len(test_without)
+        objective = (len(test_without) * (comb_no_auc - base_auc) + len(test_with) * (comb_ext_auc - ext_auc)) / n_total
 
         print(f"\n>>> {ds_name} | {mode}: objective={objective:.6f}", flush=True)
         print(f"    Ext AUC: {ext_auc:.6f}", flush=True)

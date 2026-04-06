@@ -470,7 +470,8 @@ for ds_name, load_fn in DATASETS:
         ext_auc = roc_auc_score(test_with[label],
                                  dm.extended_model.predict(test_with[dm.all_features]))
 
-        objective = (comb_ext_auc - ext_auc) + (comb_no_auc - base_auc)
+        n_total = len(test_with) + len(test_without)
+        objective = (len(test_without) * (comb_no_auc - base_auc) + len(test_with) * (comb_ext_auc - ext_auc)) / n_total
 
         print(f"\n>>> {ds_name} | {mode}: objective={objective:.6f}")
         print(f"    Base AUC: {base_auc:.6f}, Ext AUC: {ext_auc:.6f}")

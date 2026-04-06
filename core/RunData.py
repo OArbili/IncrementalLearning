@@ -157,8 +157,11 @@ class RunPipeline():
 
         print("\nResults Summary:")
         print(results_df)
-        return (combined_with_ext_auc - extended_auc) + \
-               (combined_no_ext_auc - base_auc)
+        # Weighted average objective: population-size-weighted AUC improvement
+        n_with = len(test_with_extended)
+        n_without = len(test_without_extended)
+        n_total = n_with + n_without
+        return (n_without * (combined_no_ext_auc - base_auc) + n_with * (combined_with_ext_auc - extended_auc)) / n_total
 
     def full_run(self, data, in_base_features, in_ext_features, label, csv_name, n_trials=20, pruning_mode='optuna'):
         self.load_data(in_base_features, in_ext_features, data, label)
