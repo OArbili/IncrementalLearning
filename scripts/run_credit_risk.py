@@ -23,9 +23,9 @@ set_all_seeds()
 # --- Config ---
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 START_FROM = int(sys.argv[2]) if len(sys.argv) > 2 else 1  # 1-based combo index to start from
-NULL_THRESHOLD = 0.50   # Features with >50% nulls are candidates for extended
+NULL_THRESHOLD = 0.40   # Features with >40% nulls are candidates for extended
 JACCARD_THRESHOLD = 0.95  # Group features with similar null patterns
-MAX_GROUPS = 5           # Max number of groups to enumerate (2^5 = 32 combos)
+MAX_GROUPS = 4           # Max number of groups to enumerate (2^4 = 16 combos)
 MIN_GROUP_PCT = 0.02     # Min 2% of total population per test group
 
 pipeline = GenericDataPipeline()
@@ -61,6 +61,28 @@ df = pipeline.preprocessing(df)
 
 label = "TARGET"
 df[label] = df[label].astype(int)
+
+print(f"Dataset shape (before feature selection): {df.shape}")
+
+# --- Feature selection: keep top 60 by importance + all high-null features ---
+import xgboost as xgb
+print("Running quick XGBoost for feature selection...")
+X_all = df.drop(label, axis=1)
+y_all = df[label]
+selector = xgb.XGBClassifier(n_estimators=200, max_depth=6, learning_rate=0.1,
+                              tree_method='hist', random_state=SEED, eval_metric='auc')
+selector.fit(X_all, y_all, verbose=False)
+imp = pd.Series(selector.feature_importances_, index=X_all.columns).sort_values(ascending=False)
+
+# Keep top 40 features by importance (these become base + some ext)
+top_features = set(imp.head(40).index.tolist())
+keep_features = top_features | {label}
+
+# Drop the rest
+drop_cols = [c for c in df.columns if c not in keep_features]
+df = df.drop(columns=drop_cols)
+print(f"Feature selection: kept top {len(top_features)} features by importance")
+print(f"Dropped {len(drop_cols)} features")
 
 print(f"Dataset shape: {df.shape}")
 print(f"N_TRIALS per model: {N_TRIALS}")

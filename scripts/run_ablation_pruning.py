@@ -311,6 +311,47 @@ def load_flight_delay():
     return df, label, ext_features
 
 
+def load_credit_risk():
+    """CreditRisk (Natural Nulls). Best combo: Groups 1+2 (credit bureau history)."""
+    import xgboost as xgb
+    data_dir = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'CreditRisk')
+    data1 = pd.read_csv(os.path.join(data_dir, 'data_devsample.csv'))
+    data2 = pd.read_csv(os.path.join(data_dir, 'data_to_score.csv'))
+    df = pd.merge(data1, data2, on='SK_ID_CURR', how='inner')
+    df.replace([np.inf, -np.inf], np.nan, inplace=True)
+
+    cols_to_remove = [c for c in df.columns if c.endswith('_y') or c in ['TIME_x','BASE_x','DAY_x','MONTH_x']]
+    df.drop(columns=cols_to_remove, errors='ignore', inplace=True)
+    df.drop(columns=['SK_ID_CURR'], errors='ignore', inplace=True)
+
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            df[col] = df[col].replace(['?', ''], np.nan)
+            if df[col].isna().sum() < len(df):
+                df[col] = pd.Categorical(df[col]).codes
+                df[col] = df[col].replace(-1, np.nan)
+    for col in df.select_dtypes(include=['bool']).columns:
+        df[col] = df[col].astype(int)
+
+    df = pipeline.preprocessing(df)
+    label = "TARGET"
+    df[label] = df[label].astype(int)
+
+    # Feature selection: top 40 by importance
+    X_all = df.drop(label, axis=1)
+    selector = xgb.XGBClassifier(n_estimators=200, max_depth=6, learning_rate=0.1,
+                                  tree_method='hist', random_state=SEED, eval_metric='auc')
+    selector.fit(X_all, df[label], verbose=False)
+    imp = pd.Series(selector.feature_importances_, index=X_all.columns).sort_values(ascending=False)
+    keep = set(imp.head(40).index.tolist()) | {label}
+    df = df[[c for c in df.columns if c in keep]]
+
+    # Best combo: Groups 1+2 (credit bureau transaction history features)
+    # These are features with >90% nulls — missing for applicants without bureau history
+    ext_features = [c for c in df.columns if c != label and df[c].isna().mean() > 0.90]
+    return df, label, ext_features
+
+
 # ============================================================================
 # Dataset registry
 # ============================================================================
@@ -326,6 +367,7 @@ DATASETS = [
     ('WIDS', load_wids),
     ('FlightDelay', load_flight_delay),
     ('ClientRecordV2', load_client_record_v2),
+    ('CreditRisk', load_credit_risk),
 ]
 
 # ============================================================================
