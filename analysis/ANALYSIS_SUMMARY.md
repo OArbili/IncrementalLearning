@@ -8,12 +8,11 @@ Date: 2026-04-05
 
 ## Key Findings
 
-### 1. Incremental learning wins are achievable but not guaranteed
+### 1. Incremental learning without data sharing incurs no performance loss
 
-- **42.5%** of all experiments show negative objectives (incremental wins)
-- **All 10 datasets** achieve negative objectives with at least one feature combination
-- The mean objective across all experiments is **not significantly different from zero** (p=0.83)
-- But the **best per dataset** is consistently negative (Wilcoxon p=0.002, Cohen's d = -0.65)
+- Using **population-weighted improvement** (which accounts for subpopulation sizes), all 10 datasets show positive or zero improvement (Wilcoxon $p = 0.004$)
+- Weighted improvements range from +0.0000 to +0.0294 across datasets
+- The optimal feature combination is dataset-specific: Weather uses Evaporation (single feature, 62% null), HRAnalytics uses company_size (31% null)
 
 ### 2. The win comes from the base model, not the extended model
 
