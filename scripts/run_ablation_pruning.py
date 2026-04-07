@@ -104,7 +104,7 @@ def load_diabetes():
 
 
 def load_hr_analytics():
-    """HRAnalytics (Natural Nulls). Best combo: gender ext."""
+    """HRAnalytics (Natural Nulls). Best combo: company_size ext."""
     path = kagglehub.dataset_download("arashnic/hr-analytics-job-change-of-data-scientists")
     df = pd.read_csv(os.path.join(path, "aug_train.csv"))
     df.drop(['enrollee_id'], axis=1, inplace=True)
@@ -112,7 +112,7 @@ def load_hr_analytics():
     label = "target"
     df[label] = df[label].astype(int)
 
-    ext_features = ['gender']
+    ext_features = ['company_size']
     return df, label, ext_features
 
 

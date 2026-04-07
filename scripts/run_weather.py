@@ -18,8 +18,8 @@ set_all_seeds()
 
 # --- Config ---
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
-NULL_THRESHOLD = 0.05  # Features with >5% nulls are candidates for extended
-MIN_GROUP_PCT = 0.02   # Min 2% of total population per test group
+NULL_THRESHOLD = 0.10  # Features with >10% nulls are candidates for extended
+MIN_GROUP_PCT = 0.05   # Min 5% of total population per test group
 
 pipeline = GenericDataPipeline()
 
