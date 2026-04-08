@@ -180,7 +180,7 @@ def load_client_record_v2():
 
 
 def load_movie_aug_v2():
-    """Movie (Augmented v2 — Heavy). Best combo: rating_mean + rating_std ext."""
+    """Movie (Augmented v2 — Heavy). Best combo: rating_mean + tags ext."""
     path = kagglehub.dataset_download("grouplens/movielens-20m-dataset")
     ratings = pd.read_csv(os.path.join(path, "rating.csv"))
     tags = pd.read_csv(os.path.join(path, "tag.csv"))
@@ -239,7 +239,7 @@ def load_movie_aug_v2():
         null_idx = rng.choice(df.index, size=n_null, replace=False)
         df.loc[null_idx, feat] = np.nan
 
-    ext_features = ['rating_mean', 'rating_std']
+    ext_features = ['rating_mean', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
     return df, label, ext_features
 
 
