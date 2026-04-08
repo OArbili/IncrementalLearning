@@ -312,7 +312,7 @@ def load_flight_delay():
 
 
 def load_credit_risk():
-    """CreditRisk (Natural Nulls). Best combo: Groups 1+2 (credit bureau history)."""
+    """CreditRisk (Natural Nulls). Best combo: Groups 1+2 (credit bureau history, 5 features)."""
     import xgboost as xgb
     data_dir = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'CreditRisk')
     data1 = pd.read_csv(os.path.join(data_dir, 'data_devsample.csv'))
@@ -337,7 +337,7 @@ def load_credit_risk():
     label = "TARGET"
     df[label] = df[label].astype(int)
 
-    # Feature selection: top 40 by importance
+    # Feature selection: top 40 by importance (same as run_credit_risk.py)
     X_all = df.drop(label, axis=1)
     selector = xgb.XGBClassifier(n_estimators=200, max_depth=6, learning_rate=0.1,
                                   tree_method='hist', random_state=SEED, eval_metric='auc')
@@ -346,9 +346,14 @@ def load_credit_risk():
     keep = set(imp.head(40).index.tolist()) | {label}
     df = df[[c for c in df.columns if c in keep]]
 
-    # Best combo: Groups 1+2 (credit bureau transaction history features)
-    # These are features with >90% nulls — missing for applicants without bureau history
-    ext_features = [c for c in df.columns if c != label and df[c].isna().mean() > 0.90]
+    # Best combo from sweep: Groups 1+2 (exact features, same as combo 4 in run_credit_risk.py)
+    ext_features = [
+        'MEAN_AMTCR_1M_3M_TYPE_EQ_ACTIVE_DIV_MEAN_AMTCR_3M_12M_TYPE_EQ_ACTIVE_x',
+        'STD_AMTCR_0M_6M_x',
+        'MEAN_AMTCR_0M_6M_TYPE_EQ_CLOSED_x',
+        'MEAN_AMTCR_0M_6M_TYPE_EQ_ACTIVE_x',
+        'MEDIAN_AMTCR_0M_6M_x',
+    ]
     return df, label, ext_features
 
 
