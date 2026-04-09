@@ -54,7 +54,7 @@ In this work, we introduce an incremental learning framework for GBMs that integ
 \setlength{\itemindent}{0pt}
 \item \textbf{An incremental learning framework for evolving feature spaces:} We implement a two-phase training procedure where a base model is trained on commonly available features, then incrementally extended with newly available features through warm-starting and continued training. The two phases operate independently --- only the model artifact is shared --- enabling both incremental updates and privacy-constrained deployment.
 
-\item \textbf{Adaptive tree pruning for knowledge transfer:} We develop a validation-driven pruning mechanism that determines how much prior knowledge to retain when extending to new feature spaces. Bayesian optimization selects the optimal pruning level, with a built-in $k=0$ fallback that guarantees the framework never underperforms training from scratch. Adaptive pruning outperforms fixed strategies in 7 of 10 datasets.
+\item \textbf{Adaptive tree pruning for knowledge transfer:} We develop a validation-driven pruning mechanism that determines how much prior knowledge to retain when extending to new feature spaces. Bayesian optimization selects the optimal pruning level, with a built-in $k=0$ fallback that guarantees the framework never underperforms training from scratch. Adaptive pruning outperforms fixed strategies in 6 of 10 datasets.
 
 \item \textbf{An empirical insight on why no performance is lost:} Our analysis reveals that the base model matches or exceeds the combined baseline on the feature-absent population in all 10 datasets. Under structured missingness, the incremental two-phase design produces population-specific specialization as an emergent benefit, compensating for any loss from not training jointly on all data.
 
@@ -449,31 +449,31 @@ FlightDelay & 568K & 20.0 & 0.7478 & 0.7450 & 0.7188 & 0.7170 & \textcolor{Fores
 
 We conducted an ablation study comparing three pruning strategies across all 10 datasets (Table~\ref{tab:pruning}): (1) \textit{Optuna} --- Bayesian optimization selects whether to warm-start and how many trees to retain; (2) \textit{No Pruning} --- always warm-starts from the full base model; (3) \textit{Fixed 50\%} --- always retains exactly half the base trees.
 
-Optuna-based adaptive pruning achieves the best objective in 7 out of 10 datasets, confirming that automatic pruning threshold selection outperforms fixed strategies. No Pruning wins in 3 datasets (HRAnalytics, CreditRisk, and MovieAugV2), cases where the full base model transfers well. Fixed 50\% pruning never achieves the best result and produces positive objectives (combined model wins) in 5 out of 10 datasets, indicating that aggressive fixed pruning often discards useful knowledge.
+Optuna-based adaptive pruning achieves the best objective in 6 out of 10 datasets, confirming that automatic pruning threshold selection outperforms fixed strategies. No Pruning wins in 4 datasets (HRAnalytics, CreditRisk, MovieAugV2, and WIDS), cases where the full base model transfers well. Fixed 50\% pruning never achieves the best result and produces positive objectives (combined model wins) in 5 out of 10 datasets, indicating that aggressive fixed pruning often discards useful knowledge.
 
 Critically, the Optuna strategy includes the option of pruning all base trees ($k=0$), which is equivalent to training from scratch. This built-in fallback ensures that the incremental approach never underperforms a full retrain, providing a safety guarantee for production deployment.
 
 \begin{table}[h]
 \centering
-\caption{Ablation Study: Pruning Mode Comparison. Objective = (combined\textsubscript{ext} -- extended AUC) + (combined\textsubscript{no} -- base AUC). Negative values indicate the incremental approach achieves superior performance to the combined baseline. Bold marks the best mode per dataset.}
+\caption{Ablation Study: Pruning Mode Comparison. Values are population-weighted objectives: $\frac{n_{\text{base}} \cdot (\text{BL}_{\text{base}} - \text{Our}_{\text{base}}) + n_{\text{ext}} \cdot (\text{BL}_{\text{ext}} - \text{Our}_{\text{ext}})}{n_{\text{base}} + n_{\text{ext}}}$. Negative values indicate the incremental approach achieves superior performance. Bold marks the best mode per dataset.}
 \label{tab:pruning}
 \resizebox{0.95\columnwidth}{!}{%
 \begin{tabular}{l r r r l r}
 \toprule
 \textbf{Dataset} & \textbf{Optuna} & \textbf{No Pruning} & \textbf{Fixed 50\%} & \textbf{Best} & \textbf{Ext AUC} \\
 \midrule
-BankLoanSta & \textbf{--0.0743} & --- & --- & Optuna & 0.7817 \\
-Weather & \textbf{--0.0027} & --0.0025 & --0.0018 & Optuna & 0.8766 \\
-DiabetesRecord & \textbf{--0.0026} & +0.0006 & --0.0011 & Optuna & 0.6682 \\
+BankLoanSta & \textbf{--0.0294} & --- & --- & Optuna & 0.7817 \\
+Weather & \textbf{--0.0027} & --0.0024 & --0.0018 & Optuna & 0.8766 \\
+DiabetesRecord & \textbf{--0.0014} & +0.0005 & --0.0005 & Optuna & 0.6682 \\
 CreditRisk & --0.0003 & \textbf{--0.0004} & +0.0000 & No Pruning & 0.7576 \\
-HRAnalytics & --0.0049 & \textbf{--0.0052} & --0.0040 & No Pruning & 0.7968 \\
-ClientRecord & \textbf{--0.0046} & --0.0038 & --0.0034 & Optuna & 0.9186 \\
-MovieAugV2 & --0.0028 & \textbf{--0.0032} & --0.0010 & No Pruning & 0.9109 \\
-WeatherAUS & \textbf{--0.0003} & --0.0003 & +0.0016 & Optuna & 0.9024 \\
-WIDS & \textbf{--0.0045} & --0.0024 & +0.0003 & Optuna & 0.8955 \\
-FlightDelay & \textbf{--0.0046} & --0.0043 & +0.0023 & Optuna & 0.7188 \\
+HRAnalytics & --0.0049 & \textbf{--0.0051} & --0.0040 & No Pruning & 0.7968 \\
+ClientRecord & \textbf{--0.0015} & --0.0009 & --0.0006 & Optuna & 0.9186 \\
+MovieAugV2 & --0.0028 & \textbf{--0.0033} & --0.0010 & No Pruning & 0.9109 \\
+WeatherAUS & \textbf{--0.0001} & --0.0001 & +0.0013 & Optuna & 0.9024 \\
+WIDS & --0.0007 & \textbf{--0.0009} & --0.0002 & No Pruning & 0.8967 \\
+FlightDelay & \textbf{--0.0021} & --0.0019 & +0.0027 & Optuna & 0.7188 \\
 \midrule
-\multicolumn{4}{l}{\textbf{Wins}} & \multicolumn{2}{l}{Optuna: 7, No Pruning: 3, Fixed 50\%: 0} \\
+\multicolumn{4}{l}{\textbf{Wins}} & \multicolumn{2}{l}{Optuna: 6, No Pruning: 4, Fixed 50\%: 0} \\
 \bottomrule
 \end{tabular}%
 }
