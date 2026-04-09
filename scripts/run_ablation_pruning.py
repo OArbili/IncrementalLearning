@@ -28,8 +28,8 @@ N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 # Per-mode trial overrides (default to N_TRIALS if not specified)
 TRIALS_PER_MODE = {
     'optuna': N_TRIALS,
-    'no_pruning': max(N_TRIALS // 2, 10),
-    'fixed_50': max(N_TRIALS // 2, 10),
+    'no_pruning': 15,
+    'fixed_50': 15,
 }
 # Optional: filter to specific datasets (comma-separated), e.g. "WeatherAUS,WIDS"
 DATASET_FILTER = sys.argv[2].split(',') if len(sys.argv) > 2 else None
