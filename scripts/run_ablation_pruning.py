@@ -258,7 +258,8 @@ def load_weatheraus():
 
 
 def load_wids():
-    """WIDS (Natural Nulls). Best combo: groups 1-4 (h1_bilirubin, h1_lactate, h1_pao2fio2ratio, h1_arterial_ph)."""
+    """WIDS (Natural Nulls). Best combo: h1_lactate + d1_lactate + d1_pao2fio2ratio (5 features)."""
+    import xgboost as xgb
     csv_path = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'WIDS.csv')
     df = pd.read_csv(csv_path, na_values=['NA'])
     columns_to_drop = ['encounter_id', 'patient_id', 'hospital_id']
@@ -267,13 +268,20 @@ def load_wids():
     label = "hospital_death"
     df[label] = df[label].astype(int)
 
-    # Best combo uses groups 1-4 from null pattern grouping (14 features total)
+    # Feature selection: top 50 by importance (same as run_wids.py)
+    X_all = df.drop(label, axis=1)
+    selector = xgb.XGBClassifier(n_estimators=200, max_depth=6, learning_rate=0.1,
+                                  tree_method='hist', random_state=SEED, eval_metric='auc')
+    selector.fit(X_all, df[label], verbose=False)
+    imp = pd.Series(selector.feature_importances_, index=X_all.columns).sort_values(ascending=False)
+    keep = set(imp.head(50).index.tolist()) | {label}
+    df = df[[c for c in df.columns if c in keep]]
+
+    # Best combo from weighted sweep: h1_lactate + d1_lactate + d1_pao2fio2ratio
     ext_features = [
-        'h1_bilirubin_max', 'h1_bilirubin_min', 'h1_albumin_max', 'h1_albumin_min',
-        'h1_lactate_max', 'h1_lactate_min',
-        'h1_pao2fio2ratio_max', 'h1_pao2fio2ratio_min',
-        'h1_arterial_ph_max', 'h1_arterial_ph_min', 'h1_arterial_pco2_max',
-        'h1_arterial_pco2_min', 'h1_arterial_po2_max', 'h1_arterial_po2_min',
+        'h1_lactate_min',
+        'd1_lactate_max', 'd1_lactate_min',
+        'd1_pao2fio2ratio_max', 'd1_pao2fio2ratio_min',
     ]
     return df, label, ext_features
 
