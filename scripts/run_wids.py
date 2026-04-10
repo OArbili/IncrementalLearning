@@ -37,6 +37,24 @@ df = df.drop(columns=columns_to_drop)
 df = pipeline.preprocessing(df)
 
 label = "hospital_death"
+df[label] = df[label].astype(int)
+print(f"Dataset shape (before feature selection): {df.shape}")
+
+# --- Feature selection: keep top 50 by importance ---
+import xgboost as xgb
+print("Running quick XGBoost for feature selection...")
+X_all = df.drop(label, axis=1)
+selector = xgb.XGBClassifier(n_estimators=200, max_depth=6, learning_rate=0.1,
+                              tree_method='hist', random_state=SEED, eval_metric='auc')
+selector.fit(X_all, df[label], verbose=False)
+imp = pd.Series(selector.feature_importances_, index=X_all.columns).sort_values(ascending=False)
+top_features = set(imp.head(50).index.tolist())
+keep_features = top_features | {label}
+drop_cols = [c for c in df.columns if c not in keep_features]
+df = df.drop(columns=drop_cols)
+print(f"Feature selection: kept top {len(top_features)} features by importance")
+print(f"Dropped {len(drop_cols)} features")
+
 print(f"Dataset shape: {df.shape}")
 print(f"N_TRIALS per model: {N_TRIALS}")
 print(f"Target distribution:\n{df[label].value_counts()}")
