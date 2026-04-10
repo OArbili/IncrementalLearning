@@ -39,17 +39,40 @@ df = pipeline.preprocessing(df)
 label = "Customer Status"
 df[label] = df[label].astype(int)
 
-# --- Augmentation: inject 40% independent nulls into Contract, Tenure, Monthly Charge ---
+# --- Augmentation: inject STRUCTURED nulls into Contract, Tenure, Monthly Charge ---
+# Missingness is conditional on base features (not random)
 rng = np.random.RandomState(SEED)
 augment_features = ['Contract', 'Tenure in Months', 'Monthly Charge']
-null_pct = 0.40
-n_null = int(null_pct * len(df))
 
-print("Augmentation: injecting 40% independent nulls")
-for feat in augment_features:
-    null_idx = rng.choice(df.index, size=n_null, replace=False)
-    df.loc[null_idx, feat] = np.nan
-    print(f"  {feat}: {df[feat].isna().mean():.1%} null ({n_null} rows)")
+print("Augmentation: injecting structured nulls (conditional on base features)")
+
+# Contract -> NaN for short-tenure customers (newer customers less likely to have contract info)
+tenure_median = df['Tenure in Months'].median()
+contract_candidates = df[df['Tenure in Months'] < tenure_median].index
+# Add some noise: also include ~10% of above-median to avoid perfect correlation
+above_median = df[df['Tenure in Months'] >= tenure_median].index
+noise_idx = rng.choice(above_median, size=int(0.10 * len(above_median)), replace=False)
+contract_null_idx = np.concatenate([contract_candidates, noise_idx])
+df.loc[contract_null_idx, 'Contract'] = np.nan
+print(f"  Contract: {df['Contract'].isna().mean():.1%} null (short tenure + noise)")
+
+# Tenure in Months -> NaN for customers with no referrals (incomplete records)
+no_referral_idx = df[df['Number of Referrals'] == 0].index
+# Add noise: ~15% of referral customers
+has_referral_idx = df[df['Number of Referrals'] > 0].index
+noise_idx2 = rng.choice(has_referral_idx, size=int(0.15 * len(has_referral_idx)), replace=False)
+tenure_null_idx = np.concatenate([no_referral_idx, noise_idx2])
+df.loc[tenure_null_idx, 'Tenure in Months'] = np.nan
+print(f"  Tenure in Months: {df['Tenure in Months'].isna().mean():.1%} null (no referrals + noise)")
+
+# Monthly Charge -> NaN for non-paperless billing customers (non-digital customers)
+non_paperless_idx = df[df['Paperless Billing'] == 0].index
+# Add noise: ~10% of paperless customers
+paperless_idx = df[df['Paperless Billing'] == 1].index
+noise_idx3 = rng.choice(paperless_idx, size=int(0.10 * len(paperless_idx)), replace=False)
+charge_null_idx = np.concatenate([non_paperless_idx, noise_idx3])
+df.loc[charge_null_idx, 'Monthly Charge'] = np.nan
+print(f"  Monthly Charge: {df['Monthly Charge'].isna().mean():.1%} null (non-paperless + noise)")
 
 print(f"\nDataset shape: {df.shape}")
 print(f"N_TRIALS per model: {N_TRIALS}")

@@ -152,7 +152,7 @@ def load_client_record_aug():
 
 
 def load_client_record_v2():
-    """ClientRecord v2 (Augmented — independent 40% nulls). Best combo: Offer + Monthly Charge ext."""
+    """ClientRecord v2 (Augmented — structured nulls). Best combo: Offer + Monthly Charge ext."""
     path = kagglehub.dataset_download("shilongzhuang/telecom-customer-churn-by-maven-analytics")
     csv_files = sorted([f for f in os.listdir(path) if f.endswith('.csv')])
     data1 = pd.read_csv(os.path.join(path, csv_files[2]))
@@ -167,13 +167,24 @@ def load_client_record_v2():
     label = "Customer Status"
     df[label] = df[label].astype(int)
 
-    # Augmentation: inject 40% independent nulls into Contract, Tenure, Monthly Charge
+    # Augmentation: inject STRUCTURED nulls (conditional on base features)
     rng = np.random.RandomState(SEED)
-    augment_features = ['Contract', 'Tenure in Months', 'Monthly Charge']
-    n_null = int(0.40 * len(df))
-    for feat in augment_features:
-        null_idx = rng.choice(df.index, size=n_null, replace=False)
-        df.loc[null_idx, feat] = np.nan
+    # Contract -> NaN for short-tenure customers + noise
+    tenure_median = df['Tenure in Months'].median()
+    contract_candidates = df[df['Tenure in Months'] < tenure_median].index
+    above_median = df[df['Tenure in Months'] >= tenure_median].index
+    noise_idx = rng.choice(above_median, size=int(0.10 * len(above_median)), replace=False)
+    df.loc[np.concatenate([contract_candidates, noise_idx]), 'Contract'] = np.nan
+    # Tenure -> NaN for no-referral customers + noise
+    no_ref = df[df['Number of Referrals'] == 0].index
+    has_ref = df[df['Number of Referrals'] > 0].index
+    noise_idx2 = rng.choice(has_ref, size=int(0.15 * len(has_ref)), replace=False)
+    df.loc[np.concatenate([no_ref, noise_idx2]), 'Tenure in Months'] = np.nan
+    # Monthly Charge -> NaN for non-paperless customers + noise
+    non_paper = df[df['Paperless Billing'] == 0].index
+    paper = df[df['Paperless Billing'] == 1].index
+    noise_idx3 = rng.choice(paper, size=int(0.10 * len(paper)), replace=False)
+    df.loc[np.concatenate([non_paper, noise_idx3]), 'Monthly Charge'] = np.nan
 
     ext_features = ['Offer', 'Monthly Charge']
     return df, label, ext_features
