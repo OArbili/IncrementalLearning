@@ -31,7 +31,7 @@ Machine learning models deployed in healthcare, finance, and other dynamic envir
 
 We introduce an incremental learning framework for Gradient Boosting Machines that seamlessly integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features, then warm-starts an extended model that incorporates newly available features through adaptive tree pruning. Crucially, the phases operate independently --- only the model artifact is transferred, not raw data --- enabling deployment under privacy constraints and evolving feature availability.
 
-Evaluation across 10 diverse datasets demonstrates that incremental learning without data sharing achieves near-parity with standard training (Wilcoxon $p = 0.004$), with all 10 datasets showing positive or zero weighted improvement ($p = 0.004$).
+Evaluation across 10 diverse datasets demonstrates that incremental learning without data sharing achieves near-parity with standard training, with all 10 datasets showing positive or zero weighted improvement (Wilcoxon $p = 0.002$).
 \end{abstract}
 
 \keywords{Incremental Learning, Structured Missingness, Gradient Boosting, Feature Evolution, Adaptive Tree Pruning, Privacy-Preserving ML, Model Transfer}
@@ -48,7 +48,7 @@ Maintaining robust predictive models in such settings presents a major challenge
 
 A closely related challenge arises in cross-organizational collaboration, where multiple institutions hold complementary feature sets but cannot share raw data due to privacy regulations. For example, two hospitals may collect different diagnostic measurements for overlapping patient populations, or banks collaborating on anti-money laundering (AML) models may hold transaction features that cannot be exchanged. Our framework directly addresses this scenario: one institution trains a base model on its features and shares only the model artifact, while the other extends it with private features using warm-start and adaptive pruning. Our experimental design mirrors exactly this setup --- the base model is trained on one feature set and extended with additional features from a different subpopulation, with no data shared between phases.
 
-In this work, we introduce an incremental learning framework for GBMs that integrates new features without full retraining or data sharing, and demonstrate that it achieves near-parity with standard training across 10 diverse datasets (Wilcoxon $p = 0.004$), with all 10 datasets showing positive or zero improvement. Our contributions are:
+In this work, we introduce an incremental learning framework for GBMs that integrates new features without full retraining or data sharing, and demonstrate that it achieves near-parity with standard training across 10 diverse datasets (Wilcoxon $p = 0.002$), with all 10 datasets showing positive or zero improvement. Our contributions are:
 \begin{itemize}
 \setlength\itemindent{0pt}
 \setlength{\itemindent}{0pt}
@@ -345,23 +345,24 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
 
 \begin{table}[h]
 \centering
-  \label{tab:dataset-summary}
  \caption{
     Datasets used in experiments. Label\% shows positive class proportion. Null\% is the average missingness of the extended features used in each experiment.
-  }\resizebox{0.95\columnwidth}{!}{%
+  }
+  \label{tab:dataset-summary}
+  \resizebox{0.95\columnwidth}{!}{%
   \begin{tabular}{l r r r r}
     \toprule
     \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Label\%} & \textbf{Null (\%)} \\
     \midrule
     FlightDelay        & 567,630  & 14  & 17.4 & 20.0 \\
     WeatherAUS         & 142,193  & 20  & 22.4 & 40.3 \\
-    MovieAugV2         & 112,466  & 11  & 1.9  & 50.0 \\
+    MovieAugV2         & 112,466  & 11  & 1.9  & 88.5 \\
     DiabetesRecord     & 101,766  & 45  & 46.1 & 66.2 \\
     BankLoanSta        & 100,000  & 17  & 77.4 & 19.1 \\
-    WIDS               & 91,713   & 183 & 8.6  & 87.7 \\
-    Weather            & 25,000   & 16  & 22.4 & 49.3 \\
+    WIDS               & 91,713   & 51  & 8.6  & 87.4 \\
     CreditRisk         & 80,000   & 41  & 8.0  & 95.0 \\
-    HRAnalytics        & 19,158   & 14  & 24.9 & 23.5 \\
+    Weather            & 25,000   & 16  & 22.4 & 62.3 \\
+    HRAnalytics        & 19,158   & 14  & 24.9 & 31.0 \\
     ClientRecord       & 7,043    & 28  & 67.0 & 47.5 \\
   \bottomrule
   \end{tabular}%
@@ -377,7 +378,7 @@ For each dataset, we implemented a five step experimental process to evaluate ou
 \begin{enumerate}
 \item \textbf{Preprocessing and Feature Optimization}: We performed an optimization routine to determine the most effective allocation between base and extended feature sets, balancing predictive power against missing value patterns.
 
-\item \textbf{Base Model Construction}: We trained an XGBoost model using only the optimized base feature set. Hyperparameters were tuned using an  bayesian optimization, resulting in optimal configurations for each dataset.
+\item \textbf{Base Model Construction}: We trained an XGBoost model using only the optimized base feature set. Hyperparameters were tuned using Bayesian optimization, resulting in optimal configurations for each dataset.
 
 \item \textbf{Extended Model Development}: We constructed an extended model by:
 \begin{itemize}
@@ -411,13 +412,13 @@ Our incremental learning framework demonstrates consistent improvements across a
 
 \subsection{Comprehensive Performance Analysis}
 
-Across all 10 datasets, our framework achieves positive or zero weighted improvement, demonstrating that incremental learning without data sharing incurs no performance loss compared to standard training (Wilcoxon $p = 0.004$). The strongest gains appear in BankLoanSta (+0.0743), Weather (+0.0097), FlightDelay (+0.0046), and ClientRecord (+0.0046).
+Across all 10 datasets, our framework achieves positive or zero weighted improvement, demonstrating that incremental learning without data sharing incurs no performance loss compared to standard training (Wilcoxon $p = 0.002$). The strongest gains appear in BankLoanSta (+0.0294), HRAnalytics (+0.0049), MovieAugV2 (+0.0028), and Weather (+0.0027).
 
 A key finding is that the incremental approach not only avoids performance degradation but achieves consistent gains on the feature-absent population (positive base diff in all 10 datasets). This occurs because our base model trains on \textit{all} rows with extended features masked as NaN, giving it a larger training set than the baseline's base model which uses only base features. The extended features' absence pattern itself becomes an implicit signal that aids specialization --- an emergent benefit of the incremental design.
 
 For the extended population, results are more nuanced. In 6 out of 10 datasets, the extended model matches or exceeds the combined baseline on extended-feature rows. In the remaining 2 datasets (Weather, WeatherAUS), the extended model shows marginal deficits (less than 0.002 AUC), which are more than compensated by the base model's gains on the no-extended population.
 
-\textbf{Statistical significance.} All 10 datasets show positive or zero weighted improvement. A Wilcoxon signed-rank test confirms statistical significance ($W = 0$, $p = 0.004$). The median weighted improvement is +0.0014 AUC.
+\textbf{Statistical significance.} All 10 datasets show positive or zero weighted improvement. A Wilcoxon signed-rank test confirms statistical significance ($W = 0$, $p = 0.004$). The median weighted improvement is +0.0018 AUC.
 \textbf{Robustness across pruning strategies.} As a proxy for result stability, we examine the spread of improvements across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). While the adaptive (Optuna) strategy achieves the best improvement for each dataset, performance varies across strategies: the mean range between best and worst pruning mode is 0.004 AUC. Two datasets (BankLoanSta and ClientRecord) show positive improvement under all three pruning strategies, indicating robust gains regardless of pruning choice. For the remaining datasets, at least one strategy achieves positive improvement, while others may yield marginal deficits --- confirming that pruning strategy selection matters and justifying the adaptive optimization approach.
 
 \begin{table*}[!t]
@@ -540,9 +541,9 @@ Several directions merit further investigation. First, extending the framework t
 
 We presented an incremental learning framework for Gradient Boosting Machines that integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features and incrementally extends it with newly available features through warm-starting and adaptive tree pruning --- with only the model artifact shared between phases, enabling both incremental updates and privacy-constrained deployment.
 
-Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that incremental learning without data sharing achieves near-parity with standard training, with weighted AUC improvements ranging from +0.0000 to +0.0294 across all 10 datasets (Wilcoxon $p = 0.004$). This is the central result: \textit{data separation between training phases incurs no performance cost} --- while providing operational benefits that standard training cannot offer, including incremental updates and privacy-constrained deployment.
+Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that incremental learning without data sharing achieves near-parity with standard training, with weighted AUC improvements ranging from +0.0001 to +0.0294 across all 10 datasets (Wilcoxon $p = 0.002$). This is the central result: \textit{data separation between training phases incurs no performance cost} --- while providing operational benefits that standard training cannot offer, including incremental updates and privacy-constrained deployment.
 
-The adaptive pruning mechanism --- which determines how much prior knowledge to retain during incremental extension --- achieves the best results in 8 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our analysis of 166 experiment configurations reveals why no performance is lost despite data separation: the two-phase design enables population-specific specialization as an emergent benefit, with the base model matching or exceeding unified baselines on the feature-absent subpopulation in 100\% of datasets.
+The adaptive pruning mechanism --- which determines how much prior knowledge to retain during incremental extension --- achieves the best results in 7 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our analysis of 166 experiment configurations reveals why no performance is lost despite data separation: the two-phase design enables population-specific specialization as an emergent benefit, with the base model matching or exceeding unified baselines on the feature-absent subpopulation in 100\% of datasets.
 
 The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data --- all 10 datasets validate that this model-level knowledge transfer achieves near-parity performance without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
 
