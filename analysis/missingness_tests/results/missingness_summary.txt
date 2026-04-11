@@ -7,4 +7,4 @@ Tests:
 
 Dataset              Type               Chi2 p   LogReg AUC Classification      
 --------------------------------------------------------------------------------
-ClientRecord         augmented        1.36e-07       0.8234 Structured          
+FlightDelay          augmented        1.57e-01       0.4975 Random              
