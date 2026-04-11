@@ -152,7 +152,7 @@ def load_client_record_aug():
 
 
 def load_client_record_v2():
-    """ClientRecord v2 (Augmented — structured nulls). Best combo: Offer + Monthly Charge ext."""
+    """ClientRecord v2 (Augmented — structured nulls). Best combo: Tenure in Months ext."""
     path = kagglehub.dataset_download("shilongzhuang/telecom-customer-churn-by-maven-analytics")
     csv_files = sorted([f for f in os.listdir(path) if f.endswith('.csv')])
     data1 = pd.read_csv(os.path.join(path, csv_files[2]))
@@ -186,7 +186,7 @@ def load_client_record_v2():
     noise_idx3 = rng.choice(paper, size=int(0.10 * len(paper)), replace=False)
     df.loc[np.concatenate([non_paper, noise_idx3]), 'Monthly Charge'] = np.nan
 
-    ext_features = ['Offer', 'Monthly Charge']
+    ext_features = ['Tenure in Months']
     return df, label, ext_features
 
 
