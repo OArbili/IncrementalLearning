@@ -43,7 +43,7 @@ pipeline = GenericDataPipeline()
 # ============================================================================
 
 def load_bankloansta():
-    """BankLoanSta (Augmented — structured nulls). Best combo: Current Loan Amount ext."""
+    """BankLoanSta (Augmented — structured nulls). Best combo: TBD from sweep."""
     path = kagglehub.dataset_download("zaurbegiev/my-dataset")
     csv_files = sorted([f for f in os.listdir(path) if f.endswith('.csv')])
     csv_path = os.path.join(path, csv_files[1])
@@ -54,16 +54,28 @@ def load_bankloansta():
     label = "Loan Status"
     df[label] = df[label].astype(int)
 
-    # Augmentation: inject STRUCTURED nulls (conditional on base features)
+    # Augmentation: inject STRUCTURED nulls into 3 features (conditional on base features)
     rng = np.random.RandomState(SEED)
-    # Current Loan Amount -> NaN for high debt customers (Monthly Debt > median) + noise
+    # Current Loan Amount -> NaN for high debt (Monthly Debt > median) + noise
     debt_median = df['Monthly Debt'].median()
     high_debt = df[df['Monthly Debt'] > debt_median].index
     low_debt = df[df['Monthly Debt'] <= debt_median].index
-    noise_idx = rng.choice(low_debt, size=int(0.10 * len(low_debt)), replace=False)
-    df.loc[np.concatenate([high_debt, noise_idx]), 'Current Loan Amount'] = np.nan
+    noise1 = rng.choice(low_debt, size=int(0.10 * len(low_debt)), replace=False)
+    df.loc[np.concatenate([high_debt, noise1]), 'Current Loan Amount'] = np.nan
+    # Annual Income -> NaN for short credit history + noise
+    hist_median = df['Years of Credit History'].median()
+    short_hist = df[df['Years of Credit History'] < hist_median].index
+    long_hist = df[df['Years of Credit History'] >= hist_median].index
+    noise2 = rng.choice(long_hist, size=int(0.10 * len(long_hist)), replace=False)
+    df.loc[np.concatenate([short_hist, noise2]), 'Annual Income'] = np.nan
+    # Credit Score -> NaN for many open accounts + noise
+    acct_median = df['Number of Open Accounts'].median()
+    many_accts = df[df['Number of Open Accounts'] > acct_median].index
+    few_accts = df[df['Number of Open Accounts'] <= acct_median].index
+    noise3 = rng.choice(few_accts, size=int(0.10 * len(few_accts)), replace=False)
+    df.loc[np.concatenate([many_accts, noise3]), 'Credit Score'] = np.nan
 
-    ext_features = ['Current Loan Amount']
+    ext_features = ['Current Loan Amount', 'Annual Income', 'Credit Score']
     return df, label, ext_features
 
 

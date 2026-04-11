@@ -68,17 +68,27 @@ def load_bankloansta():
     label = "Loan Status"
     df[label] = df[label].astype(int)
 
-    # Augmentation: STRUCTURED nulls (conditional on base features)
+    # Augmentation: STRUCTURED nulls into 3 features (conditional on base features)
     rng = np.random.RandomState(SEED)
     debt_median = df['Monthly Debt'].median()
     high_debt = df[df['Monthly Debt'] > debt_median].index
     low_debt = df[df['Monthly Debt'] <= debt_median].index
-    noise_idx = rng.choice(low_debt, size=int(0.10 * len(low_debt)), replace=False)
-    df.loc[np.concatenate([high_debt, noise_idx]), 'Current Loan Amount'] = np.nan
+    noise1 = rng.choice(low_debt, size=int(0.10 * len(low_debt)), replace=False)
+    df.loc[np.concatenate([high_debt, noise1]), 'Current Loan Amount'] = np.nan
+    hist_median = df['Years of Credit History'].median()
+    short_hist = df[df['Years of Credit History'] < hist_median].index
+    long_hist = df[df['Years of Credit History'] >= hist_median].index
+    noise2 = rng.choice(long_hist, size=int(0.10 * len(long_hist)), replace=False)
+    df.loc[np.concatenate([short_hist, noise2]), 'Annual Income'] = np.nan
+    acct_median = df['Number of Open Accounts'].median()
+    many_accts = df[df['Number of Open Accounts'] > acct_median].index
+    few_accts = df[df['Number of Open Accounts'] <= acct_median].index
+    noise3 = rng.choice(few_accts, size=int(0.10 * len(few_accts)), replace=False)
+    df.loc[np.concatenate([many_accts, noise3]), 'Credit Score'] = np.nan
 
     return df, label, {
         'mode': 'augmented',
-        'inject_features': ['Current Loan Amount'],
+        'inject_features': ['Current Loan Amount', 'Annual Income', 'Credit Score'],
     }
 
 
