@@ -38,16 +38,14 @@ def load_bankloansta():
     df = pipeline.preprocessing(df)
     label = "Loan Status"
     df[label] = df[label].astype(int)
+    # Augmentation: STRUCTURED nulls (conditional on base features)
     rng = np.random.RandomState(SEED)
-    null_features_original = ['Credit Score', 'Annual Income', 'Months since last delinquent', 'Years in current job']
-    has_any_null = df[null_features_original].isna().any(axis=1)
-    candidate_indices = df[has_any_null].index.tolist()
-    n_sample = min(int(0.20 * len(df)), len(candidate_indices))
-    sampled_indices = rng.choice(candidate_indices, size=n_sample, replace=False)
-    choices = rng.choice(['home', 'purpose', 'both'], size=len(sampled_indices))
-    df.loc[sampled_indices[choices != 'purpose'], 'Home Ownership'] = np.nan
-    df.loc[sampled_indices[choices != 'home'], 'Purpose'] = np.nan
-    ext_features = ['Current Loan Amount', 'Annual Income', 'Credit Score']
+    debt_median = df['Monthly Debt'].median()
+    high_debt = df[df['Monthly Debt'] > debt_median].index
+    low_debt = df[df['Monthly Debt'] <= debt_median].index
+    noise_idx = rng.choice(low_debt, size=int(0.10 * len(low_debt)), replace=False)
+    df.loc[np.concatenate([high_debt, noise_idx]), 'Current Loan Amount'] = np.nan
+    ext_features = ['Current Loan Amount']
     return df, label, ext_features, 'augmented'
 
 def load_weather():
