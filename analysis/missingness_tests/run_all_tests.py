@@ -244,10 +244,27 @@ def load_flightdelay():
     if len(df) > 100000:
         df = df.sample(n=100000, random_state=SEED).reset_index(drop=True)
     df = pipeline.preprocessing(df)
+    # STRUCTURED nulls (conditional on base features)
     rng = np.random.RandomState(SEED)
-    for feat in ['TAIL_NUM', 'DISTANCE', 'OP_CARRIER_FL_NUM', 'DAY_OF_MONTH']:
-        null_idx = rng.choice(df.index, size=int(0.20 * len(df)), replace=False)
-        df.loc[null_idx, feat] = np.nan
+    regional = ['9E', 'EV', 'MQ', 'OH', 'OO', 'YV', 'YX']
+    regional_idx = df[df['OP_CARRIER'].isin(regional)].index
+    major_idx = df[~df['OP_CARRIER'].isin(regional)].index
+    noise1 = rng.choice(major_idx, size=int(0.05 * len(major_idx)), replace=False)
+    df.loc[np.concatenate([regional_idx, noise1]), 'OP_CARRIER_FL_NUM'] = np.nan
+    weekend_idx = df[df['DAY_OF_WEEK'].isin([6, 7])].index
+    weekday_idx = df[df['DAY_OF_WEEK'].isin([1, 2, 3, 4, 5])].index
+    noise2 = rng.choice(weekday_idx, size=int(0.05 * len(weekday_idx)), replace=False)
+    df.loc[np.concatenate([weekend_idx, noise2]), 'TAIL_NUM'] = np.nan
+    early_idx = df[df['DEP_TIME_BLK'].isin(['0001-0559', '0600-0659'])].index
+    other_idx = df[~df['DEP_TIME_BLK'].isin(['0001-0559', '0600-0659'])].index
+    noise3 = rng.choice(other_idx, size=int(0.10 * len(other_idx)), replace=False)
+    df.loc[np.concatenate([early_idx, noise3]), 'DISTANCE'] = np.nan
+    dist_median = df['DISTANCE'].median()
+    short_idx = df[df['DISTANCE'] < dist_median].index if not df['DISTANCE'].isna().all() else pd.Index([])
+    long_idx = df[df['DISTANCE'] >= dist_median].index if not df['DISTANCE'].isna().all() else df.index
+    if len(short_idx) > 0 and len(long_idx) > 0:
+        noise4 = rng.choice(long_idx, size=int(0.10 * len(long_idx)), replace=False)
+        df.loc[np.concatenate([short_idx, noise4]), 'DAY_OF_MONTH'] = np.nan
     ext_features = ['OP_CARRIER_FL_NUM']
     return df, label, ext_features, 'augmented'
 
