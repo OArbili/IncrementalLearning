@@ -249,13 +249,31 @@ def load_movie_aug_v2():
     label = "TARGET"
     df[label] = df[label].astype(int)
 
-    # Heavy augmentation: 50% null per feature, independent
+    # STRUCTURED augmentation: conditional on base features
     rng = np.random.RandomState(SEED)
-    augment_features = ['rating_count', 'rating_mean', 'rating_std', 'days_active', 'rating_frequency']
-    n_null = int(0.50 * len(df))
-    for feat in augment_features:
-        null_idx = rng.choice(df.index, size=n_null, replace=False)
-        df.loc[null_idx, feat] = np.nan
+    # rating_count -> NaN for inactive users (days_active < median) + noise
+    days_median = df['days_active'].median()
+    inactive = df[df['days_active'] < days_median].index
+    active = df[df['days_active'] >= days_median].index
+    noise1 = rng.choice(active, size=int(0.10 * len(active)), replace=False)
+    df.loc[np.concatenate([inactive, noise1]), 'rating_count'] = np.nan
+    # rating_mean -> NaN for low-count users (rating_count < median) + noise
+    count_median = df['rating_count'].median()
+    low_count = df[df['rating_count'] < count_median].index if not df['rating_count'].isna().all() else pd.Index([])
+    high_count = df[df['rating_count'] >= count_median].index if not df['rating_count'].isna().all() else df.index
+    if len(low_count) > 0 and len(high_count) > 0:
+        noise2 = rng.choice(high_count, size=int(0.10 * len(high_count)), replace=False)
+        df.loc[np.concatenate([low_count, noise2]), 'rating_mean'] = np.nan
+    # rating_std -> NaN for users with few ratings + noise (same pattern as mean)
+    df.loc[np.concatenate([low_count, noise2]) if len(low_count) > 0 else pd.Index([]), 'rating_std'] = np.nan
+    # days_active and rating_frequency -> NaN for low engagement (rating_count < Q1) + noise
+    q1 = df['rating_count'].quantile(0.25)
+    very_low = df[df['rating_count'] < q1].index if not df['rating_count'].isna().all() else pd.Index([])
+    not_very_low = df[df['rating_count'] >= q1].index if not df['rating_count'].isna().all() else df.index
+    if len(very_low) > 0 and len(not_very_low) > 0:
+        noise3 = rng.choice(not_very_low, size=int(0.15 * len(not_very_low)), replace=False)
+        df.loc[np.concatenate([very_low, noise3]), 'days_active'] = np.nan
+        df.loc[np.concatenate([very_low, noise3]), 'rating_frequency'] = np.nan
 
     ext_features = ['rating_mean', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
     return df, label, ext_features

@@ -196,10 +196,27 @@ def load_movieaugv2():
     df = pipeline.preprocessing(df)
     label = "TARGET"
     df[label] = df[label].astype(int)
+    # STRUCTURED augmentation: conditional on base features
     rng = np.random.RandomState(SEED)
-    for feat in ['rating_count', 'rating_mean', 'rating_std', 'days_active', 'rating_frequency']:
-        null_idx = rng.choice(df.index, size=int(0.50 * len(df)), replace=False)
-        df.loc[null_idx, feat] = np.nan
+    days_median = df['days_active'].median()
+    inactive = df[df['days_active'] < days_median].index
+    active = df[df['days_active'] >= days_median].index
+    noise1 = rng.choice(active, size=int(0.10 * len(active)), replace=False)
+    df.loc[np.concatenate([inactive, noise1]), 'rating_count'] = np.nan
+    count_median = df['rating_count'].median()
+    low_count = df[df['rating_count'] < count_median].index if not df['rating_count'].isna().all() else pd.Index([])
+    high_count = df[df['rating_count'] >= count_median].index if not df['rating_count'].isna().all() else df.index
+    if len(low_count) > 0 and len(high_count) > 0:
+        noise2 = rng.choice(high_count, size=int(0.10 * len(high_count)), replace=False)
+        df.loc[np.concatenate([low_count, noise2]), 'rating_mean'] = np.nan
+        df.loc[np.concatenate([low_count, noise2]), 'rating_std'] = np.nan
+    q1 = df['rating_count'].quantile(0.25)
+    very_low = df[df['rating_count'] < q1].index if not df['rating_count'].isna().all() else pd.Index([])
+    not_very_low = df[df['rating_count'] >= q1].index if not df['rating_count'].isna().all() else df.index
+    if len(very_low) > 0 and len(not_very_low) > 0:
+        noise3 = rng.choice(not_very_low, size=int(0.15 * len(not_very_low)), replace=False)
+        df.loc[np.concatenate([very_low, noise3]), 'days_active'] = np.nan
+        df.loc[np.concatenate([very_low, noise3]), 'rating_frequency'] = np.nan
     ext_features = ['rating_mean', 'tag_count', 'unique_tags', 'avg_tag_length', 'tag_frequency', 'last_tag']
     return df, label, ext_features, 'augmented'
 
