@@ -68,17 +68,17 @@ def load_bankloansta():
     label = "Loan Status"
     df[label] = df[label].astype(int)
 
-    # Augmentation: inject nulls into selected features (independent masks)
-    inject_features = ['Current Loan Amount', 'Annual Income', 'Credit Score']
-    inject_rate = 0.20
-    np.random.seed(SEED)
-    for col in inject_features:
-        mask = np.random.rand(len(df)) < inject_rate
-        df.loc[mask, col] = np.nan
+    # Augmentation: STRUCTURED nulls (conditional on base features)
+    rng = np.random.RandomState(SEED)
+    debt_median = df['Monthly Debt'].median()
+    high_debt = df[df['Monthly Debt'] > debt_median].index
+    low_debt = df[df['Monthly Debt'] <= debt_median].index
+    noise_idx = rng.choice(low_debt, size=int(0.10 * len(low_debt)), replace=False)
+    df.loc[np.concatenate([high_debt, noise_idx]), 'Current Loan Amount'] = np.nan
 
     return df, label, {
         'mode': 'augmented',
-        'inject_features': inject_features,
+        'inject_features': ['Current Loan Amount'],
     }
 
 
