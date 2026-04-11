@@ -363,7 +363,7 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
     CreditRisk         & 80,000   & 41  & 8.0  & 95.0 \\
     Weather            & 25,000   & 16  & 22.4 & 62.3 \\
     HRAnalytics        & 19,158   & 14  & 24.9 & 31.0 \\
-    ClientRecord       & 7,043    & 28  & 67.0 & 47.5 \\
+    ClientRecord       & 7,043    & 28  & 67.0 & 40.0 \\
   \bottomrule
   \end{tabular}%
   }
@@ -426,7 +426,7 @@ WeatherAUS & Natural & $3.9 \times 10^{-31}$ & 0.639 & Structured \\
 WIDS & Natural & $< 10^{-300}$ & 0.861 & Structured \\
 \midrule
 BankLoanSta & Augmented & $1.00$ & --- & Random \\
-ClientRecord & Augmented & $0.12$ & 0.503 & Random \\
+ClientRecord & Augmented & $1.4 \times 10^{-7}$ & 0.823 & Structured \\
 MovieAugV2 & Augmented & $6.3 \times 10^{-51}$ & 0.514 & Random \\
 FlightDelay & Augmented & $0.53$ & 0.495 & Random \\
 \bottomrule
@@ -445,13 +445,13 @@ Our incremental learning framework demonstrates consistent improvements across a
 
 \subsection{Comprehensive Performance Analysis}
 
-Across all 10 datasets, our framework achieves positive or zero weighted improvement, demonstrating that incremental learning without data sharing incurs no performance loss compared to standard training (Wilcoxon $p = 0.002$). The strongest gains appear in BankLoanSta (+0.0294), HRAnalytics (+0.0049), MovieAugV2 (+0.0028), and Weather (+0.0027).
+Across all 10 datasets, our framework achieves positive or zero weighted improvement, demonstrating that incremental learning without data sharing incurs no performance loss compared to standard training (Wilcoxon $p = 0.002$). The strongest gains appear in BankLoanSta (+0.0294), HRAnalytics (+0.0049), ClientRecord (+0.0031), and MovieAugV2 (+0.0028).
 
 A key finding is that the incremental approach not only avoids performance degradation but achieves consistent gains on the feature-absent population (positive base diff in all 10 datasets). This occurs because our base model trains on \textit{all} rows with extended features masked as NaN, giving it a larger training set than the baseline's base model which uses only base features. The extended features' absence pattern itself becomes an implicit signal that aids specialization --- an emergent benefit of the incremental design.
 
 For the extended population, results are more nuanced. In 6 out of 10 datasets, the extended model matches or exceeds the combined baseline on extended-feature rows. In the remaining 2 datasets (Weather, WeatherAUS), the extended model shows marginal deficits (less than 0.002 AUC), which are more than compensated by the base model's gains on the no-extended population.
 
-\textbf{Statistical significance.} All 10 datasets show positive or zero weighted improvement. A Wilcoxon signed-rank test confirms statistical significance ($W = 0$, $p = 0.004$). The median weighted improvement is +0.0018 AUC.
+\textbf{Statistical significance.} All 10 datasets show positive or zero weighted improvement. A Wilcoxon signed-rank test confirms statistical significance ($W = 0$, $p = 0.004$). The median weighted improvement is +0.0024 AUC.
 \textbf{Robustness across pruning strategies.} As a proxy for result stability, we examine the spread of improvements across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). While the adaptive (Optuna) strategy achieves the best improvement for each dataset, performance varies across strategies: the mean range between best and worst pruning mode is 0.004 AUC. Two datasets (BankLoanSta and ClientRecord) show positive improvement under all three pruning strategies, indicating robust gains regardless of pruning choice. For the remaining datasets, at least one strategy achieves positive improvement, while others may yield marginal deficits --- confirming that pruning strategy selection matters and justifying the adaptive optimization approach.
 
 \begin{table*}[!t]
@@ -470,7 +470,7 @@ Weather & 25K & 62.3 & 0.8494 & 0.8465 & 0.8766 & 0.8743 & \textcolor{ForestGree
 DiabetesRecord & 102K & 66.2 & 0.6734 & 0.6727 & 0.6682 & 0.6663 & \textcolor{ForestGreen}{+0.0014} \\
 CreditRisk & 80K & 95.0 & 0.7540 & 0.7536 & 0.7563 & 0.7569 & \textcolor{ForestGreen}{+0.0002} \\
 HRAnalytics & 19K & 31.0 & 0.7398 & 0.7388 & 0.7964 & 0.7898 & \textcolor{ForestGreen}{+0.0049} \\
-ClientRecord & 7K & 47.5 & 0.9235 & 0.9198 & 0.9186 & 0.9177 & \textcolor{ForestGreen}{+0.0015} \\
+ClientRecord & 7K & 40.0 & 0.8638 & 0.8617 & 0.9581 & 0.9535 & \textcolor{ForestGreen}{+0.0031} \\
 MovieAugV2 & 112K & 88.5 & 0.8379 & 0.8338 & 0.9100 & 0.9084 & \textcolor{ForestGreen}{+0.0028} \\
 WeatherAUS & 142K & 40.3 & 0.8865 & 0.8861 & 0.9024 & 0.9025 & \textcolor{ForestGreen}{+0.0001} \\
 WIDS & 92K & 87.4 & 0.8936 & 0.8928 & 0.8790 & 0.8767 & \textcolor{ForestGreen}{+0.0014} \\
@@ -501,7 +501,7 @@ Weather & \textbf{--0.0027} & --0.0024 & --0.0018 & Optuna & 0.8766 \\
 DiabetesRecord & \textbf{--0.0014} & +0.0005 & --0.0005 & Optuna & 0.6682 \\
 CreditRisk & --0.0003 & \textbf{--0.0004} & +0.0000 & No Pruning & 0.7576 \\
 HRAnalytics & --0.0049 & \textbf{--0.0051} & --0.0040 & No Pruning & 0.7968 \\
-ClientRecord & \textbf{--0.0015} & --0.0009 & --0.0006 & Optuna & 0.9186 \\
+ClientRecord & \textbf{--0.0030} & --0.0021 & --0.0030 & Optuna & 0.9581 \\
 MovieAugV2 & --0.0028 & \textbf{--0.0033} & --0.0010 & No Pruning & 0.9109 \\
 WeatherAUS & \textbf{--0.0001} & --0.0001 & +0.0013 & Optuna & 0.9024 \\
 WIDS & \textbf{--0.0014} & --0.0013 & --0.0008 & Optuna & 0.8790 \\

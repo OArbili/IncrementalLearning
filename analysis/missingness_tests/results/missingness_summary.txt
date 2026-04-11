@@ -7,13 +7,4 @@ Tests:
 
 Dataset              Type               Chi2 p   LogReg AUC Classification      
 --------------------------------------------------------------------------------
-BankLoanSta          augmented        1.00e+00          N/A Random              
-Weather              natural          5.14e-03       0.8281 Structured          
-DiabetesRecord       natural          2.61e-32       0.6334 Structured          
-CreditRisk           natural          3.47e-22       0.6789 Structured          
-HRAnalytics          natural         1.22e-246       0.7898 Structured          
-ClientRecord         augmented        1.21e-01       0.5033 Random              
-MovieAugV2           augmented        6.30e-51       0.5137 Weakly Structured   
-WeatherAUS           natural          3.86e-31       0.6387 Structured          
-WIDS                 natural          0.00e+00       0.8609 Structured          
-FlightDelay          augmented        5.29e-01       0.4947 Random              
+ClientRecord         augmented        1.36e-07       0.8234 Structured          

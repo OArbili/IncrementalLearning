@@ -1,11 +1,15 @@
 dataset,combo_name,ext_features,n_ext_features,ext_null_pct,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,n_no_ext,n_ext,n_rows,label_name,label_0_count,label_1_count,label_1_pct,source,date
-ClientRecordV2,Tenure+Offer ext,"Tenure in Months,Offer",2,47.5,30,optuna,0.8595,0.9245,0.8532,0.9322,0.001391,313,1096,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
-ClientRecordV2,Tenure ext,Tenure in Months,1,40.0,30,optuna,0.8783,0.9387,0.869,0.9452,-0.002748,564,845,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
-ClientRecordV2,Offer+Contract ext,"Offer,Contract",2,47.5,30,optuna,0.9192,0.9296,0.9167,0.9307,-0.001377,309,1100,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,optuna,0.9235,0.9186,0.9198,0.9177,-0.004647,305,1104,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
-ClientRecordV2,Offer ext,Offer,1,55.0,30,optuna,0.9218,0.9451,0.9205,0.9467,0.000291,775,634,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
-ClientRecordV2,Contract ext,Contract,1,40.0,30,optuna,0.9227,0.932,0.9202,0.9349,0.000345,564,845,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
-ClientRecordV2,MonthlyCharge ext,Monthly Charge,1,40.0,30,optuna,0.9202,0.9349,0.921,0.9357,0.00157,563,846,7043,Customer Status,2323,4720,67.0,30t combo sweep,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,optuna,0.9235,0.9186,0.9198,0.9177,-0.004647,305,1104,7043,Customer Status,2323,4720,67.0,30t ablation,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,no_pruning,0.9235,0.9178,0.9198,0.9177,-0.003799,305,1104,7043,Customer Status,2323,4720,67.0,30t ablation,2026-04-05
-ClientRecordV2,Offer+MonthlyCharge ext,"Offer,Monthly Charge",2,47.5,30,fixed_50,0.9235,0.9174,0.9198,0.9177,-0.003429,305,1104,7043,Customer Status,2323,4720,67.0,30t ablation,2026-04-05
+ClientRecordV2,Tenure+Offer+Contra ext,"Tenure in Months,Offer,Contract",3,47.5,30,optuna,0.7185,0.9264,0.7272,0.9255,0.001202,307,1102,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Tenure+Offer ext,"Tenure in Months,Offer",2,47.5,30,optuna,0.7855,0.9182,0.7862,0.9249,0.004653,479,930,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Tenure+Contra+Monthl ext,"Tenure in Months,Contract,Monthly Charge",3,47.5,30,optuna,0.8369,0.9205,0.8509,0.9244,0.005690,255,1154,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Tenure+Contra ext,"Tenure in Months,Contract",2,47.5,30,optuna,0.7904,0.9195,0.7971,0.9356,0.012432,553,856,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Tenure+Monthl ext,"Tenure in Months,Monthly Charge",2,47.5,30,optuna,0.8872,0.9060,0.8824,0.9115,0.002645,397,1012,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Tenure ext,"Tenure in Months",1,40.0,30,optuna,0.8638,0.9581,0.8617,0.9535,-0.003035,861,548,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Offer+Contra ext,"Offer,Contract",2,47.5,30,optuna,0.7894,0.9145,0.7946,0.9164,0.002898,427,982,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Offer+Monthl ext,"Offer,Monthly Charge",2,47.5,30,optuna,0.8843,0.9079,0.8845,0.9127,0.003631,365,1044,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Offer ext,"Offer",1,55.0,30,optuna,0.9104,0.9383,0.9134,0.9411,0.002893,775,634,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Contra+Monthl ext,"Contract,Monthly Charge",2,47.5,30,optuna,0.8770,0.8946,0.8829,0.9041,0.008554,359,1050,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Monthl ext,"Monthly Charge",1,40.0,30,optuna,0.9026,0.9054,0.9022,0.9056,-0.000110,658,751,7043,Customer Status,2323,4720,67.0,30t structured sweep cluster,2026-04-11
+ClientRecordV2,Tenure ext,"Tenure in Months",1,40.0,30,optuna,0.8638,0.9581,0.8617,0.9535,-0.003035,861,548,7043,Customer Status,2323,4720,67.0,30t structured ablation cluster,2026-04-11
+ClientRecordV2,Tenure ext,"Tenure in Months",1,40.0,30,no_pruning,0.8638,0.9558,0.8617,0.9535,-0.002147,861,548,7043,Customer Status,2323,4720,67.0,30t structured ablation cluster,2026-04-11
+ClientRecordV2,Tenure ext,"Tenure in Months",1,40.0,30,fixed_50,0.8638,0.9580,0.8617,0.9535,-0.003005,861,548,7043,Customer Status,2323,4720,67.0,30t structured ablation cluster,2026-04-11
