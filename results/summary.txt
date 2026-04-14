@@ -289,6 +289,23 @@ Incremental wins: 6/21 (29%)
 Best combo: h1_bilirub+h1_lactate+h1_pao2fio+h1_arteria ext (objective: -0.004540)
 
 ================================================================================
+DATASET 12: FlightDelay (Augmented)
+================================================================================
+Rows: 567,630 | Augmented with artificial nulls (20% per feature)
+Augmented features: TAIL_NUM, DISTANCE, OP_CARRIER_FL_NUM, DAY_OF_MONTH
+Best combo: OP_CARRIER_FL_NUM ext | Optuna trials per model: 10
+Label: DEP_DEL15 (binary: 1 = departure delayed >= 15 min)
+
+#   Combo                Objective    Base AUC  Ext AUC   Comb-no   Comb+ext  N_no_ext  N_ext     Winner
+--- -------------------- ------------ --------- --------- --------- --------- --------- --------- --------
+1   DAY_OF_M ext         0.009717     0.6935    0.7360    0.6858    0.7534    22705     90821     Combined
+2   TAIL_NUM ext         -0.002970    0.7484    0.7399    0.7449    0.7404    22705     90821     Increm
+3   OP_CARRI ext         -0.004340    0.7399    0.7475    0.7363    0.7469    22705     90821     Increm
+
+Incremental wins: 2/3 (67%)
+Best combo: OP_CARRI ext (objective: -0.004340)
+
+================================================================================
 OVERALL SUMMARY
 ================================================================================
 
@@ -305,12 +322,14 @@ Movie (Aug v1)       112,466  0        N/A           N/A (no valid combos)      
 Movie (Aug v2)       112,466  20       5/20 (25%)    rating+rating ext                -0.004046    0.9209    0.8739    0.9199    0.8709    Yes
 WeatherAUS           142,193  15       0/15 (0%)     Evapor+Cloud9 ext                 0.000560    0.8867    0.9019    0.8855    0.9037    No
 WIDS                 91,713   21       6/21 (29%)    h1_bilirub+h1_lactate+... ext    -0.004540    0.9006    0.8955    0.8992    0.8923    No
+FlightDelay          567,630  3        2/3 (67%)     OP_CARRI ext                     -0.004340    0.7399    0.7475    0.7363    0.7469    Yes
 
-Total: 41/121 combinations (34%) show incremental learning advantage.
-(Excluding Movie/Movie Aug v1 which had no valid combinations: 41/121)
+Total: 43/124 combinations (35%) show incremental learning advantage.
+(Excluding Movie/Movie Aug v1 which had no valid combinations: 43/124)
 
 Key insight: Across all datasets, specialized incremental models tend to outperform the single combined model,
 particularly when extended features have high null ratios and the base/extended split is well-separated.
 Heavy augmentation (50% null rate) on Movie dataset enabled valid combinations where lighter augmentation (20%) failed.
 WeatherAUS (142K rows) shows 0% wins with high base AUC (~0.89), suggesting limited room for incremental gains.
 WIDS ICU dataset (91K rows) shows 29% wins using hour-1 clinical measurement groups as extended features.
+FlightDelay (567K rows) shows 67% wins — largest dataset, moderate AUC range (0.69–0.75).

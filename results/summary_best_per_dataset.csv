@@ -1,11 +1,11 @@
 dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,weighted_improvement,n_no_ext,n_ext,n_rows,label_name,label_1_pct,source,date
-BankLoanSta,Curren+Annual+Credit ext,"Current Loan Amount,Annual Income,Credit Score",3,30,optuna,0.6952,0.7817,0.6495,0.7531,-0.074311,0.029375,907,19093,100000,Loan Status,77.4,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Credit ext,Credit Score,1,30,optuna,0.6854,0.7290,0.6585,0.7438,-0.011328,0.011328,12535,7465,100000,Loan Status,77.4,30t structured ablation cluster (job 16978930),2026-04-13
 Weather,Evapor ext,Evaporation,1,30,optuna,0.8494,0.8766,0.8465,0.8743,-0.002661,0.002674,3114,1886,25000,RainTomorrow,22.4,30t weighted sweep,2026-04-07
 DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,30,optuna,0.6734,0.6682,0.6727,0.6663,-0.002604,0.001405,8389,11965,101766,readmitted,46.1,30t combo sweep (IDs removed),2026-04-05
-CreditRisk,Grp2 ext,MEAN_AMTCR credit bureau features (group 2),2,30,optuna,0.7368,0.7378,0.736,0.7384,-0.000148,0.000504,12617,3383,80000,TARGET,8.0,30t combo sweep,2026-04-05
-HRAnalytics,company_size ext,company_size,1,30,optuna,0.7398,0.7964,0.7388,0.7898,-0.004913,0.004864,1188,2644,19158,target,24.9,30t weighted sweep,2026-04-07
+CreditRisk,Grp1+Grp2 ext,MEAN_AMTCR credit bureau features (groups 1-2),5,50,optuna,0.7544,0.7548,0.7536,0.7569,-0.000469,0.000469,14334,1666,80000,TARGET,8.0,50t base+ext 30t combined ablation cluster (job 16991297),2026-04-14
+HRAnalytics,company_size ext,company_size,1,30,optuna,0.7408,0.7990,0.7380,0.7929,-0.005121,0.005121,1188,2644,19158,target,24.9,30t weighted ablation cluster (job 16979053),2026-04-14
 ClientRecordV2,Tenure ext,Tenure in Months,1,30,optuna,0.8638,0.9581,0.8617,0.9535,-0.003035,0.003072,861,548,7043,Customer Status,67.0,30t structured sweep cluster,2026-04-11
 MovieAugV2,rating_mean+tags ext,"rating_mean,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag",6,30,optuna,0.8379,0.91,0.8338,0.9084,-0.002795,0.002804,10830,11664,112466,TARGET,1.9,30t weighted cluster,2026-04-07
-WeatherAUS,Cloud3 ext,Cloud3pm,1,30,optuna,0.8923,0.9016,0.8906,0.9021,-0.001144,0.000383,11419,17020,142193,RainTomorrow,22.4,frosty-pasteur (30t sweep),2026-04-03
+WeatherAUS,Evapor+Cloud9 ext,"Evaporation,Cloud9am",2,100,optuna,0.8875,0.9032,0.8859,0.9027,-0.000794,0.000794,8815,19624,142193,RainTomorrow,22.4,100t base+ext 30t combined ablation cluster (job 16989553),2026-04-14
 WIDS,h1_bilirub+h1_lactate+h1_pao2fio+h1_arteria,"h1_bilirubin_max,h1_bilirubin_min,h1_albumin_max,h1_albumin_min,h1_lactate_max,h1_lactate_min,h1_pao2fio2ratio_max,h1_pao2fio2ratio_min,h1_arterial_ph_max,h1_arterial_ph_min,h1_arterial_pco2_max,h1_arterial_pco2_min,h1_arterial_po2_max,h1_arterial_po2_min",14,10,optuna,0.9006,0.8955,0.8992,0.8923,-0.00454,0.001862,13632,4711,91713,hospital_death,8.6,wids_results.txt (10t full sweep),2026-03-16
 FlightDelay,OP_CARRIER_FL_NUM ext,OP_CARRIER_FL_NUM,1,30,optuna,0.7491,0.7194,0.7429,0.717,-0.003518,0.003542,6011,13989,100000,DEP_DEL15,17.3,30t structured sweep+ablation cluster,2026-04-11

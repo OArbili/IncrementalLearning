@@ -20,3 +20,6 @@ BankLoanSta,Curren+Annual ext,"Current Loan Amount,Annual Income",2,19.1,30,optu
 BankLoanSta,Curren+Credit ext,"Current Loan Amount,Credit Score",2,19.1,30,optuna,0.6777,0.7746,0.6621,0.765,-0.025278,1418,18582,100000,Loan Status,22639,77361,77.4,local main (30t b4l625xsb run2),2026-04-03
 BankLoanSta,Annual+Credit ext,"Annual Income,Credit Score",2,19.1,30,optuna,0.6693,0.7801,0.6543,0.7605,-0.034466,4478,15522,100000,Loan Status,22639,77361,77.4,local main (30t b4l625xsb run2),2026-04-03
 BankLoanSta,Curren+Annual+Credit ext,"Current Loan Amount,Annual Income,Credit Score",3,19.1,30,optuna,0.6952,0.7817,0.6495,0.7531,-0.074311,907,19093,100000,Loan Status,22639,77361,77.4,local main (30t b4l625xsb run2),2026-04-03
+BankLoanSta,Credit ext,Credit Score,1,62.7,30,optuna,0.6854,0.7290,0.6585,0.7438,-0.011328,12535,7465,100000,Loan Status,22639,77361,77.4,30t structured ablation cluster (job 16978930),2026-04-13
+BankLoanSta,Credit ext,Credit Score,1,62.7,30,no_pruning,0.6854,0.7226,0.6585,0.7438,-0.008936,12535,7465,100000,Loan Status,22639,77361,77.4,30t structured ablation cluster (job 16978930),2026-04-13
+BankLoanSta,Credit ext,Credit Score,1,62.7,30,fixed_50,0.6854,0.7382,0.6585,0.7438,-0.014769,12535,7465,100000,Loan Status,22639,77361,77.4,30t structured ablation cluster (job 16978930),2026-04-13

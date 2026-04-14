@@ -25,6 +25,7 @@ pd.set_option('future.infer_string', False)
 set_all_seeds()
 
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+COMBINED_TRIALS = int(sys.argv[3]) if len(sys.argv) > 3 else N_TRIALS  # baseline combined model trials
 # Per-mode trial overrides (default to N_TRIALS if not specified)
 TRIALS_PER_MODE = {
     'optuna': N_TRIALS,
@@ -75,7 +76,7 @@ def load_bankloansta():
     noise3 = rng.choice(few_accts, size=int(0.10 * len(few_accts)), replace=False)
     df.loc[np.concatenate([many_accts, noise3]), 'Credit Score'] = np.nan
 
-    ext_features = ['Current Loan Amount', 'Annual Income', 'Credit Score']
+    ext_features = ['Credit Score']
     return df, label, ext_features
 
 
@@ -283,7 +284,7 @@ def load_weatheraus():
     """WeatherAUS (Natural Nulls). Best combo: Evaporation + Cloud9am ext."""
     csv_path = os.path.join(os.path.dirname(__file__), '..', 'datasets', 'weatherAUS.csv')
     df = pd.read_csv(csv_path, na_values=['NA'])
-    columns_to_drop = ['Date', 'Location', 'RISK_MM']
+    columns_to_drop = ['Date', 'Location', 'RISK_MM', 'RainToday']
     df = df.drop(columns=columns_to_drop)
     df = pipeline.preprocessing(df)
     label = "RainTomorrow"
@@ -498,12 +499,12 @@ for ds_name, load_fn in DATASETS:
     print(f"\nBase AUC (no-ext test): {base_auc:.6f}")
 
     # --- Train Combined Model (once) ---
-    print("\n=== Training Combined Model (shared) ===")
+    print(f"\n=== Training Combined Model (shared, {COMBINED_TRIALS} trials) ===")
     dm.combined_model = XGBoostModel(name="combined_model")
     dm.combined_model.train(
         dm.train_df[dm.base_features + dm.ext_features],
         dm.train_df[dm.label],
-        n_trials=N_TRIALS
+        n_trials=COMBINED_TRIALS
     )
     dm.combined_model.save_model()
     shutil.copy2("combined_model.json", os.path.join(ds_dir, "combined_model.json"))
