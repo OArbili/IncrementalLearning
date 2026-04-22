@@ -1,0 +1,75 @@
+================================================================================
+FRAMEWORK COMPARISON — AUC per Dataset per Method
+================================================================================
+Generated: 2026-04-22
+Note: All methods use the SAME data preparation, feature split
+      (base_features vs ext_features), stratified train/test split
+      (by label × has_extended), and test populations.
+
+Terminology:
+  Base AUC      = AUC on the no-extended test population (n_no rows,
+                  all extended features are NaN for these rows)
+  Extended AUC  = AUC on the has-extended test population (n_ext rows,
+                  all extended features are present)
+  Pop-weighted  = (n_no * Base AUC + n_ext * Extended AUC) / (n_no + n_ext)
+
+Methods compared:
+  Ours (base/ext)       = TWO models, no data sharing between phases.
+                           • Base model trained on ALL rows with ext
+                             features masked as NaN → evaluated on no-ext pop
+                           • Extended model warm-started from base, trained
+                             only on has-ext rows with adaptive tree pruning
+                             → evaluated on has-ext pop
+  Baseline Combined     = ONE XGBoost model trained on all rows with
+                           full base + extended features. Requires data
+                           sharing. Evaluated on both populations.
+  AdaptiveXGBoost       = ONE streaming ensemble (Montiel et al. IJCNN 2020)
+                           n_estimators=30, replace-window strategy.
+                           Evaluated on both populations.
+
+================================================================================
+WIDS (91,713 rows — hospital_death)
+    Ext features: h1_lactate_min, d1_lactate_max/min, d1_pao2fio2ratio_max/min
+    Null%: 58.2 (n_no=10668, n_ext=7675)
+--------------------------------------------------------------------------------
+Method                      Base AUC      Extended AUC    Pop-weighted
+                            (no-ext pop)  (has-ext pop)
+--------------------------------------------------------------------------------
+Ours (base model / ext model)   0.8936         0.8790          0.8875
+Baseline Combined (one model)   0.8928         0.8767          0.8861
+AdaptiveXGBoost (stream)        0.8533         0.8505          0.8521
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0008        +0.0023         +0.0014
+Gap (Ours − AdaptiveXGBoost)   +0.0403        +0.0285         +0.0354
+================================================================================
+
+================================================================================
+ClientRecord (7,043 rows — Customer Status)
+    Ext features: Tenure in Months (structured null injection)
+    Null%: 61.1 (n_no=861, n_ext=548)
+--------------------------------------------------------------------------------
+Method                      Base AUC      Extended AUC    Pop-weighted
+                            (no-ext pop)  (has-ext pop)
+--------------------------------------------------------------------------------
+Ours (base model / ext model)   0.8638         0.9581          0.9005
+Baseline Combined (one model)   0.8617         0.9535          0.8974
+AdaptiveXGBoost (stream)        0.8434         0.9047          0.8672
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0021        +0.0046         +0.0031
+Gap (Ours − AdaptiveXGBoost)   +0.0204        +0.0534         +0.0333
+================================================================================
+
+--------------------------------------------------------------------------------
+Notes
+--------------------------------------------------------------------------------
+- Base AUC measures how well a method handles rows missing extended features.
+  Extended AUC measures how well it uses the extended features when present.
+- In "Ours", Base AUC comes from the standalone base model and Extended AUC
+  comes from the warm-started extended model — two separate models.
+  The Baseline and AdaptiveXGBoost columns use ONE model evaluated twice.
+- Our framework matches or slightly beats the Baseline Combined on both
+  populations of both datasets while NOT sharing data between phases.
+- For apples-to-apples comparison, all methods operate on the identical
+  train/test split (stratified by label × has_extended, seed=42, test=20%)
+  produced by scripts/prepare_datasets.py::split_train_test().
+--------------------------------------------------------------------------------
