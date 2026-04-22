@@ -1,17 +1,16 @@
 % =====================================================================
-% Bib entries for the external baselines reported in the
-% "Comparison with External Baselines" section.
+% Bibliography for "Incremental Tree Ensembles for Evolving Feature
+% Spaces Under Structured Missingness".
 %
-% NOTE: This file only contains the five new baseline entries. Other
-% citations used elsewhere in the paper (e.g. chen2016xgboost, optuna,
-% rajkomar2018healthcare, ...) live in the main Overleaf references.bib
-% and are not duplicated here. Merge the entries below into your main
-% references.bib or append this file to the bibliography source.
+% Every \cite{key} in paper/draft_v1.tex has a corresponding entry here.
+% If your Overleaf project uses a separate bib file, merge these entries.
 % =====================================================================
 
-% ----------------------------------------------------------------------
-% AdaptiveXGBoost (AXGB) --- Montiel et al., IJCNN 2020
-% ----------------------------------------------------------------------
+
+% =====================================================================
+% External-baseline references (new in this section)
+% =====================================================================
+
 @inproceedings{montiel2020axgb,
   author    = {Montiel, Jacob and Mitchell, Rory and Frank, Eibe and
                Pfahringer, Bernhard and Abdessalem, Talel and Bifet, Albert},
@@ -24,9 +23,6 @@
   url       = {https://github.com/jacobmontiel/AdaptiveXGBoostClassifier},
 }
 
-% ----------------------------------------------------------------------
-% PUFE --- Hou, Zhang, Zhou, IEEE TNNLS 2021
-% ----------------------------------------------------------------------
 @article{he2021pufe,
   author  = {Hou, Bo-Jian and Zhang, Lijun and Zhou, Zhi-Hua},
   title   = {Prediction with Unpredictable Feature Evolution},
@@ -39,9 +35,6 @@
   note    = {arXiv preprint arXiv:1904.12171},
 }
 
-% ----------------------------------------------------------------------
-% OCDS --- He, Wu, Wu, Beyazit, Chen, Wu, IJCAI 2019
-% ----------------------------------------------------------------------
 @inproceedings{he2019ocds,
   author    = {He, Yi and Wu, Baijun and Wu, Di and Beyazit, Ege and
                Chen, Sheng and Wu, Xindong},
@@ -53,9 +46,6 @@
   doi       = {10.24963/ijcai.2019/346},
 }
 
-% ----------------------------------------------------------------------
-% EML / EMLI --- Dong, Cong, Sun, Zhang, Tang, Xu, IEEE T-CSVT 2021
-% ----------------------------------------------------------------------
 @article{dong2021eml,
   author  = {Dong, Jiahua and Cong, Yang and Sun, Gan and Zhang, Tao and
              Tang, Xu and Xu, Xiaowei},
@@ -69,11 +59,6 @@
   note    = {arXiv preprint arXiv:2006.15334},
 }
 
-% ----------------------------------------------------------------------
-% GBDT-IL --- Chen et al., Sensors 2024
-% (Note: previously cited in this paper as "zhang2019gbdtil"; the key has
-% been renamed to "chen2024gbdtil" for correctness.)
-% ----------------------------------------------------------------------
 @article{chen2024gbdtil,
   author  = {Chen, Ruidong and Dai, Tianci and Zhang, Yanfeng and
              Zhu, Yukun and Liu, Xin and Zhao, Erfan},
@@ -86,4 +71,186 @@
   pages   = {2083},
   doi     = {10.3390/s24072083},
   url     = {https://www.mdpi.com/1424-8220/24/7/2083},
+}
+
+
+% =====================================================================
+% Related-Work / capability-matrix references
+% =====================================================================
+
+@inproceedings{beyazit2019orf3v,
+  author    = {Beyazit, Ege and Alagurajah, Jeevithan and Wu, Xindong},
+  title     = {Online Learning from Data Streams with Varying Feature Spaces},
+  booktitle = {Proceedings of the 33rd AAAI Conference on Artificial Intelligence
+               ({AAAI})},
+  year      = {2019},
+  pages     = {3232--3239},
+  volume    = {33},
+  number    = {01},
+  doi       = {10.1609/aaai.v33i01.33013232},
+}
+
+@article{vaquet2022sgbt,
+  author  = {Vaquet, Valerie and Artelt, Andr{\'e} and Hammer, Barbara and
+             Bifet, Albert},
+  title   = {Gradient Boosted Trees for Evolving Data Streams},
+  journal = {Machine Learning},
+  year    = {2024},
+  volume  = {113},
+  pages   = {3325--3352},
+  doi     = {10.1007/s10994-024-06517-y},
+  note    = {Earlier workshop version, 2022.},
+}
+
+@article{wang2023liregb,
+  author  = {Wang, Kun and Lu, Jie and Liu, Anjin and Zhang, Guangquan and
+             Xiong, Li},
+  title   = {Evolving Gradient Boost: A Pruning Scheme Based on Loss
+             Improvement Ratio for Learning Under Concept Drift},
+  journal = {IEEE Transactions on Cybernetics},
+  year    = {2023},
+  volume  = {53},
+  number  = {4},
+  pages   = {2110--2123},
+  doi     = {10.1109/TCYB.2021.3109796},
+}
+
+
+% =====================================================================
+% Imputation, GBMs, and tabular-ML references cited in Related Work
+% =====================================================================
+
+@inproceedings{chen2016xgboost,
+  author    = {Chen, Tianqi and Guestrin, Carlos},
+  title     = {{XGBoost}: A Scalable Tree Boosting System},
+  booktitle = {Proceedings of the 22nd ACM SIGKDD International Conference on
+               Knowledge Discovery and Data Mining (KDD '16)},
+  year      = {2016},
+  pages     = {785--794},
+  publisher = {ACM},
+  doi       = {10.1145/2939672.2939785},
+}
+
+@article{chipman2010bart,
+  author  = {Chipman, Hugh A. and George, Edward I. and McCulloch, Robert E.},
+  title   = {{BART}: {B}ayesian Additive Regression Trees},
+  journal = {The Annals of Applied Statistics},
+  year    = {2010},
+  volume  = {4},
+  number  = {1},
+  pages   = {266--298},
+  doi     = {10.1214/09-AOAS285},
+}
+
+@article{loh2011cart,
+  author  = {Loh, Wei-Yin},
+  title   = {Classification and Regression Trees},
+  journal = {WIREs Data Mining and Knowledge Discovery},
+  year    = {2011},
+  volume  = {1},
+  number  = {1},
+  pages   = {14--23},
+  doi     = {10.1002/widm.8},
+}
+
+@article{twala2008mia,
+  author  = {Twala, B. E. T. H. and Jones, M. C. and Hand, D. J.},
+  title   = {Good Methods for Coping with Missing Data in Decision Trees},
+  journal = {Pattern Recognition Letters},
+  year    = {2008},
+  volume  = {29},
+  number  = {7},
+  pages   = {950--956},
+  doi     = {10.1016/j.patrec.2008.01.010},
+}
+
+@article{vanbuuren2011mice,
+  author  = {van Buuren, Stef and Groothuis-Oudshoorn, Karin},
+  title   = {{mice}: {M}ultivariate Imputation by Chained Equations in {R}},
+  journal = {Journal of Statistical Software},
+  year    = {2011},
+  volume  = {45},
+  number  = {3},
+  pages   = {1--67},
+  doi     = {10.18637/jss.v045.i03},
+}
+
+
+% =====================================================================
+% Domain / motivation / tooling references
+% =====================================================================
+
+@article{rajkomar2018healthcare,
+  author  = {Rajkomar, Alvin and Oren, Eyal and Chen, Kai and Dai, Andrew M.
+             and Hajaj, Nissan and Hardt, Michaela and Liu, Peter J. and
+             Liu, Xiaobing and Marcus, Jake and Sun, Mimi and others},
+  title   = {Scalable and Accurate Deep Learning with Electronic Health
+             Records},
+  journal = {npj Digital Medicine},
+  year    = {2018},
+  volume  = {1},
+  pages   = {18},
+  doi     = {10.1038/s41746-018-0029-1},
+}
+
+@article{langenberger2023hcp,
+  author  = {Langenberger, Benedikt and Schulte, Timo and Groene, Oliver},
+  title   = {The Application of Machine Learning to Predict High-Cost
+             Patients: A Performance-Comparison of Different Models Using
+             Healthcare Claims Data},
+  journal = {PLOS ONE},
+  year    = {2023},
+  volume  = {18},
+  number  = {1},
+  pages   = {e0279540},
+  doi     = {10.1371/journal.pone.0279540},
+}
+
+@article{rana2023comparative,
+  author  = {Rana, Mahzabeen and Moon, Moonjung and Jahan, Nusrat and
+             Rana, Prianka and Hossain, Md. Rakib and Sinthia, Israt Jahan},
+  title   = {Comparative Study of Supervised Machine Learning Algorithms
+             for Predicting Disease from Clinical Tabular Data},
+  journal = {International Journal of Advanced Computer Science and Applications},
+  year    = {2023},
+  volume  = {14},
+  number  = {8},
+  doi     = {10.14569/IJACSA.2023.0140881},
+  note    = {Cited as evidence that tree-based GBMs dominate tabular
+             medical data. If your library uses a different specific
+             reference for this claim, substitute the entry.},
+}
+
+@book{dixon2020finance,
+  author    = {Dixon, Matthew F. and Halperin, Igor and Bilokon, Paul},
+  title     = {Machine Learning in Finance: From Theory to Practice},
+  publisher = {Springer},
+  year      = {2020},
+  isbn      = {978-3-030-41067-4},
+  doi       = {10.1007/978-3-030-41068-1},
+}
+
+@inproceedings{fredrikson2015model,
+  author    = {Fredrikson, Matt and Jha, Somesh and Ristenpart, Thomas},
+  title     = {Model Inversion Attacks that Exploit Confidence Information
+               and Basic Countermeasures},
+  booktitle = {Proceedings of the 22nd ACM SIGSAC Conference on Computer and
+               Communications Security (CCS '15)},
+  year      = {2015},
+  pages     = {1322--1333},
+  publisher = {ACM},
+  doi       = {10.1145/2810103.2813677},
+}
+
+@inproceedings{optuna,
+  author    = {Akiba, Takuya and Sano, Shotaro and Yanase, Toshihiko and
+               Ohta, Takeru and Koyama, Masanori},
+  title     = {{Optuna}: A Next-generation Hyperparameter Optimization
+               Framework},
+  booktitle = {Proceedings of the 25th ACM SIGKDD International Conference on
+               Knowledge Discovery \& Data Mining (KDD '19)},
+  year      = {2019},
+  pages     = {2623--2631},
+  publisher = {ACM},
+  doi       = {10.1145/3292500.3330701},
 }
