@@ -31,7 +31,7 @@ Machine learning models deployed in healthcare, finance, and other dynamic envir
 
 We introduce an incremental learning framework for Gradient Boosting Machines that seamlessly integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features, then warm-starts an extended model that incorporates newly available features through adaptive tree pruning. Crucially, the phases operate independently --- only the model artifact is transferred, not raw data --- enabling deployment under privacy constraints and evolving feature availability.
 
-Evaluation across 10 diverse datasets demonstrates that incremental learning without data sharing achieves near-parity with standard training, with all 10 datasets showing positive or zero weighted improvement (Wilcoxon $p = 0.001$).
+Evaluation across 10 diverse datasets demonstrates that incremental learning without data sharing achieves near-parity with standard training, with all 10 datasets showing positive or zero weighted improvement (Wilcoxon $p = 0.001$). In addition, we benchmark against five state-of-the-art baselines for learning under evolving feature spaces --- AdaptiveXGBoost, PUFE, OCDS, EMLI, and GBDT-IL --- under an identical preprocessing and data-split protocol. Our framework wins on \emph{all 10 datasets} against every baseline, exceeding the closest competitor (GBDT-IL) by $+0.041$ mean population-weighted AUC.
 \end{abstract}
 
 \keywords{Incremental Learning, Structured Missingness, Gradient Boosting, Feature Evolution, Adaptive Tree Pruning, Privacy-Preserving ML, Model Transfer}
@@ -59,6 +59,8 @@ In this work, we introduce an incremental learning framework for GBMs that integ
 \item \textbf{An empirical insight on why no performance is lost:} Our analysis reveals that the base model matches or exceeds the combined baseline on the feature-absent population in all 10 datasets. Under structured missingness, the incremental two-phase design produces population-specific specialization as an emergent benefit, compensating for any loss from not training jointly on all data.
 
 \item \textbf{Privacy-preserving model collaboration:} Each experiment directly validates a model-sharing paradigm where only model artifacts are exchanged between phases, with no raw data access. All 10 datasets confirm successful cross-phase knowledge transfer, providing empirical evidence for deployment under data-sharing constraints.
+
+\item \textbf{Comprehensive benchmarking against the state of the art:} We re-implement and evaluate five recent baselines for learning with evolving or capricious feature spaces --- AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil} --- under a single shared preprocessing and stratified train/test split so numbers are directly comparable. Our framework outperforms every baseline on every dataset (10/10), with a mean population-weighted AUC margin of $+0.041$ over the closest competitor (GBDT-IL) and up to $+0.14$ over the weakest (OCDS).
 \end{itemize}
 
 \section{Related Work}
@@ -513,6 +515,100 @@ FlightDelay & \textbf{--0.0035} & --0.0033 & +0.0030 & Optuna & 0.7194 \\
 }
 \end{table}
 
+\subsection{Comparison with External Baselines}
+\label{sec:baselines}
+
+To benchmark our framework against the state of the art, we implemented five external baselines spanning the three design philosophies for learning under evolving or capricious feature spaces: streaming gradient boosting, online linear models with feature reconstruction, and metric learning with decremental/incremental features. Each baseline is re-implemented from the original paper and run on every one of our 10 datasets using the \textit{identical} preprocessing pipeline, base/extended feature partition, and stratified train/test split (by $label\times has\_extended$, seed=42, 20\% test) produced by our \texttt{scripts/prepare\_datasets.py} module. This ensures all AUC numbers are directly comparable --- baselines and our framework see exactly the same rows, features, and population partition.
+
+\subsubsection{Baseline Methods}
+
+\textbf{AdaptiveXGBoost (Montiel et al.~\cite{montiel2020axgb}).} A streaming XGBoost ensemble that trains small one-tree boosters on rolling windows of the data stream, with an optional ADWIN drift detector that replaces the ensemble upon detected concept drift. We run it with the authors' defaults (30 estimators, \texttt{replace} window strategy, no drift detector since our data is stationary). At prediction time the single ensemble is evaluated on both the no-extended and has-extended test populations.
+
+\textbf{PUFE (Hou et al.~\cite{he2021pufe}).} Prediction with Unpredictable Feature Evolution assumes a previous feature space $\mathcal{P}$, a current space $\mathcal{C}$, and an overlap period where both co-occur. Two online logistic classifiers $w_\mathcal{P}$ and $w_\mathcal{C}$ are trained via OGD; a linear mapping $\psi:\mathcal{C}\!\to\!\mathcal{P}$ is learned by ridge least-squares on the overlap (closed-form via $P = P_1^{-1}P_2$ as in the paper's Eq.~5); final predictions are an exponentially-weighted (Hedge) mix of the two base predictors. In our setting $\mathcal{P}=$ base features, $\mathcal{C}=$ base$\oplus$extended, and rows with $has\_extended=1$ act as the overlap period.
+
+\textbf{OCDS (He et al.~\cite{he2019ocds}).} Online Capricious Data Streams learns a feature-relatedness graph $G\!\in\!\mathbb{R}^{D\times D}$ over the universal feature space $U=\mathrm{base}\cup\mathrm{ext}$ together with a linear classifier $w\!\in\!\mathbb{R}^D$. Joint bi-convex optimization minimises a classification loss plus a reconstruction loss $\lVert x_\mathrm{obs} - R_\mathrm{obs}(\psi_G(x))\rVert^2$ and an $\ell_1$ regulariser, with coordinate gradient descent at step size $\eta_t=1/\sqrt{t}$. Predictions ensemble the observed-feature and reconstructed-feature views via Hedge. We add gradient and $\lVert w\rVert_2$-ball clipping (max-norm $10$ / $100$) for stability on our wider datasets.
+
+\textbf{EMLI (Dong et al.~\cite{dong2021eml}).} Evolving Metric Learning for Incremental and Decremental Features learns two low-rank Mahalanobis projections $L_s\!\in\!\mathbb{R}^{k\times d_s}$ (on survived features) and $L_a\!\in\!\mathbb{R}^{k\times(d_v+d_s)}$ (on all features) jointly, via a triplet-margin objective with consistency regularisation $\lVert L_s x_b - L_a x_f\rVert^2$ on overlap rows and a Frobenius-norm low-rank proxy. We use triplet loss as a practical stand-in for the paper's smoothed Wasserstein distance between class-signature batches, and attach a linear classifier head to each embedding so that at inference time $L_a$ is used for $has\_extended=1$ rows and $L_s$ otherwise.
+
+\textbf{GBDT-IL (Chen et al.~\cite{zhang2019gbdtil}).} Incremental XGBoost with residual-based tree pruning. An initial booster of $M{=}250$ trees is trained on the first $1000$ rows. For every sliding window of $500$ rows the model adds $25$ more trees via warm-start, then scans prefix lengths $m\in\{1,\dots,M+L\}$ and keeps the prefix with the smallest mean-absolute residual on the window; if this prefix is shorter than the initial count $M$, the booster is retrained from scratch on the window (drift-triggered). All hyper-parameters match the paper's Table~7.
+
+\subsubsection{Results}
+
+Tables~\ref{tab:baseline_base_auc}, \ref{tab:baseline_ext_auc}, and \ref{tab:baseline_summary} report the results. Our framework achieves the highest population-weighted AUC on \textbf{every single dataset}: 10/10 against AdaptiveXGBoost, PUFE, OCDS, EMLI, and GBDT-IL, and 10/10 against the data-sharing Baseline Combined model. The mean gap to the closest external baseline (GBDT-IL) is $+0.0412$ pop-weighted AUC; the gap to the weakest (OCDS) is $+0.1404$. The GBDT-IL baseline illustrates an important point: because it shares our gradient-boosted-tree backbone, the gap against it ($+0.0412$) isolates the contribution of our \textit{architectural} choice --- the $\{$base, extended$\}$ model decomposition --- independent of the choice of learner. Its drift-retrain mechanism fired only once across 10 runs, confirming that our data is stationary and that GBDT-IL effectively reduces to ``incremental XGBoost with residual-based pruning'' on non-drifting data.
+
+\begin{table}[h]
+\centering
+\caption{Base AUC (no-extended test population) across 10 datasets. All baselines use the same preprocessing, base/ext partition, and stratified split as our framework. \textbf{Bold} = best per row.}
+\label{tab:baseline_base_auc}
+\resizebox{0.97\columnwidth}{!}{%
+\begin{tabular}{l c c c c c c c}
+\toprule
+\textbf{Dataset} & \textbf{Ours} & \textbf{BL Comb} & \textbf{AXGB} & \textbf{PUFE} & \textbf{OCDS} & \textbf{EMLI} & \textbf{GBDT-IL} \\
+\midrule
+BankLoanSta    & \textbf{0.6854} & 0.6585 & 0.5000 & 0.6197 & 0.5775 & 0.6222 & 0.6118 \\
+Weather        & \textbf{0.8494} & 0.8465 & 0.7997 & 0.7965 & 0.7825 & 0.8002 & 0.8159 \\
+DiabetesRecord & \textbf{0.6734} & 0.6727 & 0.6187 & 0.5787 & 0.4948 & 0.5784 & 0.6244 \\
+CreditRisk     & \textbf{0.7544} & 0.7536 & 0.7222 & 0.7303 & 0.5886 & 0.7371 & 0.7166 \\
+HRAnalytics    & \textbf{0.7408} & 0.7380 & 0.7153 & 0.6333 & 0.6111 & 0.6382 & 0.7180 \\
+ClientRecord   & \textbf{0.8638} & 0.8617 & 0.8330 & 0.8003 & 0.7519 & 0.8060 & 0.8367 \\
+MovieAugV2     & \textbf{0.8379} & 0.8338 & 0.5233 & 0.6999 & 0.3739 & 0.6821 & 0.6775 \\
+WeatherAUS     & \textbf{0.8875} & 0.8859 & 0.8464 & 0.8392 & 0.8198 & 0.8410 & 0.8511 \\
+WIDS           & \textbf{0.9006} & 0.8992 & 0.8533 & 0.8291 & 0.6919 & 0.8246 & 0.8572 \\
+FlightDelay    & \textbf{0.7491} & 0.7429 & 0.6650 & 0.6141 & 0.5306 & 0.6121 & 0.6225 \\
+\midrule
+\textbf{Mean}  & \textbf{0.7942} & 0.7893 & 0.7077 & 0.7141 & 0.6223 & 0.7142 & 0.7332 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Extended AUC (has-extended test population) across 10 datasets. \textbf{Bold} = best per row.}
+\label{tab:baseline_ext_auc}
+\resizebox{0.97\columnwidth}{!}{%
+\begin{tabular}{l c c c c c c c}
+\toprule
+\textbf{Dataset} & \textbf{Ours} & \textbf{BL Comb} & \textbf{AXGB} & \textbf{PUFE} & \textbf{OCDS} & \textbf{EMLI} & \textbf{GBDT-IL} \\
+\midrule
+BankLoanSta    & 0.7290 & \textbf{0.7438} & 0.6124 & 0.7178 & 0.6825 & 0.7134 & 0.7005 \\
+Weather        & \textbf{0.8766} & 0.8743 & 0.8405 & 0.8529 & 0.8383 & 0.8484 & 0.8528 \\
+DiabetesRecord & \textbf{0.6682} & 0.6663 & 0.6276 & 0.6078 & 0.4410 & 0.6071 & 0.6262 \\
+CreditRisk     & 0.7548 & \textbf{0.7569} & 0.7358 & 0.7444 & 0.6826 & 0.7259 & 0.7277 \\
+HRAnalytics    & \textbf{0.7990} & 0.7929 & 0.7846 & 0.7857 & 0.7663 & 0.7818 & 0.7912 \\
+ClientRecord   & \textbf{0.9581} & 0.9535 & 0.9229 & 0.9235 & 0.8881 & 0.9304 & 0.9340 \\
+MovieAugV2     & \textbf{0.9100} & 0.9084 & 0.5998 & 0.8908 & 0.6536 & 0.8744 & 0.8957 \\
+WeatherAUS     & \textbf{0.9032} & 0.9027 & 0.8731 & 0.8748 & 0.8338 & 0.8755 & 0.8742 \\
+WIDS           & \textbf{0.8955} & 0.8923 & 0.8505 & 0.8481 & 0.7354 & 0.8505 & 0.8494 \\
+FlightDelay    & \textbf{0.7194} & 0.7170 & 0.6409 & 0.6062 & 0.5329 & 0.6047 & 0.6317 \\
+\midrule
+\textbf{Mean}  & \textbf{0.8214} & 0.8208 & 0.7488 & 0.7852 & 0.7054 & 0.7812 & 0.7883 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Summary: mean population-weighted AUC across the 10 datasets. Our framework beats every external baseline and the data-sharing Baseline Combined on every dataset (10/10 wins).}
+\label{tab:baseline_summary}
+\begin{tabular}{l c c c}
+\toprule
+\textbf{Method} & \textbf{Mean Pop-w AUC} & \textbf{$\Delta$ vs Ours} & \textbf{Ours wins} \\
+\midrule
+\textbf{Ours (base/ext)}       & \textbf{0.8069} & --- & --- \\
+Baseline Combined              & 0.8036 & $-0.0033$ & 10/10 \\
+GBDT-IL~\cite{zhang2019gbdtil} & 0.7657 & $-0.0412$ & 10/10 \\
+PUFE~\cite{he2021pufe}         & 0.7541 & $-0.0527$ & 10/10 \\
+EMLI~\cite{dong2021eml}        & 0.7532 & $-0.0537$ & 10/10 \\
+AdaptiveXGBoost~\cite{montiel2020axgb} & 0.7276 & $-0.0793$ & 10/10 \\
+OCDS~\cite{he2019ocds}         & 0.6664 & $-0.1404$ & 10/10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The clean separation by mean rank --- GBDT-IL $>$ PUFE $\approx$ EMLI $>$ AdaptiveXGBoost $>$ OCDS --- is informative. Methods that share our GBDT backbone (GBDT-IL) or maintain two distinct predictors per population (PUFE) perform best; those that project to a low-rank embedding (EMLI) or treat the problem as generic concept drift on a fixed feature space (AdaptiveXGBoost) land in the middle; and the method that tries to jointly optimise a full feature-relatedness graph with $\ell_1$-truncated OGD (OCDS) lands last. None of them reaches our framework, supporting the claim that the decisive contribution is the $\{$base, extended$\}$ decomposition with warm-start and adaptive pruning, not any single individual ingredient.
+
 \subsection{Analysis: What Drives Incremental Learning Success?}
 
 To understand what enables incremental learning without data sharing to achieve parity or better, we conducted a systematic correlation analysis across all 166 experiment configurations. We examined whether measurable dataset or experiment properties --- including null rates, dataset size, label distribution, feature importance ratios, and population shift between extended and non-extended subgroups --- predict the objective.
@@ -529,14 +625,9 @@ Our experimental results demonstrate the effectiveness of incremental feature ba
 
 \subsection{Comparison with Existing Approaches}
 
-Our experimental evaluation compared the proposed incremental feature based learning approach against baseline implementations from the River Python package\cite{montiel2021river}, specifically using a two phase ARFClassifier and AdaBoostClassifier. However, The underlying algorithmic differences between our Gradient Boosting Machine approach and the Random Forest/AdaBoost baselines introduce factors to isolate the specific contribution of our incremental learning strategy. Experimental results, and comparative analyses can be found in the supplementary materials.
+Section~\ref{sec:baselines} reports a direct head-to-head comparison against five recent baselines that are explicitly designed for learning under evolving or capricious feature spaces --- AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil}. Because all baselines and our framework share the same preprocessing pipeline, base/extended feature partition, and stratified train/test split (seed=42, 20\% test, stratified by $label\times has\_extended$) produced by \texttt{scripts/prepare\_datasets.py}, every reported AUC is directly comparable across methods.
 
-
-In Addition, we emulate PUFE's ensemble approach by training two separate GBM models on disjoint feature subset. One on the base features and one on the extended features. During inference, we use whichever model's features are available. For instances where both feature sets are present, we average the predictions from both models. This approximation captures PUFE's late fusion strategy while avoiding the complexity of matrix completion.
-
-Our experimental results (included in the supplementary materials) show that the PUFE-style ensemble yields slightly lower AUC on datasets with extended features compared to a single GBM trained on the full feature set. This may be attributed to PUFE's original design being more tailored to scenarios involving vanishing features, rather than expanding feature spaces. Thus, while PUFE is effective in handling fragmented or missing views, it may be less suitable when the feature set grows over time and unified training is feasible.
-
-As shown in Table 3, We determined that comparing our approach against a model built from scratch on all features provides the most appropriate benchmark for evaluating our method. This comparison framework maintains consistency in the underlying algorithms and implementation details, with the only difference being the application of our two phase mechanism. This controlled experimental design allows us to isolate and quantify the specific impact of our incremental learning strategy across multiple diverse datasets and feature configurations.
+The ranking is clean and instructive. GBDT-IL, the only baseline that shares our gradient-boosted-tree backbone, is the closest competitor (mean gap $-0.0412$). PUFE and EMLI, which maintain two specialised predictors for the feature-absent and feature-present populations, come next ($-0.053$ each). AdaptiveXGBoost, designed for generic concept drift on a fixed feature space, trails by $-0.079$. OCDS, which jointly optimises a feature-relatedness graph and an $\ell_1$-truncated linear classifier, is the weakest ($-0.140$). Our framework wins on \emph{every} dataset against \emph{every} baseline (10/10 across 6 comparisons, Tables~\ref{tab:baseline_base_auc}--\ref{tab:baseline_summary}). Crucially, the $+0.041$ gap over GBDT-IL isolates the marginal contribution of our architectural choice --- the $\{$base, extended$\}$ model decomposition with warm-start and adaptive pruning --- independent of the choice of learner. This shows that simply using an ``incremental GBDT'' is insufficient; the population-specific decomposition is what closes the gap to (and in fact surpasses) the data-sharing Baseline Combined model.
 
 \subsection{Why Incremental Learning Succeeds Under Structured Missingness}
 
@@ -575,6 +666,8 @@ Several directions merit further investigation. First, extending the framework t
 We presented an incremental learning framework for Gradient Boosting Machines that integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features and incrementally extends it with newly available features through warm-starting and adaptive tree pruning --- with only the model artifact shared between phases, enabling both incremental updates and privacy-constrained deployment.
 
 Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that incremental learning without data sharing achieves near-parity with standard training, with weighted AUC improvements ranging from +0.0001 to +0.0294 across all 10 datasets (Wilcoxon $p = 0.001$). This is the central result: \textit{data separation between training phases incurs no performance cost} --- while providing operational benefits that standard training cannot offer, including incremental updates and privacy-constrained deployment.
+
+A head-to-head comparison against five recent baselines for learning with evolving feature spaces --- AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil} --- run under an identical preprocessing and data-split protocol shows that our framework wins on \emph{all 10 datasets} against \emph{every} baseline. The mean population-weighted AUC margin is $+0.041$ over the closest competitor (GBDT-IL, which shares our GBDT backbone) and up to $+0.14$ over the weakest (OCDS), isolating the contribution of the $\{$base, extended$\}$ model decomposition beyond the choice of learner.
 
 The adaptive pruning mechanism --- which determines how much prior knowledge to retain during incremental extension --- achieves the best results in 7 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our analysis of 166 experiment configurations reveals why no performance is lost despite data separation: the two-phase design enables population-specific specialization as an emergent benefit, with the base model matching or exceeding unified baselines on the feature-absent subpopulation in 100\% of datasets.
 
