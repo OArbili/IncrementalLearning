@@ -23,6 +23,7 @@ our framework's `ext_auc` and `base_auc`.
 | `pufe/` | Hou, Zhang, Zhou, [Prediction with Unpredictable Feature Evolution](https://arxiv.org/abs/1904.12171), IEEE TNNLS 2021 | Two OGD logistic predictors (base-only, base⊕ext with recovered ext) Hedge-ensembled by cumulative log-loss |
 | `ocds/` | He, Wu, Wu, Beyazit, Chen, Wu, [Online Learning from Capricious Data Streams](https://www.ijcai.org/proceedings/2019/346), IJCAI 2019 | Learned universal feature-relatedness graph G, joint bi-convex CGD on (w, G) with reconstruction + classification losses, observed/reconstructed Hedge ensemble |
 | `emli/` | Dong, Cong, Sun, Zhang, Tang, Xu, [Evolving Metric Learning for Incremental and Decremental Features](https://arxiv.org/abs/2006.15334), IEEE T-CSVT 2021 | Two low-rank Mahalanobis projections L_s (base) / L_a (base⊕ext) learned jointly via triplet loss + consistency + Frobenius regularisation; classifier head on each embedding, selected per row by has_extended |
+| `gbdt_il/` | Chen, Dai, Zhang, Zhu, Liu, Zhao, [GBDT-IL: Incremental Learning of Gradient Boosting Decision Trees](https://doi.org/10.3390/s24072083), Sensors 2024 | Incremental XGBoost on sliding windows; warm-start adds trees per window, residual-based prefix search (argmin MA(R_m)) prunes to optimal tree count; drift-triggered full retrain when prefix < initial M. Defaults per paper Table 7. |
 
 ## Running
 
