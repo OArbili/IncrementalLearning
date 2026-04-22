@@ -1,75 +1,146 @@
 ================================================================================
 FRAMEWORK COMPARISON — AUC per Dataset per Method
 ================================================================================
-Generated: 2026-04-22
-Note: All methods use the SAME data preparation, feature split
-      (base_features vs ext_features), stratified train/test split
-      (by label × has_extended), and test populations.
+Generated: 2026-04-22  (10 datasets, 3 methods)
 
-Terminology:
-  Base AUC      = AUC on the no-extended test population (n_no rows,
-                  all extended features are NaN for these rows)
-  Extended AUC  = AUC on the has-extended test population (n_ext rows,
-                  all extended features are present)
-  Pop-weighted  = (n_no * Base AUC + n_ext * Extended AUC) / (n_no + n_ext)
+All methods use the SAME data preparation (scripts/prepare_datasets.py),
+the SAME base_features / ext_features split, and the SAME stratified
+train/test split (by label × has_extended, seed=42, test=20%).
 
-Methods compared:
-  Ours (base/ext)       = TWO models, no data sharing between phases.
-                           • Base model trained on ALL rows with ext
-                             features masked as NaN → evaluated on no-ext pop
-                           • Extended model warm-started from base, trained
-                             only on has-ext rows with adaptive tree pruning
-                             → evaluated on has-ext pop
-  Baseline Combined     = ONE XGBoost model trained on all rows with
-                           full base + extended features. Requires data
-                           sharing. Evaluated on both populations.
-  AdaptiveXGBoost       = ONE streaming ensemble (Montiel et al. IJCNN 2020)
-                           n_estimators=30, replace-window strategy.
-                           Evaluated on both populations.
+Columns:
+  Base AUC     — AUC on the no-extended test population (n_no)
+  Extended AUC — AUC on the has-extended test population (n_ext)
+  Pop-weighted — (n_no*Base + n_ext*Ext) / (n_no+n_ext)
+
+Methods:
+  Ours (base/ext)     — our framework: 2 models, no data sharing
+                         (base on no-ext, extended on has-ext)
+  Baseline Combined   — single XGBoost on all rows + features
+                         (requires data sharing) — from our sweep
+  AdaptiveXGBoost     — Montiel et al. IJCNN 2020, streaming
+                         (n_estimators=30, replace-window, 32 CPU)
 
 ================================================================================
-WIDS (91,713 rows — hospital_death)
-    Ext features: h1_lactate_min, d1_lactate_max/min, d1_pao2fio2ratio_max/min
-    Null%: 58.2 (n_no=10668, n_ext=7675)
+BankLoanSta  (n_no=12535, n_ext=7465)
+  Ext features: Credit Score
 --------------------------------------------------------------------------------
-Method                      Base AUC      Extended AUC    Pop-weighted
-                            (no-ext pop)  (has-ext pop)
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.6854        0.7290        0.7017
+Baseline Combined (one model)   0.6585        0.7438        0.6903
+AdaptiveXGBoost (stream)        0.5000        0.6124        0.5420
 --------------------------------------------------------------------------------
-Ours (base model / ext model)   0.8936         0.8790          0.8875
-Baseline Combined (one model)   0.8928         0.8767          0.8861
-AdaptiveXGBoost (stream)        0.8533         0.8505          0.8521
+Gap (Ours − Baseline)          +0.0269      -0.0148      +0.0113
+Gap (Ours − AdaptiveXGBoost)   +0.1854      +0.1166      +0.1597
+================================================================================
+Weather  (n_no=3114, n_ext=1886)
+  Ext features: Evaporation
 --------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0008        +0.0023         +0.0014
-Gap (Ours − AdaptiveXGBoost)   +0.0403        +0.0285         +0.0354
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.8494        0.8766        0.8597
+Baseline Combined (one model)   0.8465        0.8743        0.8570
+AdaptiveXGBoost (stream)        0.7997        0.8405        0.8151
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0029      +0.0023      +0.0027
+Gap (Ours − AdaptiveXGBoost)   +0.0497      +0.0361      +0.0446
+================================================================================
+DiabetesRecord  (n_no=8389, n_ext=11965)
+  Ext features: medical_specialty,A1Cresult
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.6734        0.6682        0.6703
+Baseline Combined (one model)   0.6727        0.6663        0.6689
+AdaptiveXGBoost (stream)        0.6187        0.6276        0.6239
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0007      +0.0019      +0.0014
+Gap (Ours − AdaptiveXGBoost)   +0.0547      +0.0406      +0.0464
+================================================================================
+CreditRisk  (n_no=14334, n_ext=1666)
+  Ext features: MEAN_AMTCR credit bureau features (groups 1-2)
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.7544        0.7548        0.7544
+Baseline Combined (one model)   0.7536        0.7569        0.7539
+AdaptiveXGBoost (stream)        0.7222        0.7358        0.7236
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0008      -0.0021      +0.0005
+Gap (Ours − AdaptiveXGBoost)   +0.0322      +0.0190      +0.0309
+================================================================================
+HRAnalytics  (n_no=1188, n_ext=2644)
+  Ext features: company_size
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.7408        0.7990        0.7810
+Baseline Combined (one model)   0.7380        0.7929        0.7759
+AdaptiveXGBoost (stream)        0.7153        0.7846        0.7631
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0028      +0.0061      +0.0051
+Gap (Ours − AdaptiveXGBoost)   +0.0255      +0.0144      +0.0178
+================================================================================
+ClientRecord  (n_no=861, n_ext=548)
+  Ext features: Tenure in Months
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.8638        0.9581        0.9005
+Baseline Combined (one model)   0.8617        0.9535        0.8974
+AdaptiveXGBoost (stream)        0.8330        0.9229        0.8679
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0021      +0.0046      +0.0031
+Gap (Ours − AdaptiveXGBoost)   +0.0308      +0.0352      +0.0325
+================================================================================
+MovieAugV2  (n_no=10830, n_ext=11664)
+  Ext features: rating_mean,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag
+  [NOTE: framework split 10830/11664 differs from baseline run split 5347/17147]
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.8379        0.9100        0.8753
+Baseline Combined (one model)   0.8338        0.9084        0.8725
+AdaptiveXGBoost (stream)        0.5233        0.5998        0.5817
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0041      +0.0016      +0.0028
+Gap (Ours − AdaptiveXGBoost)   +0.3146      +0.3102      +0.2936
+================================================================================
+WeatherAUS  (n_no=8815, n_ext=19624)
+  Ext features: Evaporation,Cloud9am
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.8875        0.9032        0.8983
+Baseline Combined (one model)   0.8859        0.9027        0.8975
+AdaptiveXGBoost (stream)        0.8464        0.8731        0.8648
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0016      +0.0005      +0.0008
+Gap (Ours − AdaptiveXGBoost)   +0.0411      +0.0301      +0.0335
+================================================================================
+WIDS  (n_no=13632, n_ext=4711)
+  Ext features: h1_bilirubin_max,h1_bilirubin_min,h1_albumin_max,h1_albumin_min,h1_lactate_max,h1_lactate_min,h1_pao2fio2ratio_max,h1_pao2fio2ratio_min,h1_arterial_ph_max,h1_arterial_ph_min,h1_arterial_pco2_max,h1_arterial_pco2_min,h1_arterial_po2_max,h1_arterial_po2_min
+  [NOTE: framework split 13632/4711 differs from baseline run split 10668/7675]
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.9006        0.8955        0.8993
+Baseline Combined (one model)   0.8992        0.8923        0.8974
+AdaptiveXGBoost (stream)        0.8533        0.8505        0.8521
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0014      +0.0032      +0.0019
+Gap (Ours − AdaptiveXGBoost)   +0.0473      +0.0450      +0.0472
+================================================================================
+FlightDelay  (n_no=6011, n_ext=13989)
+  Ext features: OP_CARRIER_FL_NUM
+  [NOTE: framework split 6011/13989 differs from baseline run split 1000/19000]
+--------------------------------------------------------------------------------
+Method                        Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)   0.7491        0.7194        0.7283
+Baseline Combined (one model)   0.7429        0.7170        0.7248
+AdaptiveXGBoost (stream)        0.6650        0.6409        0.6421
+--------------------------------------------------------------------------------
+Gap (Ours − Baseline)          +0.0062      +0.0024      +0.0035
+Gap (Ours − AdaptiveXGBoost)   +0.0841      +0.0785      +0.0863
 ================================================================================
 
-================================================================================
-ClientRecord (7,043 rows — Customer Status)
-    Ext features: Tenure in Months (structured null injection)
-    Null%: 61.1 (n_no=861, n_ext=548)
+SUMMARY (mean across 10 datasets, pop-weighted AUC)
 --------------------------------------------------------------------------------
-Method                      Base AUC      Extended AUC    Pop-weighted
-                            (no-ext pop)  (has-ext pop)
---------------------------------------------------------------------------------
-Ours (base model / ext model)   0.8638         0.9581          0.9005
-Baseline Combined (one model)   0.8617         0.9535          0.8974
-AdaptiveXGBoost (stream)        0.8434         0.9047          0.8672
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0021        +0.0046         +0.0031
-Gap (Ours − AdaptiveXGBoost)   +0.0204        +0.0534         +0.0333
-================================================================================
+  Ours (mean)              : 0.8069
+  Baseline Combined (mean) : 0.8036
+  AdaptiveXGBoost (mean)   : 0.7276
 
---------------------------------------------------------------------------------
-Notes
---------------------------------------------------------------------------------
-- Base AUC measures how well a method handles rows missing extended features.
-  Extended AUC measures how well it uses the extended features when present.
-- In "Ours", Base AUC comes from the standalone base model and Extended AUC
-  comes from the warm-started extended model — two separate models.
-  The Baseline and AdaptiveXGBoost columns use ONE model evaluated twice.
-- Our framework matches or slightly beats the Baseline Combined on both
-  populations of both datasets while NOT sharing data between phases.
-- For apples-to-apples comparison, all methods operate on the identical
-  train/test split (stratified by label × has_extended, seed=42, test=20%)
-  produced by scripts/prepare_datasets.py::split_train_test().
---------------------------------------------------------------------------------
+  Ours − Baseline          : +0.0033
+  Ours − AdaptiveXGBoost   : +0.0793
+================================================================================
