@@ -156,17 +156,25 @@ class GBDTIL:
         return best_m
 
     def _truncate_booster(self, n_keep: int):
-        """Keep only the first n_keep trees of the current booster.
+        """Keep only the first n_keep iterations/trees of the current booster.
 
-        XGBoost doesn't expose a native `trim` API; we save-and-reload a
-        JSON with trees [n_keep:] stripped. In practice, for the volumes
-        we deal with (<10K trees), this is fast (~tens of ms per call).
+        Uses XGBoost's native slice API (`booster[a:b]`), which correctly
+        handles internal structures like `iteration_indptr` in modern
+        versions (>=2.0). Falls back to JSON round-trip if slicing fails.
         """
         n_total = self.booster_.num_boosted_rounds()
         if n_keep >= n_total:
             return
         if n_keep < 1:
             n_keep = 1
+        # Native slice — cleanest and version-safe.
+        try:
+            sliced = self.booster_[0:n_keep]
+            self.booster_ = sliced
+            return
+        except Exception:
+            pass
+        # Fallback (older XGBoost without slice support): JSON round-trip.
         cfg = self.booster_.save_config()
         raw = self.booster_.save_raw('json')
         import json
@@ -177,8 +185,14 @@ class GBDTIL:
             model['trees'] = model['trees'][:n_keep]
             model['tree_info'] = model['tree_info'][:n_keep]
             model['gbtree_model_param']['num_trees'] = str(n_keep)
-            # Some XGBoost versions also track number_of_parallel_tree in
-            # gradient_booster — leave unchanged.
+            # Also truncate iteration_indptr if present (XGBoost >=2.0).
+            if 'iteration_indptr' in model:
+                iit = model['iteration_indptr']
+                # Binary/regression with num_parallel_tree=1 → one tree per iteration
+                new_iit = [v for v in iit if v <= n_keep]
+                if not new_iit or new_iit[-1] != n_keep:
+                    new_iit.append(n_keep)
+                model['iteration_indptr'] = new_iit
         new_raw = json.dumps(obj).encode('utf-8')
         new_booster = xgb.Booster()
         new_booster.load_model(bytearray(new_raw))
