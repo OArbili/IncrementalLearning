@@ -1,146 +1,168 @@
-================================================================================
+==================================================================================
 FRAMEWORK COMPARISON — AUC per Dataset per Method
-================================================================================
-Generated: 2026-04-22  (10 datasets, 3 methods)
+==================================================================================
+Generated: 2026-04-22  (10 datasets, 4 methods)
 
-All methods use the SAME data preparation (scripts/prepare_datasets.py),
-the SAME base_features / ext_features split, and the SAME stratified
-train/test split (by label × has_extended, seed=42, test=20%).
+All methods use the SAME preprocessing, base/ext feature split, and
+stratified train/test split (label × has_extended, seed=42, test=20%)
+via scripts/prepare_datasets.py.
 
 Columns:
-  Base AUC     — AUC on the no-extended test population (n_no)
-  Extended AUC — AUC on the has-extended test population (n_ext)
+  Base AUC     — AUC on no-extended test population (n_no rows)
+  Extended AUC — AUC on has-extended test population (n_ext rows)
   Pop-weighted — (n_no*Base + n_ext*Ext) / (n_no+n_ext)
 
 Methods:
-  Ours (base/ext)     — our framework: 2 models, no data sharing
-                         (base on no-ext, extended on has-ext)
-  Baseline Combined   — single XGBoost on all rows + features
-                         (requires data sharing) — from our sweep
-  AdaptiveXGBoost     — Montiel et al. IJCNN 2020, streaming
-                         (n_estimators=30, replace-window, 32 CPU)
+  Ours (base/ext)    — our framework: 2 models, no data sharing
+                        (base on no-ext, extended on has-ext)
+  Baseline Combined  — single XGBoost on all rows + features
+                        (requires data sharing) — from our sweep
+  AdaptiveXGBoost    — Montiel et al. IJCNN 2020, streaming
+                        (n_estimators=30, replace-window, 32 CPU)
+  PUFE               — Hou et al. IEEE TNNLS 2021, two OGD logistic
+                        predictors Hedge-ensembled
+                        (lr=0.5, hedge_eta=5.0, 3 passes)
 
-================================================================================
+==================================================================================
 BankLoanSta  (n_no=12535, n_ext=7465)
   Ext features: Credit Score
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.6854        0.7290        0.7017
-Baseline Combined (one model)   0.6585        0.7438        0.6903
-AdaptiveXGBoost (stream)        0.5000        0.6124        0.5420
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0269      -0.0148      +0.0113
-Gap (Ours − AdaptiveXGBoost)   +0.1854      +0.1166      +0.1597
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.6854        0.7290        0.7017
+Baseline Combined (one model)    0.6585        0.7438        0.6903
+AdaptiveXGBoost (stream)         0.5000        0.6124        0.5420
+PUFE (OGD + Hedge)               0.6197        0.7178        0.6563
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0269       -0.0148       +0.0113
+Gap (Ours − AdaptiveXGBoost)    +0.1854       +0.1166       +0.1597
+Gap (Ours − PUFE)               +0.0657       +0.0112       +0.0453
+==================================================================================
 Weather  (n_no=3114, n_ext=1886)
   Ext features: Evaporation
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.8494        0.8766        0.8597
-Baseline Combined (one model)   0.8465        0.8743        0.8570
-AdaptiveXGBoost (stream)        0.7997        0.8405        0.8151
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0029      +0.0023      +0.0027
-Gap (Ours − AdaptiveXGBoost)   +0.0497      +0.0361      +0.0446
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.8494        0.8766        0.8597
+Baseline Combined (one model)    0.8465        0.8743        0.8570
+AdaptiveXGBoost (stream)         0.7997        0.8405        0.8151
+PUFE (OGD + Hedge)               0.7965        0.8529        0.8178
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0029       +0.0023       +0.0027
+Gap (Ours − AdaptiveXGBoost)    +0.0497       +0.0361       +0.0446
+Gap (Ours − PUFE)               +0.0529       +0.0237       +0.0419
+==================================================================================
 DiabetesRecord  (n_no=8389, n_ext=11965)
   Ext features: medical_specialty,A1Cresult
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.6734        0.6682        0.6703
-Baseline Combined (one model)   0.6727        0.6663        0.6689
-AdaptiveXGBoost (stream)        0.6187        0.6276        0.6239
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0007      +0.0019      +0.0014
-Gap (Ours − AdaptiveXGBoost)   +0.0547      +0.0406      +0.0464
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.6734        0.6682        0.6703
+Baseline Combined (one model)    0.6727        0.6663        0.6689
+AdaptiveXGBoost (stream)         0.6187        0.6276        0.6239
+PUFE (OGD + Hedge)               0.5787        0.6078        0.5958
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0007       +0.0019       +0.0014
+Gap (Ours − AdaptiveXGBoost)    +0.0547       +0.0406       +0.0464
+Gap (Ours − PUFE)               +0.0947       +0.0604       +0.0745
+==================================================================================
 CreditRisk  (n_no=14334, n_ext=1666)
   Ext features: MEAN_AMTCR credit bureau features (groups 1-2)
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.7544        0.7548        0.7544
-Baseline Combined (one model)   0.7536        0.7569        0.7539
-AdaptiveXGBoost (stream)        0.7222        0.7358        0.7236
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0008      -0.0021      +0.0005
-Gap (Ours − AdaptiveXGBoost)   +0.0322      +0.0190      +0.0309
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.7544        0.7548        0.7544
+Baseline Combined (one model)    0.7536        0.7569        0.7539
+AdaptiveXGBoost (stream)         0.7222        0.7358        0.7236
+PUFE (OGD + Hedge)               0.7303        0.7444        0.7317
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0008       -0.0021       +0.0005
+Gap (Ours − AdaptiveXGBoost)    +0.0322       +0.0190       +0.0309
+Gap (Ours − PUFE)               +0.0241       +0.0104       +0.0227
+==================================================================================
 HRAnalytics  (n_no=1188, n_ext=2644)
   Ext features: company_size
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.7408        0.7990        0.7810
-Baseline Combined (one model)   0.7380        0.7929        0.7759
-AdaptiveXGBoost (stream)        0.7153        0.7846        0.7631
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0028      +0.0061      +0.0051
-Gap (Ours − AdaptiveXGBoost)   +0.0255      +0.0144      +0.0178
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.7408        0.7990        0.7810
+Baseline Combined (one model)    0.7380        0.7929        0.7759
+AdaptiveXGBoost (stream)         0.7153        0.7846        0.7631
+PUFE (OGD + Hedge)               0.6333        0.7857        0.7385
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0028       +0.0061       +0.0051
+Gap (Ours − AdaptiveXGBoost)    +0.0255       +0.0144       +0.0178
+Gap (Ours − PUFE)               +0.1075       +0.0133       +0.0425
+==================================================================================
 ClientRecord  (n_no=861, n_ext=548)
   Ext features: Tenure in Months
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.8638        0.9581        0.9005
-Baseline Combined (one model)   0.8617        0.9535        0.8974
-AdaptiveXGBoost (stream)        0.8330        0.9229        0.8679
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0021      +0.0046      +0.0031
-Gap (Ours − AdaptiveXGBoost)   +0.0308      +0.0352      +0.0325
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.8638        0.9581        0.9005
+Baseline Combined (one model)    0.8617        0.9535        0.8974
+AdaptiveXGBoost (stream)         0.8330        0.9229        0.8679
+PUFE (OGD + Hedge)               0.8003        0.9235        0.8482
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0021       +0.0046       +0.0031
+Gap (Ours − AdaptiveXGBoost)    +0.0308       +0.0352       +0.0325
+Gap (Ours − PUFE)               +0.0635       +0.0346       +0.0522
+==================================================================================
 MovieAugV2  (n_no=10830, n_ext=11664)
   Ext features: rating_mean,tag_count,unique_tags,avg_tag_length,tag_frequency,last_tag
-  [NOTE: framework split 10830/11664 differs from baseline run split 5347/17147]
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.8379        0.9100        0.8753
-Baseline Combined (one model)   0.8338        0.9084        0.8725
-AdaptiveXGBoost (stream)        0.5233        0.5998        0.5817
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0041      +0.0016      +0.0028
-Gap (Ours − AdaptiveXGBoost)   +0.3146      +0.3102      +0.2936
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.8379        0.9100        0.8753
+Baseline Combined (one model)    0.8338        0.9084        0.8725
+AdaptiveXGBoost (stream)         0.5233        0.5998        0.5817
+PUFE (OGD + Hedge)               0.6999        0.8908        0.8454
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0041       +0.0016       +0.0028
+Gap (Ours − AdaptiveXGBoost)    +0.3146       +0.3102       +0.2936
+Gap (Ours − PUFE)               +0.1380       +0.0192       +0.0299
+==================================================================================
 WeatherAUS  (n_no=8815, n_ext=19624)
   Ext features: Evaporation,Cloud9am
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.8875        0.9032        0.8983
-Baseline Combined (one model)   0.8859        0.9027        0.8975
-AdaptiveXGBoost (stream)        0.8464        0.8731        0.8648
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0016      +0.0005      +0.0008
-Gap (Ours − AdaptiveXGBoost)   +0.0411      +0.0301      +0.0335
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.8875        0.9032        0.8983
+Baseline Combined (one model)    0.8859        0.9027        0.8975
+AdaptiveXGBoost (stream)         0.8464        0.8731        0.8648
+PUFE (OGD + Hedge)               0.8392        0.8748        0.8638
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0016       +0.0005       +0.0008
+Gap (Ours − AdaptiveXGBoost)    +0.0411       +0.0301       +0.0335
+Gap (Ours − PUFE)               +0.0483       +0.0284       +0.0345
+==================================================================================
 WIDS  (n_no=13632, n_ext=4711)
   Ext features: h1_bilirubin_max,h1_bilirubin_min,h1_albumin_max,h1_albumin_min,h1_lactate_max,h1_lactate_min,h1_pao2fio2ratio_max,h1_pao2fio2ratio_min,h1_arterial_ph_max,h1_arterial_ph_min,h1_arterial_pco2_max,h1_arterial_pco2_min,h1_arterial_po2_max,h1_arterial_po2_min
-  [NOTE: framework split 13632/4711 differs from baseline run split 10668/7675]
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.9006        0.8955        0.8993
-Baseline Combined (one model)   0.8992        0.8923        0.8974
-AdaptiveXGBoost (stream)        0.8533        0.8505        0.8521
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0014      +0.0032      +0.0019
-Gap (Ours − AdaptiveXGBoost)   +0.0473      +0.0450      +0.0472
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.9006        0.8955        0.8993
+Baseline Combined (one model)    0.8992        0.8923        0.8974
+AdaptiveXGBoost (stream)         0.8533        0.8505        0.8521
+PUFE (OGD + Hedge)               0.8291        0.8481        0.8371
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0014       +0.0032       +0.0019
+Gap (Ours − AdaptiveXGBoost)    +0.0473       +0.0450       +0.0472
+Gap (Ours − PUFE)               +0.0715       +0.0474       +0.0622
+==================================================================================
 FlightDelay  (n_no=6011, n_ext=13989)
   Ext features: OP_CARRIER_FL_NUM
-  [NOTE: framework split 6011/13989 differs from baseline run split 1000/19000]
---------------------------------------------------------------------------------
-Method                        Base AUC   Extended AUC   Pop-weighted
-Ours (base model / ext model)   0.7491        0.7194        0.7283
-Baseline Combined (one model)   0.7429        0.7170        0.7248
-AdaptiveXGBoost (stream)        0.6650        0.6409        0.6421
---------------------------------------------------------------------------------
-Gap (Ours − Baseline)          +0.0062      +0.0024      +0.0035
-Gap (Ours − AdaptiveXGBoost)   +0.0841      +0.0785      +0.0863
-================================================================================
+----------------------------------------------------------------------------------
+Method                         Base AUC   Extended AUC   Pop-weighted
+Ours (base model / ext model)    0.7491        0.7194        0.7283
+Baseline Combined (one model)    0.7429        0.7170        0.7248
+AdaptiveXGBoost (stream)         0.6650        0.6409        0.6421
+PUFE (OGD + Hedge)               0.6141        0.6062        0.6066
+----------------------------------------------------------------------------------
+Gap (Ours − Baseline)           +0.0062       +0.0024       +0.0035
+Gap (Ours − AdaptiveXGBoost)    +0.0841       +0.0785       +0.0863
+Gap (Ours − PUFE)               +0.1350       +0.1132       +0.1217
+==================================================================================
 
 SUMMARY (mean across 10 datasets, pop-weighted AUC)
---------------------------------------------------------------------------------
-  Ours (mean)              : 0.8069
-  Baseline Combined (mean) : 0.8036
-  AdaptiveXGBoost (mean)   : 0.7276
+----------------------------------------------------------------------------------
+  Ours               : 0.8069
+  Baseline Combined  : 0.8036
+  AdaptiveXGBoost    : 0.7276
+  PUFE               : 0.7541
 
   Ours − Baseline          : +0.0033
   Ours − AdaptiveXGBoost   : +0.0793
-================================================================================
+  Ours − PUFE              : +0.0527
+==================================================================================
