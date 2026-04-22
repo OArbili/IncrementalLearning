@@ -47,6 +47,8 @@ class OCDSClassifier:
     n_passes: int = 2             # passes over the training stream
     hedge_eta: float = 5.0        # Hedge learning rate (scaled per-round, cf. PUFE)
     ridge_G: float = 1e-3         # ridge ψ-initialisation of G (LS over overlap rows)
+    max_grad_norm: float = 10.0   # gradient ℓ₂-norm clip (stability)
+    max_w_norm: float = 100.0     # w ℓ₂-norm ball projection (stability)
     standardize: bool = True
     seed: int = 42
     verbose: bool = False
@@ -173,12 +175,24 @@ class OCDSClassifier:
                 grad_G[np.ix_(obs_mask, obs_mask)] += \
                     (-2.0 * self.gamma / d_obs) * np.outer(x_obs, r_rec)
 
+                # --- Gradient clipping (stability against divergence) ---
+                gw_norm = np.linalg.norm(grad_w)
+                if gw_norm > self.max_grad_norm:
+                    grad_w *= self.max_grad_norm / gw_norm
+                gG_norm = np.linalg.norm(grad_G)
+                if gG_norm > self.max_grad_norm:
+                    grad_G *= self.max_grad_norm / gG_norm
+
                 # --- Update ---
                 w -= eta * grad_w
                 # ℓ₁ proximal / soft-threshold step for w
                 if self.lam1 > 0:
                     thresh = eta * self.lam1
                     w = np.sign(w) * np.maximum(np.abs(w) - thresh, 0.0)
+                # ℓ₂-ball projection for w
+                wn = np.linalg.norm(w)
+                if wn > self.max_w_norm:
+                    w *= self.max_w_norm / wn
                 G -= eta * grad_G
 
                 # --- Hedge accumulators ---
