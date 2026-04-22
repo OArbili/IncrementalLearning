@@ -406,7 +406,21 @@ For each dataset, we implemented a five step experimental process to evaluate ou
     \item Extended Group: Instances with non-null extended features
 \end{itemize}
 
-\item \textbf{Performance Evaluation}: We calculated AUC for each test group, comparing our approach against a standard two-model baseline: a base model trained on base features only, and a combined model trained on all features with full data access. Both approaches serve the same two test populations; the difference is that our method can operate with data separation between phases while the baseline cannot.
+\item \textbf{Performance Evaluation}: We report AUROC separately on the two test populations — \emph{Base AUC} on the no-extended subset ($n_{\text{no}}$ rows) and \emph{Extended AUC} on the has-extended subset ($n_{\text{ext}}$ rows) — and summarise them with the \textbf{population-weighted AUC}
+\begin{equation}
+\label{eq:pop-weighted-auc}
+\mathrm{AUC}_{\text{pop-w}}
+=\frac{n_{\text{no}}\,\mathrm{AUC}_{\text{base}}\;+\;n_{\text{ext}}\,\mathrm{AUC}_{\text{ext}}}{n_{\text{no}}+n_{\text{ext}}}.
+\end{equation}
+The pop-weighted AUC is the primary scalar we compare across methods; it gives each test row equal weight regardless of which population it belongs to, which matters when the two populations differ in size by orders of magnitude (e.g.\ CreditRisk has $n_{\text{no}}{=}14\,334$ vs.\ $n_{\text{ext}}{=}1{,}666$, so a simple $(\mathrm{AUC}_{\text{base}}+\mathrm{AUC}_{\text{ext}})/2$ average would over-weight each has-ext row by a factor of $\sim 9$).
+
+We also report the \emph{weighted improvement} of our framework over the Baseline Combined model, defined as the population-weighted difference
+\begin{equation}
+\label{eq:weighted-improvement}
+\Delta\mathrm{AUC}_{\text{pop-w}}
+=\frac{n_{\text{no}}(\mathrm{AUC}^{\text{Ours}}_{\text{base}}-\mathrm{AUC}^{\text{BL}}_{\text{base}})+n_{\text{ext}}(\mathrm{AUC}^{\text{Ours}}_{\text{ext}}-\mathrm{AUC}^{\text{BL}}_{\text{ext}})}{n_{\text{no}}+n_{\text{ext}}},
+\end{equation}
+which is exactly the signed quantity Bayesian optimisation maximises during feature allocation and pruning-level selection (Section~\ref{sec:problem}, objective~\eqref{eq:inc-opt}). All tables in Sections~\ref{sec:baselines} and later use these three quantities (Base AUC, Extended AUC, pop-weighted AUC) consistently. The baseline is a standard two-model setup --- a base model trained on base features only, and a combined model trained on all features with full data access --- evaluated on the same two test populations; the difference is that our method operates with data separation between phases while the baseline cannot.
 \end{enumerate}
 
 As described in Section 4.2, the tree pruning strategy was essential for effective model combination, allowing us to identify and retain only the most relevant decision trees when transitioning from the base to the extended model.
@@ -415,7 +429,7 @@ As described in Section 4.2, the tree pruning strategy was essential for effecti
 
 \subsection{Missingness Structure Validation}
 
-To verify that our natural-missingness datasets exhibit structured (non-random) missingness, we apply two statistical tests per dataset. First, a \textit{chi-squared test} evaluates whether the target label distribution differs significantly between instances with and without extended features. Second, a \textit{logistic regression} trained to predict the missingness indicator (\texttt{has\_extended}) from base features alone, evaluated via 5-fold cross-validated AUC - an AUC significantly above 0.5 indicates that missingness is predictable from observed features, confirming structured rather than random absence.
+To verify that our natural-missingness datasets exhibit structured (non-random) missingness, we apply two statistical tests per dataset. First, a \textit{chi-squared test} evaluates whether the target label distribution differs significantly between instances with and without extended features. Second, a \textit{logistic regression} trained to predict the missingness indicator (\texttt{has\_extended}) from base features alone, evaluated via 5-fold cross-validated AUC --- an AUC significantly above 0.5 indicates that missingness is predictable from observed features, confirming structured rather than random absence. Note that the AUC reported in this subsection measures only the predictability of \texttt{has\_extended} from base features and is not the population-weighted AUC (Eq.~\ref{eq:pop-weighted-auc}) used to score our model in Sections~\ref{sec:baselines} onwards.
 
 Table~\ref{tab:missingness} summarizes the results. All ten datasets show statistically significant chi-squared tests ($p < 0.01$) and logistic regression AUC well above 0.5 (range: 0.50--0.91), confirming that missingness is structured and predictable from base features. The six natural-missingness datasets exhibit strong structure (AUC 0.63--0.86), while the four augmented datasets use conditional null injection designed to mimic real-world structured missingness patterns (AUC 0.50--0.91).
 
