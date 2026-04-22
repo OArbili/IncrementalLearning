@@ -22,6 +22,7 @@ our framework's `ext_auc` and `base_auc`.
 | `adaptive_xgboost/` | Montiel et al., [Adaptive XGBoost for Evolving Data Streams](https://github.com/jacobmontiel/AdaptiveXGBoostClassifier), IJCNN 2020 | Streaming XGBoost ensemble with replace/push window, optional ADWIN drift detection |
 | `pufe/` | Hou, Zhang, Zhou, [Prediction with Unpredictable Feature Evolution](https://arxiv.org/abs/1904.12171), IEEE TNNLS 2021 | Two OGD logistic predictors (base-only, base⊕ext with recovered ext) Hedge-ensembled by cumulative log-loss |
 | `ocds/` | He, Wu, Wu, Beyazit, Chen, Wu, [Online Learning from Capricious Data Streams](https://www.ijcai.org/proceedings/2019/346), IJCAI 2019 | Learned universal feature-relatedness graph G, joint bi-convex CGD on (w, G) with reconstruction + classification losses, observed/reconstructed Hedge ensemble |
+| `emli/` | Dong, Cong, Sun, Zhang, Tang, Xu, [Evolving Metric Learning for Incremental and Decremental Features](https://arxiv.org/abs/2006.15334), IEEE T-CSVT 2021 | Two low-rank Mahalanobis projections L_s (base) / L_a (base⊕ext) learned jointly via triplet loss + consistency + Frobenius regularisation; classifier head on each embedding, selected per row by has_extended |
 
 ## Running
 
