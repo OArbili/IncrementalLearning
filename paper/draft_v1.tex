@@ -267,13 +267,14 @@ Where $k \leq n$ is the optimal number of base trees to retain (determined throu
 
 We optimize the allocation of features between base and extended sets by running both Phase 1 and Phase 2 with different feature allocation configurations using Bayesian optimization. This optimization process evaluates different partitioning of features between base and extended sets to determine the optimal feature allocation strategy.
 
-The feature allocation optimization aims to minimize the objective function:
-
+The Bayesian search minimises the population-weighted loss between the data-sharing baseline and our two-phase approach, evaluated separately on the two test populations and combined by their sizes (identical to Eq.~\ref{eq:weighted-improvement} with the sign flipped so it is a \emph{loss}):
 \begin{equation}
-\mathcal{L} = \text{AUC}_{\text{baseline}} - \text{AUC}_{\text{two-phase}}
+\label{eq:bo-objective}
+\mathcal{L}
+=\frac{n_{\text{no}}\bigl(\mathrm{AUC}^{\text{BL}}_{\text{base}}-\mathrm{AUC}^{\text{Ours}}_{\text{base}}\bigr)
++n_{\text{ext}}\bigl(\mathrm{AUC}^{\text{BL}}_{\text{ext}}-\mathrm{AUC}^{\text{Ours}}_{\text{ext}}\bigr)}{n_{\text{no}}+n_{\text{ext}}}.
 \end{equation}
-
-Where $\text{AUC}_{\text{baseline}}$ is the validation area under the ROC curve for a model trained with all features at once, and $\text{AUC}_{\text{two-phase}}$ is the validation performance of our two-phase approach. The Bayesian optimization process systematically explores different feature allocation strategies to identify the configuration that maximizes the performance advantage of our two-phase method over the baseline approach.
+Here $\mathrm{AUC}^{\text{BL}}_{\text{base}}$, $\mathrm{AUC}^{\text{BL}}_{\text{ext}}$ are the \emph{data-sharing baseline's} AUCs --- a single combined model trained on all rows with all features --- evaluated on the no-extended and has-extended test populations respectively; $\mathrm{AUC}^{\text{Ours}}_{\text{base}}$ is our base model's AUC on the no-extended population; $\mathrm{AUC}^{\text{Ours}}_{\text{ext}}$ is our (warm-started, adaptively-pruned) extended model's AUC on the has-extended population; and $(n_{\text{no}}, n_{\text{ext}})$ are the two population sizes on the validation set. A negative value of $\mathcal{L}$ means the incremental two-phase approach strictly dominates the data-sharing baseline on the population-weighted average. Bayesian optimisation explores feature allocations and pruning levels that drive $\mathcal{L}$ as negative as possible, i.e. that maximise the same population-weighted improvement we report in Tables~\ref{tab:baseline_base_auc}--\ref{tab:baseline_summary}.
 
 In real-world scenarios, feature allocation is subject to the availability of data sources at training time, making this optimization crucial for determining the most effective partitioning strategy given the constraints of data accessibility and acquisition timing.
 
