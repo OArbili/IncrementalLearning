@@ -20,6 +20,7 @@ our framework's `ext_auc` and `base_auc`.
 | Folder | Paper / Source | Method |
 | --- | --- | --- |
 | `adaptive_xgboost/` | Montiel et al., [Adaptive XGBoost for Evolving Data Streams](https://github.com/jacobmontiel/AdaptiveXGBoostClassifier), IJCNN 2020 | Streaming XGBoost ensemble with replace/push window, optional ADWIN drift detection |
+| `pufe/` | Hou, Zhang, Zhou, [Prediction with Unpredictable Feature Evolution](https://arxiv.org/abs/1904.12171), IEEE TNNLS 2021 | Two OGD logistic predictors (base-only, base⊕ext with recovered ext) Hedge-ensembled by cumulative log-loss |
 
 ## Running
 
