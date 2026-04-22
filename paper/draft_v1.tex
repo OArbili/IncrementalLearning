@@ -27,11 +27,11 @@ Incremental Tree Ensembles for Evolving Feature Spaces Under Structured Missingn
 \begin{document}
 
 \begin{abstract}
-Machine learning models deployed in healthcare, finance, and other dynamic environments face a persistent challenge: feature spaces that evolve over time as new measurements, tests, or data sources become available. This creates \textit{structured missingness} --- newer features are systematically absent from historical records, requiring models to serve heterogeneous subpopulations with different feature availability. Traditional approaches require full retraining or maintaining multiple specialized models, both costly and incompatible with privacy-constrained settings where data cannot be centralized.
+Machine learning models deployed in healthcare, finance, and other dynamic environments face a persistent challenge: feature spaces that evolve over time as new measurements, tests, or data sources become available. This creates \textit{structured missingness} - newer features are systematically absent from historical records, requiring models to serve heterogeneous subpopulations with different feature availability. Traditional approaches require full retraining or maintaining multiple specialized models, both costly and incompatible with privacy-constrained settings where data cannot be centralized.
 
-We introduce an incremental learning framework for Gradient Boosting Machines that seamlessly integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features, then warm-starts an extended model that incorporates newly available features through adaptive tree pruning. Crucially, the phases operate independently --- only the model artifact is transferred, not raw data --- enabling deployment under privacy constraints and evolving feature availability.
+We introduce an incremental learning framework for Gradient Boosting Machines that seamlessly integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features, then warm-starts an extended model that incorporates newly available features through adaptive tree pruning. Crucially, the phases operate independently - only the model artifact is transferred, not raw data - enabling deployment under privacy constraints and evolving feature availability.
 
-Evaluation across 10 diverse datasets demonstrates that incremental learning without data sharing achieves near-parity with standard training, with all 10 datasets showing positive or zero weighted improvement (Wilcoxon $p = 0.001$). In addition, we benchmark against five state-of-the-art baselines for learning under evolving feature spaces --- AdaptiveXGBoost, PUFE, OCDS, EMLI, and GBDT-IL --- under an identical preprocessing and data-split protocol. Our framework wins on \emph{all 10 datasets} against every baseline, exceeding the closest competitor (GBDT-IL) by $+0.041$ mean population-weighted AUC.
+Evaluation across 10 diverse datasets demonstrates that incremental learning without data sharing achieves near-parity with standard training, with all 10 datasets showing positive or zero weighted improvement (Wilcoxon $p = 0.001$). In addition, we benchmark against five baselines for learning under evolving feature spaces - AdaptiveXGBoost, PUFE, OCDS, EMLI, and GBDT-IL - under an identical preprocessing and data-split protocol. Our framework wins on \emph{all 10 datasets} against every baseline.
 \end{abstract}
 
 \keywords{Incremental Learning, Structured Missingness, Gradient Boosting, Feature Evolution, Adaptive Tree Pruning, Privacy-Preserving ML, Model Transfer}
@@ -46,13 +46,13 @@ Tree-based models, particularly GBMs, remain the dominant choice in these domain
 
 Maintaining robust predictive models in such settings presents a major challenge. Organizations often resort to training multiple specialized models aligned with different feature subsets. However, this strategy introduces substantial maintenance burden, complicates deployment workflows, and risks version drift across models. Moreover, it is incompatible with real-world scenarios involving partial feature availability at inference time, particularly under privacy constraints such as GDPR where feature usage may vary at the user level.
 
-A closely related challenge arises in cross-organizational collaboration, where multiple institutions hold complementary feature sets but cannot share raw data due to privacy regulations. For example, two hospitals may collect different diagnostic measurements for overlapping patient populations, or banks collaborating on anti-money laundering (AML) models may hold transaction features that cannot be exchanged. Our framework directly addresses this scenario: one institution trains a base model on its features and shares only the model artifact, while the other extends it with private features using warm-start and adaptive pruning. Our experimental design mirrors exactly this setup --- the base model is trained on one feature set and extended with additional features from a different subpopulation, with no data shared between phases.
+A closely related challenge arises in cross-organizational collaboration, where multiple institutions hold complementary feature sets but cannot share raw data due to privacy regulations. For example, two hospitals may collect different diagnostic measurements for overlapping patient populations, or banks collaborating on anti-money laundering (AML) models may hold transaction features that cannot be exchanged. Our framework directly addresses this scenario: one institution trains a base model on its features and shares only the model artifact, while the other extends it with private features using warm-start and adaptive pruning. Our experimental design mirrors exactly this setup - the base model is trained on one feature set and extended with additional features from a different subpopulation, with no data shared between phases.
 
 In this work, we introduce an incremental learning framework for GBMs that integrates new features without full retraining or data sharing, and demonstrate that it achieves near-parity with standard training across 10 diverse datasets (Wilcoxon $p = 0.001$), with all 10 datasets showing positive or zero improvement. Our contributions are:
 \begin{itemize}
 \setlength\itemindent{0pt}
 \setlength{\itemindent}{0pt}
-\item \textbf{An incremental learning framework for evolving feature spaces:} We implement a two-phase training procedure where a base model is trained on commonly available features, then incrementally extended with newly available features through warm-starting and continued training. The two phases operate independently --- only the model artifact is shared --- enabling both incremental updates and privacy-constrained deployment.
+\item \textbf{An incremental learning framework for evolving feature spaces:} We implement a two-phase training procedure where a base model is trained on commonly available features, then incrementally extended with newly available features through warm-starting and continued training. The two phases operate independently - only the model artifact is shared - enabling both incremental updates and privacy-constrained deployment.
 
 \item \textbf{Adaptive tree pruning for knowledge transfer:} We develop a validation-driven pruning mechanism that determines how much prior knowledge to retain when extending to new feature spaces. Bayesian optimization selects the optimal pruning level, with a built-in $k=0$ fallback that guarantees the framework never underperforms training from scratch. Adaptive pruning outperforms fixed strategies in 7 of 10 datasets.
 
@@ -60,13 +60,12 @@ In this work, we introduce an incremental learning framework for GBMs that integ
 
 \item \textbf{Privacy-preserving model collaboration:} Each experiment directly validates a model-sharing paradigm where only model artifacts are exchanged between phases, with no raw data access. All 10 datasets confirm successful cross-phase knowledge transfer, providing empirical evidence for deployment under data-sharing constraints.
 
-\item \textbf{Comprehensive benchmarking against the state of the art:} We re-implement and evaluate five recent baselines for learning with evolving or capricious feature spaces --- AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil} --- under a single shared preprocessing and stratified train/test split so numbers are directly comparable. Our framework outperforms every baseline on every dataset (10/10), with a mean population-weighted AUC margin of $+0.041$ over the closest competitor (GBDT-IL) and up to $+0.14$ over the weakest (OCDS).
-\end{itemize}
+\item \textbf{Comprehensive benchmarking:} We re-implement and evaluate five recent baselines for learning with evolving or capricious feature spaces - AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil} - under a single shared preprocessing and stratified train/test split so numbers are directly comparable. Our framework outperforms every baseline on every dataset (10/10).
 
 \section{Related Work}
 Missing data are traditionally addressed either by discarding incomplete instances or by imputing missing values, but each strategy has drawbacks~\cite{chen2016xgboost}. Common strategies include MICE~\cite{vanbuuren2011mice}, which iteratively imputes values using regression under MAR assumptions, and tree-based methods like CART~\cite{loh2011cart} and MIA~\cite{twala2008mia}, which handle missingness via surrogate splits or by treating missing values as informative categories.
 
-Modern gradient boosting frameworks such as XGBoost~\cite{chen2016xgboost}, LightGBM, and CatBoost include built-in mechanisms for missing values, but these are fundamentally heuristic. XGBoost learns a default split direction at each tree node: when a feature is absent during inference, the sample is routed left or right based on whichever direction minimized training loss. This approach treats missingness as ``just another value'' and optimizes the routing empirically. Critically, it does not model \textit{why} a value is missing, does not distinguish between random and structured missingness, and does not adapt the model architecture for subpopulations with different feature availability. When missingness is structured --- e.g., ICU lab tests ordered only for critical patients, or premium financial metrics collected only for high-value customers --- the missing-value population and the observed-value population may exhibit fundamentally different predictive patterns. A single model with heuristic default directions cannot specialize for these distinct subgroups.
+Modern gradient boosting frameworks such as XGBoost~\cite{chen2016xgboost}, LightGBM, and CatBoost include built-in mechanisms for missing values, but these are fundamentally heuristic. XGBoost learns a default split direction at each tree node: when a feature is absent during inference, the sample is routed left or right based on whichever direction minimized training loss. This approach treats missingness as ``just another value'' and optimizes the routing empirically. Critically, it does not model \textit{why} a value is missing, does not distinguish between random and structured missingness, and does not adapt the model architecture for subpopulations with different feature availability. When missingness is structured - e.g., ICU lab tests ordered only for critical patients, or premium financial metrics collected only for high-value customers - the missing-value population and the observed-value population may exhibit fundamentally different predictive patterns. A single model with heuristic default directions cannot specialize for these distinct subgroups.
 
 Bayesian Additive Regression Trees (BART)~\cite{chipman2010bart} can be augmented with MIA to natively support incomplete data without imputation, but similarly assume that missingness is random or independent. This limitation motivates our approach, which explicitly models structured missingness by training separate specialized models for each subpopulation rather than relying on heuristic missing-value routing within a single model.
 Recent research has begun addressing more complex streaming and evolving-feature scenarios, where both the data distribution and feature space can change over time. While traditional stream learners assume a fixed set of input features, real-world systems often experience column-wise feature drift with new sensors, logs, or sources introducing features that were previously unavailable.
@@ -228,7 +227,7 @@ availability.
 \section{METHODS}
 \label{sec:method}
 
-Our approach implements a two-phase incremental learning framework for Gradient Boosting Machines, designed for evolving feature spaces with structured missingness (Figure~\ref{fig:framework}). Rather than retraining from scratch when new features become available, we incrementally extend an existing model through warm-starting and adaptive pruning. The framework consists of two components: \textbf{Phase~1} trains a base model on commonly available features; \textbf{Phase~2} transfers knowledge from the base model and extends it with newly available features. Critically, the two phases operate independently --- only the model artifact is shared --- enabling both incremental updates over time and privacy-constrained collaboration across institutions.
+Our approach implements a two-phase incremental learning framework for Gradient Boosting Machines, designed for evolving feature spaces with structured missingness (Figure~\ref{fig:framework}). Rather than retraining from scratch when new features become available, we incrementally extend an existing model through warm-starting and adaptive pruning. The framework consists of two components: \textbf{Phase~1} trains a base model on commonly available features; \textbf{Phase~2} transfers knowledge from the base model and extends it with newly available features. Critically, the two phases operate independently - only the model artifact is shared - enabling both incremental updates over time and privacy-constrained collaboration across institutions.
 
 \subsection{Phase 1: Base Model Training}
 
@@ -331,7 +330,7 @@ This theoretical foundation ensures that our incremental approach is always a sa
 \input{fig_framework.tex}
 
 \section{Experiments}
-This section evaluates our incremental learning framework across diverse real-world datasets. We demonstrate that the two-phase approach --- which enables incremental model updates without full retraining or data sharing --- achieves comparable or superior performance to standard training that requires simultaneous access to all data. We conduct ablation studies to validate the adaptive pruning mechanism and present a systematic analysis explaining why incremental learning succeeds under structured missingness.
+This section evaluates our incremental learning framework across diverse real-world datasets. We demonstrate that the two-phase approach - which enables incremental model updates without full retraining or data sharing - achieves comparable or superior performance to standard training that requires simultaneous access to all data. We conduct ablation studies to validate the adaptive pruning mechanism and present a systematic analysis explaining why incremental learning succeeds under structured missingness.
 
 All Bayesian optimization procedures use Optuna\cite{optuna} with 30 trials per model (50 for select sensitivity experiments). Training and validation employ 3-fold stratified cross-validation to ensure robust performance estimates and prevent overfitting, particularly for the imbalanced class distributions in our datasets.
 \subsection{Datasets}
@@ -348,28 +347,39 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
 \begin{table}[h]
 \centering
  \caption{
-    Datasets used in experiments. Label\% shows positive class proportion. Null\% is the percentage of rows where at least one extended feature is missing, i.e., the fraction of the population that lacks extended information and relies solely on the base model.
+    Datasets used in experiments. Null\% is the percentage of rows where at least one extended feature is missing, i.e., the fraction of the population that lacks extended information and relies solely on the base model. \textit{Missingness} denotes how the missing-pattern was obtained: \textbf{Natural} uses the dataset as-is; \textbf{Augmented} injects structured (conditional) nulls into specific features following NMAR rules (see Section~\ref{sec:problem}). \textit{Partial} marks datasets where we did not use the full raw source --- either by sub-sampling rows or by retaining only the top-$k$ features selected via XGBoost importance (see caption footnotes).
   }
   \label{tab:dataset-summary}
-  \resizebox{0.95\columnwidth}{!}{%
-  \begin{tabular}{l r r r r}
+  \resizebox{0.98\columnwidth}{!}{%
+  \begin{tabular}{l r r r l l}
     \toprule
-    \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Label\%} & \textbf{Null (\%)} \\
+    \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Null (\%)} & \textbf{Missingness} & \textbf{Partial} \\
     \midrule
-    FlightDelay        & 100,000  & 14  & 17.3 & 30.0 \\
-    WeatherAUS         & 142,193  & 20  & 22.4 & 40.3 \\
-    MovieAugV2         & 112,466  & 11  & 1.9  & 88.5 \\
-    DiabetesRecord     & 101,766  & 45  & 46.1 & 66.2 \\
-    BankLoanSta        & 100,000  & 17  & 77.4 & 62.7 \\
-    WIDS               & 91,713   & 51  & 8.6  & 87.4 \\
-    CreditRisk         & 80,000   & 41  & 8.0  & 89.6 \\
-    Weather            & 25,000   & 16  & 22.4 & 62.3 \\
-    HRAnalytics        & 19,158   & 14  & 24.9 & 31.0 \\
-    ClientRecord       & 7,043    & 28  & 67.0 & 40.0 \\
+    FlightDelay        & 100,000  & 14  & 30.0 & Augmented$^\dagger$ & rows sampled$^{a}$ \\
+    WeatherAUS         & 142,193  & 20  & 40.3 & Natural             & --- \\
+    MovieAugV2         & 112,466  & 11  & 88.5 & Augmented$^\dagger$ & rebuilt$^{b}$ \\
+    DiabetesRecord     & 101,766  & 45  & 66.2 & Natural             & --- \\
+    BankLoanSta        & 100,000  & 17  & 62.7 & Augmented$^\dagger$ & --- \\
+    WIDS               & 91,713   & 51  & 87.4 & Natural             & top-50 features$^{c}$ \\
+    CreditRisk         & 80,000   & 41  & 89.6 & Natural             & top-40 features$^{c}$ \\
+    Weather            & 25,000   & 16  & 62.3 & Natural             & --- \\
+    HRAnalytics        & 19,158   & 14  & 31.0 & Natural             & --- \\
+    ClientRecord       & 7,043    & 28  & 40.0 & Augmented$^\dagger$ & --- \\
   \bottomrule
   \end{tabular}%
   }
 
+\footnotesize
+$^\dagger$ Structured (NMAR) null injection: missingness on the extended
+feature(s) is conditioned on observed base features
+(e.g.\ BankLoanSta: \textit{Credit Score} $\to$ NaN when \textit{Number of
+Open Accounts} is above median, with 10\% noise).\\
+$^{a}$ FlightDelay: the raw Kaggle source has $>$580K rows; we uniformly
+sample 100K (fixed seed=42) to keep experiments tractable.\\
+$^{b}$ MovieAugV2: built from MovieLens-20M by aggregating per-user
+rating/tag statistics and defining a future-activity target.\\
+$^{c}$ Selected via XGBoost feature-importance ranking; the remaining
+columns are discarded prior to preprocessing.
 
 \end{table}
 
@@ -405,11 +415,11 @@ As described in Section 4.2, the tree pruning strategy was essential for effecti
 
 \subsection{Missingness Structure Validation}
 
-To verify that our natural-missingness datasets exhibit structured (non-random) missingness, we apply two statistical tests per dataset. First, a \textit{chi-squared test} evaluates whether the target label distribution differs significantly between instances with and without extended features. Second, a \textit{logistic regression} trained to predict the missingness indicator (\texttt{has\_extended}) from base features alone, evaluated via 5-fold cross-validated AUC --- an AUC significantly above 0.5 indicates that missingness is predictable from observed features, confirming structured rather than random absence.
+To verify that our natural-missingness datasets exhibit structured (non-random) missingness, we apply two statistical tests per dataset. First, a \textit{chi-squared test} evaluates whether the target label distribution differs significantly between instances with and without extended features. Second, a \textit{logistic regression} trained to predict the missingness indicator (\texttt{has\_extended}) from base features alone, evaluated via 5-fold cross-validated AUC - an AUC significantly above 0.5 indicates that missingness is predictable from observed features, confirming structured rather than random absence.
 
 Table~\ref{tab:missingness} summarizes the results. All ten datasets show statistically significant chi-squared tests ($p < 0.01$) and logistic regression AUC well above 0.5 (range: 0.50--0.91), confirming that missingness is structured and predictable from base features. The six natural-missingness datasets exhibit strong structure (AUC 0.63--0.86), while the four augmented datasets use conditional null injection designed to mimic real-world structured missingness patterns (AUC 0.50--0.91).
 
-This validation supports our claim that our framework addresses structured missingness --- the common real-world pattern where feature absence is systematic and predictable, not random.
+This validation supports our claim that our framework addresses structured missingness - the common real-world pattern where feature absence is systematic and predictable, not random.
 
 \begin{table}[h]
 \centering
@@ -426,7 +436,6 @@ CreditRisk & Natural & $3.5 \times 10^{-22}$ & 0.679 & Structured \\
 HRAnalytics & Natural & $1.2 \times 10^{-246}$ & 0.790 & Structured \\
 WeatherAUS & Natural & $3.9 \times 10^{-31}$ & 0.639 & Structured \\
 WIDS & Natural & $< 10^{-300}$ & 0.861 & Structured \\
-\midrule
 BankLoanSta & Augmented & $7.0 \times 10^{-34}$ & 0.802 & Structured \\
 ClientRecord & Augmented & $1.4 \times 10^{-7}$ & 0.823 & Structured \\
 MovieAugV2 & Augmented & $6.5 \times 10^{-22}$ & 0.914 & Structured \\
@@ -449,15 +458,15 @@ Our incremental learning framework demonstrates consistent improvements across a
 
 Across all 10 datasets, our framework achieves positive or zero weighted improvement, demonstrating that incremental learning without data sharing incurs no performance loss compared to standard training (Wilcoxon $p = 0.001$). The strongest gains appear in BankLoanSta (+0.0113), HRAnalytics (+0.0051), FlightDelay (+0.0035), and ClientRecord (+0.0031).
 
-A key finding is that the incremental approach not only avoids performance degradation but achieves consistent gains on the feature-absent population (positive base diff in all 10 datasets). This occurs because our base model trains on \textit{all} rows with extended features masked as NaN, giving it a larger training set than the baseline's base model which uses only base features. The extended features' absence pattern itself becomes an implicit signal that aids specialization --- an emergent benefit of the incremental design.
+A key finding is that the incremental approach not only avoids performance degradation but achieves consistent gains on the feature-absent population (positive base diff in all 10 datasets). This occurs because our base model trains on \textit{all} rows with extended features masked as NaN, giving it a larger training set than the baseline's base model which uses only base features. The extended features' absence pattern itself becomes an implicit signal that aids specialization - an emergent benefit of the incremental design.
 
 For the extended population, results are more nuanced. In 6 out of 10 datasets, the extended model matches or exceeds the combined baseline on extended-feature rows. In the remaining 2 datasets (Weather, WeatherAUS), the extended model shows marginal deficits (less than 0.002 AUC), which are more than compensated by the base model's gains on the no-extended population.
 
 \textbf{Statistical significance.} All 10 datasets show positive or zero weighted improvement. A Wilcoxon signed-rank test confirms statistical significance ($W = 55$, $p = 0.001$). The median weighted improvement is +0.0028 AUC.
-\textbf{Robustness across pruning strategies.} As a proxy for result stability, we examine the spread of improvements across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). While the adaptive (Optuna) strategy achieves the best improvement for each dataset, performance varies across strategies: the mean range between best and worst pruning mode is 0.004 AUC. Two datasets (BankLoanSta and ClientRecord) show positive improvement under all three pruning strategies, indicating robust gains regardless of pruning choice. For the remaining datasets, at least one strategy achieves positive improvement, while others may yield marginal deficits --- confirming that pruning strategy selection matters and justifying the adaptive optimization approach.
+\textbf{Robustness across pruning strategies.} As a proxy for result stability, we examine the spread of improvements across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). While the adaptive (Optuna) strategy achieves the best improvement for each dataset, performance varies across strategies: the mean range between best and worst pruning mode is 0.004 AUC. Two datasets (BankLoanSta and ClientRecord) show positive improvement under all three pruning strategies, indicating robust gains regardless of pruning choice. For the remaining datasets, at least one strategy achieves positive improvement, while others may yield marginal deficits - confirming that pruning strategy selection matters and justifying the adaptive optimization approach.
 
 \begin{table*}[!t]
-\caption{AUROC Results Across All Datasets. Both approaches use two models evaluated on separate test populations. \textit{Baseline}: trains a base model on base features only, and a combined model on all features --- requires access to all data. \textit{Our approach}: trains a base model on base features (with extended features as NaN), then warm-starts an extended model using adaptive pruning --- phases can operate on separate data. Weighted Improvement is the population-weighted average AUC gain, computed as:
+\caption{AUROC Results Across All Datasets. Both approaches use two models evaluated on separate test populations. \textit{Baseline}: trains a base model on base features only, and a combined model on all features - requires access to all data. \textit{Our approach}: trains a base model on base features (with extended features as NaN), then warm-starts an extended model using adaptive pruning - phases can operate on separate data. Weighted Improvement is the population-weighted average AUC gain, computed as:
 $\frac{n_{\text{base}} \cdot (\text{Our}_{\text{base}} - \text{BL}_{\text{base}}) + n_{\text{ext}} \cdot (\text{Our}_{\text{ext}} - \text{BL}_{\text{ext}})}{n_{\text{base}} + n_{\text{ext}}}$,
 where $n_{\text{base}}$ and $n_{\text{ext}}$ are the test population sizes. This ensures each instance contributes equally regardless of which population it belongs to.}
 \label{tab:merged_auc_results}
@@ -483,7 +492,7 @@ FlightDelay & 100K & 30.0 & 0.7491 & 0.7429 & 0.7194 & 0.7170 & \textcolor{Fores
 
 \subsection{Ablation Study - Impact of Adaptive Tree Pruning}
 
-We conducted an ablation study comparing three pruning strategies across all 10 datasets (Table~\ref{tab:pruning}): (1) \textit{Optuna} --- Bayesian optimization selects whether to warm-start and how many trees to retain; (2) \textit{No Pruning} --- always warm-starts from the full base model; (3) \textit{Fixed 50\%} --- always retains exactly half the base trees.
+We conducted an ablation study comparing three pruning strategies across all 10 datasets (Table~\ref{tab:pruning}): (1) \textit{Optuna} - Bayesian optimization selects whether to warm-start and how many trees to retain; (2) \textit{No Pruning} - always warm-starts from the full base model; (3) \textit{Fixed 50\%} - always retains exactly half the base trees.
 
 Optuna-based adaptive pruning achieves the best objective in 7 out of 10 datasets, confirming that automatic pruning threshold selection outperforms fixed strategies. No Pruning wins in 2 datasets (CreditRisk and MovieAugV2), cases where the full base model transfers well. Fixed 50\% pruning wins in 1 dataset (BankLoanSta), where retaining half the base trees provides the best balance between knowledge transfer and adaptation capacity.
 
@@ -518,7 +527,7 @@ FlightDelay & \textbf{--0.0035} & --0.0033 & +0.0030 & Optuna & 0.7194 \\
 \subsection{Comparison with External Baselines}
 \label{sec:baselines}
 
-To benchmark our framework against the state of the art, we implemented five external baselines spanning the three design philosophies for learning under evolving or capricious feature spaces: streaming gradient boosting, online linear models with feature reconstruction, and metric learning with decremental/incremental features. Each baseline is re-implemented from the original paper and run on every one of our 10 datasets using the \textit{identical} preprocessing pipeline, base/extended feature partition, and stratified train/test split (by $label\times has\_extended$, seed=42, 20\% test) produced by our \texttt{scripts/prepare\_datasets.py} module. This ensures all AUC numbers are directly comparable --- baselines and our framework see exactly the same rows, features, and population partition.
+To benchmark our framework against the state of the art, we implemented five external baselines spanning the three design philosophies for learning under evolving or capricious feature spaces: streaming gradient boosting, online linear models with feature reconstruction, and metric learning with decremental/incremental features. Each baseline is re-implemented from the original paper and run on every one of our 10 datasets using the \textit{identical} preprocessing pipeline, base/extended feature partition, and stratified train/test split (by $label\times has\_extended$, seed=42, 20\% test) produced by our \texttt{scripts/prepare\_datasets.py} module. This ensures all AUC numbers are directly comparable - baselines and our framework see exactly the same rows, features, and population partition.
 
 \subsubsection{Baseline Methods}
 
@@ -534,7 +543,7 @@ To benchmark our framework against the state of the art, we implemented five ext
 
 \subsubsection{Results}
 
-Tables~\ref{tab:baseline_base_auc}, \ref{tab:baseline_ext_auc}, and \ref{tab:baseline_summary} report the results. Our framework achieves the highest population-weighted AUC on \textbf{every single dataset}: 10/10 against AdaptiveXGBoost, PUFE, OCDS, EMLI, and GBDT-IL, and 10/10 against the data-sharing Baseline Combined model. The mean gap to the closest external baseline (GBDT-IL) is $+0.0412$ pop-weighted AUC; the gap to the weakest (OCDS) is $+0.1404$. The GBDT-IL baseline illustrates an important point: because it shares our gradient-boosted-tree backbone, the gap against it ($+0.0412$) isolates the contribution of our \textit{architectural} choice --- the $\{$base, extended$\}$ model decomposition --- independent of the choice of learner. Its drift-retrain mechanism fired only once across 10 runs, confirming that our data is stationary and that GBDT-IL effectively reduces to ``incremental XGBoost with residual-based pruning'' on non-drifting data.
+Tables~\ref{tab:baseline_base_auc}, \ref{tab:baseline_ext_auc}, and \ref{tab:baseline_summary} report the results. Our framework achieves the highest population-weighted AUC on \textbf{every single dataset}: 10/10 against AdaptiveXGBoost, PUFE, OCDS, EMLI, and GBDT-IL, and 10/10 against the data-sharing Baseline Combined model. The mean gap to the closest external baseline (GBDT-IL) is $+0.0412$ pop-weighted AUC; the gap to the weakest (OCDS) is $+0.1404$. The GBDT-IL baseline illustrates an important point: because it shares our gradient-boosted-tree backbone, the gap against it ($+0.0412$) isolates the contribution of our \textit{architectural} choice - the $\{$base, extended$\}$ model decomposition - independent of the choice of learner. Its drift-retrain mechanism fired only once across 10 runs, confirming that our data is stationary and that GBDT-IL effectively reduces to ``incremental XGBoost with residual-based pruning'' on non-drifting data.
 
 \begin{table}[h]
 \centering
@@ -596,7 +605,7 @@ FlightDelay    & \textbf{0.7194} & 0.7170 & 0.6409 & 0.6062 & 0.5329 & 0.6047 & 
 \toprule
 \textbf{Method} & \textbf{Mean Pop-w AUC} & \textbf{$\Delta$ vs Ours} & \textbf{Ours wins} \\
 \midrule
-\textbf{Ours (base/ext)}       & \textbf{0.8069} & --- & --- \\
+\textbf{Ours (base/ext)}       & \textbf{0.8069} & - & - \\
 Baseline Combined              & 0.8036 & $-0.0033$ & 10/10 \\
 GBDT-IL~\cite{zhang2019gbdtil} & 0.7657 & $-0.0412$ & 10/10 \\
 PUFE~\cite{he2021pufe}         & 0.7541 & $-0.0527$ & 10/10 \\
@@ -607,15 +616,15 @@ OCDS~\cite{he2019ocds}         & 0.6664 & $-0.1404$ & 10/10 \\
 \end{tabular}
 \end{table}
 
-The clean separation by mean rank --- GBDT-IL $>$ PUFE $\approx$ EMLI $>$ AdaptiveXGBoost $>$ OCDS --- is informative. Methods that share our GBDT backbone (GBDT-IL) or maintain two distinct predictors per population (PUFE) perform best; those that project to a low-rank embedding (EMLI) or treat the problem as generic concept drift on a fixed feature space (AdaptiveXGBoost) land in the middle; and the method that tries to jointly optimise a full feature-relatedness graph with $\ell_1$-truncated OGD (OCDS) lands last. None of them reaches our framework, supporting the claim that the decisive contribution is the $\{$base, extended$\}$ decomposition with warm-start and adaptive pruning, not any single individual ingredient.
+The clean separation by mean rank - GBDT-IL $>$ PUFE $\approx$ EMLI $>$ AdaptiveXGBoost $>$ OCDS - is informative. Methods that share our GBDT backbone (GBDT-IL) or maintain two distinct predictors per population (PUFE) perform best; those that project to a low-rank embedding (EMLI) or treat the problem as generic concept drift on a fixed feature space (AdaptiveXGBoost) land in the middle; and the method that tries to jointly optimise a full feature-relatedness graph with $\ell_1$-truncated OGD (OCDS) lands last. None of them reaches our framework, supporting the claim that the decisive contribution is the $\{$base, extended$\}$ decomposition with warm-start and adaptive pruning, not any single individual ingredient.
 
 \subsection{Analysis: What Drives Incremental Learning Success?}
 
-To understand what enables incremental learning without data sharing to achieve parity or better, we conducted a systematic correlation analysis across all 166 experiment configurations. We examined whether measurable dataset or experiment properties --- including null rates, dataset size, label distribution, feature importance ratios, and population shift between extended and non-extended subgroups --- predict the objective.
+To understand what enables incremental learning without data sharing to achieve parity or better, we conducted a systematic correlation analysis across all 166 experiment configurations. We examined whether measurable dataset or experiment properties - including null rates, dataset size, label distribution, feature importance ratios, and population shift between extended and non-extended subgroups - predict the objective.
 
 Our analysis reveals that no single dataset-level property strongly predicts the improvement magnitude ($R^2 = 0.019$ for a multivariate regression on all measured properties). Feature importance of extended features in the combined model shows no correlation with the objective ($r = -0.035$, $p = 0.68$). Similarly, covariate shift between the extended and non-extended populations, measured via Kolmogorov-Smirnov statistics and label rate differences, shows no significant relationship.
 
-A decomposition of the objective into its two components provides an important insight. The base model matches or exceeds the combined baseline on the no-extended population in 59.5\% of experiments, while the extended model does so on the extended population in 31.4\% of experiments. This indicates that the primary mechanism enabling no-performance-loss incremental learning is the \textit{specialization of the base model} on instances lacking extended features --- a population that the combined model must share capacity across both subgroups to serve.
+A decomposition of the objective into its two components provides an important insight. The base model matches or exceeds the combined baseline on the no-extended population in 59.5\% of experiments, while the extended model does so on the extended population in 31.4\% of experiments. This indicates that the primary mechanism enabling no-performance-loss incremental learning is the \textit{specialization of the base model} on instances lacking extended features - a population that the combined model must share capacity across both subgroups to serve.
 
 These findings suggest that the no-performance-loss property is architectural rather than data-dependent: the two-phase incremental design inherently enables population-specific specialization that compensates for the data separation constraint, regardless of the specific dataset characteristics.
 
@@ -625,9 +634,9 @@ Our experimental results demonstrate the effectiveness of incremental feature ba
 
 \subsection{Comparison with Existing Approaches}
 
-Section~\ref{sec:baselines} reports a direct head-to-head comparison against five recent baselines that are explicitly designed for learning under evolving or capricious feature spaces --- AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil}. Because all baselines and our framework share the same preprocessing pipeline, base/extended feature partition, and stratified train/test split (seed=42, 20\% test, stratified by $label\times has\_extended$) produced by \texttt{scripts/prepare\_datasets.py}, every reported AUC is directly comparable across methods.
+Section~\ref{sec:baselines} reports a direct head-to-head comparison against five recent baselines that are explicitly designed for learning under evolving or capricious feature spaces - AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil}. Because all baselines and our framework share the same preprocessing pipeline, base/extended feature partition, and stratified train/test split (seed=42, 20\% test, stratified by $label\times has\_extended$) produced by \texttt{scripts/prepare\_datasets.py}, every reported AUC is directly comparable across methods.
 
-The ranking is clean and instructive. GBDT-IL, the only baseline that shares our gradient-boosted-tree backbone, is the closest competitor (mean gap $-0.0412$). PUFE and EMLI, which maintain two specialised predictors for the feature-absent and feature-present populations, come next ($-0.053$ each). AdaptiveXGBoost, designed for generic concept drift on a fixed feature space, trails by $-0.079$. OCDS, which jointly optimises a feature-relatedness graph and an $\ell_1$-truncated linear classifier, is the weakest ($-0.140$). Our framework wins on \emph{every} dataset against \emph{every} baseline (10/10 across 6 comparisons, Tables~\ref{tab:baseline_base_auc}--\ref{tab:baseline_summary}). Crucially, the $+0.041$ gap over GBDT-IL isolates the marginal contribution of our architectural choice --- the $\{$base, extended$\}$ model decomposition with warm-start and adaptive pruning --- independent of the choice of learner. This shows that simply using an ``incremental GBDT'' is insufficient; the population-specific decomposition is what closes the gap to (and in fact surpasses) the data-sharing Baseline Combined model.
+The ranking is clean and instructive. GBDT-IL, the only baseline that shares our gradient-boosted-tree backbone, is the closest competitor (mean gap $-0.0412$). PUFE and EMLI, which maintain two specialised predictors for the feature-absent and feature-present populations, come next ($-0.053$ each). AdaptiveXGBoost, designed for generic concept drift on a fixed feature space, trails by $-0.079$. OCDS, which jointly optimises a feature-relatedness graph and an $\ell_1$-truncated linear classifier, is the weakest ($-0.140$). Our framework wins on \emph{every} dataset against \emph{every} baseline (10/10 across 6 comparisons, Tables~\ref{tab:baseline_base_auc}--\ref{tab:baseline_summary}). Crucially, the $+0.041$ gap over GBDT-IL isolates the marginal contribution of our architectural choice - the $\{$base, extended$\}$ model decomposition with warm-start and adaptive pruning - independent of the choice of learner. This shows that simply using an ``incremental GBDT'' is insufficient; the population-specific decomposition is what closes the gap to (and in fact surpasses) the data-sharing Baseline Combined model.
 
 \subsection{Why Incremental Learning Succeeds Under Structured Missingness}
 
@@ -635,9 +644,9 @@ A natural question is why incremental learning without data sharing incurs no pe
 
 \textbf{Effective knowledge transfer through warm-starting.} The extended model inherits learned patterns from the base model and refines them with newly available features, rather than learning from scratch. Adaptive pruning determines how much base knowledge to retain, preventing negative transfer while preserving useful patterns. This achieves comparable performance to training a combined model from scratch on the extended population, while requiring only the model artifact (not the original training data) from Phase~1.
 
-\textbf{Population specialization as a byproduct of incremental design.} The base model trains on all rows with extended features as NaN, learning patterns specific to the feature-absent subpopulation. This is not an explicit design goal but an emergent benefit: because the base model never sees extended feature values, it specializes naturally on the population that lacks them. Our analysis confirms this matches or exceeds the baseline's base model on the no-extended population in all 10 datasets. Modern GBMs handle absent features through heuristic default-direction routing, but our results show that dedicated incremental training achieves at least parity --- explaining why no performance is lost despite the data separation constraint.
+\textbf{Population specialization as a byproduct of incremental design.} The base model trains on all rows with extended features as NaN, learning patterns specific to the feature-absent subpopulation. This is not an explicit design goal but an emergent benefit: because the base model never sees extended feature values, it specializes naturally on the population that lacks them. Our analysis confirms this matches or exceeds the baseline's base model on the no-extended population in all 10 datasets. Modern GBMs handle absent features through heuristic default-direction routing, but our results show that dedicated incremental training achieves at least parity - explaining why no performance is lost despite the data separation constraint.
 
-The broader implication is significant: \textit{incremental learning without data sharing does not sacrifice performance}. Organizations can update models as new features arrive, avoid full retraining, maintain data separation between phases --- and achieve equal or better performance in the process. This makes the incremental approach a strictly better deployment choice when data sharing is constrained or when features evolve over time.
+The broader implication is significant: \textit{incremental learning without data sharing does not sacrifice performance}. Organizations can update models as new features arrive, avoid full retraining, maintain data separation between phases - and achieve equal or better performance in the process. This makes the incremental approach a strictly better deployment choice when data sharing is constrained or when features evolve over time.
 
 \subsection{Framework Contributions}
 
@@ -645,11 +654,11 @@ Despite the performance advantages, we emphasize that the main contribution of o
 
 \subsection{Application to Privacy-Constrained Model Collaboration}
 
-Beyond feature evolution within a single organization, our experimental setup directly demonstrates a privacy-constrained collaboration scenario. In each experiment, the base model is trained on one feature set and the extended model incorporates additional features from a different subpopulation --- no raw data is shared between the two phases, only the base model artifact. This mirrors a real-world deployment where Institution A trains a base model on its available features and shares the model file, while Institution B extends it with private features that Institution A never accesses.
+Beyond feature evolution within a single organization, our experimental setup directly demonstrates a privacy-constrained collaboration scenario. In each experiment, the base model is trained on one feature set and the extended model incorporates additional features from a different subpopulation - no raw data is shared between the two phases, only the base model artifact. This mirrors a real-world deployment where Institution A trains a base model on its available features and shares the model file, while Institution B extends it with private features that Institution A never accesses.
 
 All 10 datasets in our evaluation validate this capability: the two-phase approach achieves near-parity performance with a combined model that would require access to all features simultaneously, with all 10 showing positive or zero weighted improvement. This provides empirical evidence that model-level knowledge transfer can substitute for data-level sharing in cross-institutional settings such as healthcare (hospitals with different diagnostic panels) or finance (banks with complementary transaction features for AML detection).
 
-We note that sharing model artifacts does not constitute formal privacy preservation --- gradient boosting models can be susceptible to model inversion attacks~\cite{fredrikson2015model}. Production deployments under strict regulatory constraints (GDPR, HIPAA) would benefit from additional safeguards such as differential privacy or secure aggregation. Nonetheless, the framework reduces the attack surface significantly compared to raw data sharing, and the model-sharing paradigm represents a practical middle ground between full data exchange and complete isolation.
+We note that sharing model artifacts does not constitute formal privacy preservation - gradient boosting models can be susceptible to model inversion attacks~\cite{fredrikson2015model}. Production deployments under strict regulatory constraints (GDPR, HIPAA) would benefit from additional safeguards such as differential privacy or secure aggregation. Nonetheless, the framework reduces the attack surface significantly compared to raw data sharing, and the model-sharing paradigm represents a practical middle ground between full data exchange and complete isolation.
 
 \subsection{Generalizability and Limitations}
 
@@ -663,15 +672,15 @@ Several directions merit further investigation. First, extending the framework t
 
 \section{Conclusion}
 
-We presented an incremental learning framework for Gradient Boosting Machines that integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features and incrementally extends it with newly available features through warm-starting and adaptive tree pruning --- with only the model artifact shared between phases, enabling both incremental updates and privacy-constrained deployment.
+We presented an incremental learning framework for Gradient Boosting Machines that integrates new features into existing models without full retraining. Our two-phase approach trains a base model on commonly available features and incrementally extends it with newly available features through warm-starting and adaptive tree pruning - with only the model artifact shared between phases, enabling both incremental updates and privacy-constrained deployment.
 
-Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that incremental learning without data sharing achieves near-parity with standard training, with weighted AUC improvements ranging from +0.0001 to +0.0294 across all 10 datasets (Wilcoxon $p = 0.001$). This is the central result: \textit{data separation between training phases incurs no performance cost} --- while providing operational benefits that standard training cannot offer, including incremental updates and privacy-constrained deployment.
+Evaluation across 10 diverse datasets from healthcare, finance, and meteorology domains demonstrates that incremental learning without data sharing achieves near-parity with standard training, with weighted AUC improvements ranging from +0.0001 to +0.0294 across all 10 datasets (Wilcoxon $p = 0.001$). This is the central result: \textit{data separation between training phases incurs no performance cost} - while providing operational benefits that standard training cannot offer, including incremental updates and privacy-constrained deployment.
 
-A head-to-head comparison against five recent baselines for learning with evolving feature spaces --- AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil} --- run under an identical preprocessing and data-split protocol shows that our framework wins on \emph{all 10 datasets} against \emph{every} baseline. The mean population-weighted AUC margin is $+0.041$ over the closest competitor (GBDT-IL, which shares our GBDT backbone) and up to $+0.14$ over the weakest (OCDS), isolating the contribution of the $\{$base, extended$\}$ model decomposition beyond the choice of learner.
+A head-to-head comparison against five recent baselines for learning with evolving feature spaces - AdaptiveXGBoost~\cite{montiel2020axgb}, PUFE~\cite{he2021pufe}, OCDS~\cite{he2019ocds}, EMLI~\cite{dong2021eml}, and GBDT-IL~\cite{zhang2019gbdtil} - run under an identical preprocessing and data-split protocol shows that our framework wins on \emph{all 10 datasets} against \emph{every} baseline. The mean population-weighted AUC margin is $+0.041$ over the closest competitor (GBDT-IL, which shares our GBDT backbone) and up to $+0.14$ over the weakest (OCDS), isolating the contribution of the $\{$base, extended$\}$ model decomposition beyond the choice of learner.
 
-The adaptive pruning mechanism --- which determines how much prior knowledge to retain during incremental extension --- achieves the best results in 7 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our analysis of 166 experiment configurations reveals why no performance is lost despite data separation: the two-phase design enables population-specific specialization as an emergent benefit, with the base model matching or exceeding unified baselines on the feature-absent subpopulation in 100\% of datasets.
+The adaptive pruning mechanism - which determines how much prior knowledge to retain during incremental extension - achieves the best results in 7 out of 10 datasets, with a built-in safety guarantee that ensures the framework never underperforms training from scratch. Our analysis of 166 experiment configurations reveals why no performance is lost despite data separation: the two-phase design enables population-specific specialization as an emergent benefit, with the base model matching or exceeding unified baselines on the feature-absent subpopulation in 100\% of datasets.
 
-The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data --- all 10 datasets validate that this model-level knowledge transfer achieves near-parity performance without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
+The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data - all 10 datasets validate that this model-level knowledge transfer achieves near-parity performance without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
 
 \section*{Supplementary Materials and Code Availability}
 
