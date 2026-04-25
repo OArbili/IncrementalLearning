@@ -19,10 +19,22 @@ from core.GenericDataPipeline import GenericDataPipeline
 from core.RunData import RunPipeline
 from core.XGBoostModel import XGBoostModel
 from sklearn.metrics import roc_auc_score
-from core.seed_utils import SEED, set_all_seeds
+from core import seed_utils
+from core.seed_utils import set_all_seeds
+
+# Optional environment overrides (see run_all_experiments.py for the
+# same convention). IL_SEED mutates the seed for the entire run;
+# IL_RESULTS_DIR redirects every output away from results/ so seed
+# sweeps cannot overwrite the canonical artefacts.
+_IL_SEED_ENV = os.environ.get('IL_SEED', None)
+_IL_RESULTS_DIR_ENV = os.environ.get('IL_RESULTS_DIR', None)
 
 pd.set_option('future.infer_string', False)
-set_all_seeds()
+if _IL_SEED_ENV is not None:
+    set_all_seeds(seed=int(_IL_SEED_ENV))
+else:
+    set_all_seeds()
+SEED = seed_utils.SEED
 
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 COMBINED_TRIALS = int(sys.argv[3]) if len(sys.argv) > 3 else N_TRIALS  # baseline combined model trials
@@ -34,7 +46,10 @@ TRIALS_PER_MODE = {
 }
 # Optional: filter to specific datasets (comma-separated), e.g. "WeatherAUS,WIDS"
 DATASET_FILTER = sys.argv[2].split(',') if len(sys.argv) > 2 else None
-ABLATION_DIR = os.path.join(os.path.dirname(__file__), '..', 'results', 'ablation')
+DEFAULT_RESULTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'results')
+RESULTS_DIR = _IL_RESULTS_DIR_ENV if _IL_RESULTS_DIR_ENV else DEFAULT_RESULTS_DIR
+ABLATION_DIR = os.path.join(RESULTS_DIR, 'ablation')
+os.makedirs(ABLATION_DIR, exist_ok=True)
 PRUNING_MODES = ['optuna', 'no_pruning', 'fixed_50']
 
 pipeline = GenericDataPipeline()

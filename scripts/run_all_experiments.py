@@ -33,14 +33,31 @@ from core.GenericDataPipeline import GenericDataPipeline
 from core.RunData import RunPipeline
 from core.XGBoostModel import XGBoostModel
 from sklearn.metrics import roc_auc_score
-from core.seed_utils import SEED, set_all_seeds
+from core import seed_utils
+from core.seed_utils import set_all_seeds
+
+# --- Optional environment overrides for seed-sweep / sandbox runs.   ---
+# IL_SEED        : integer seed; default keeps historical 42 behaviour.
+# IL_RESULTS_DIR : directory to write outputs; default = ../results.
+# These are read here, BEFORE set_all_seeds(), so that calling
+# set_all_seeds(seed=...) mutates the global SEED before any model
+# creates its random state. Setting IL_RESULTS_DIR is the safe way to
+# run additional experiments without touching the existing results/.
+_IL_SEED_ENV = os.environ.get('IL_SEED', None)
+_IL_RESULTS_DIR_ENV = os.environ.get('IL_RESULTS_DIR', None)
 
 pd.set_option('future.infer_string', False)
-set_all_seeds()
+if _IL_SEED_ENV is not None:
+    set_all_seeds(seed=int(_IL_SEED_ENV))
+else:
+    set_all_seeds()
+SEED = seed_utils.SEED  # local mirror, may have been updated above
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
-RESULTS_DIR = os.path.join(SCRIPTS_DIR, '..', 'results')
+DEFAULT_RESULTS_DIR = os.path.join(SCRIPTS_DIR, '..', 'results')
+RESULTS_DIR = _IL_RESULTS_DIR_ENV if _IL_RESULTS_DIR_ENV else DEFAULT_RESULTS_DIR
 ABLATION_DIR = os.path.join(RESULTS_DIR, 'ablation')
+os.makedirs(RESULTS_DIR, exist_ok=True)
 
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 30
 DATASET_FILTER = sys.argv[2].split(',') if len(sys.argv) > 2 else None

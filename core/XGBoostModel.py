@@ -11,7 +11,9 @@ class XGBoostModel:
         self.model = None
         self.best_params = None
         self.used_base_model = True
-        self.seed = SEED
+        # Read SEED dynamically from seed_utils (see RunData.py for context).
+        from . import seed_utils
+        self.seed = seed_utils.SEED
 
     def objective(self, trial, X, y, base_model_path=None, n_splits=3, pruning_mode='optuna'):
         params = {
@@ -88,6 +90,13 @@ class XGBoostModel:
 
         def _callback(study, trial):
             print(f"  Trial {trial.number+1}/{n_trials}: AUC={trial.value:.4f}", flush=True)
+
+        # Enqueue a mandatory no_pruning trial when using optuna mode with a base model
+        if pruning_mode == 'optuna' and base_model_path is not None:
+            base_booster = xgb.Booster()
+            base_booster.load_model(base_model_path)
+            total_trees = len(base_booster.get_dump())
+            study.enqueue_trial({'use_base_model': True, 'n_trees_keep': total_trees})
 
         study.optimize(
             lambda trial: self.objective(trial, X, y, base_model_path, pruning_mode=pruning_mode),

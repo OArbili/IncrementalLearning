@@ -13,7 +13,10 @@ class RunPipeline():
         self.ext_features = None
         self.label = None
         self.all_features = None
-        self.seed = SEED
+        # Read SEED dynamically from seed_utils so seed-sweep runs
+        # (which mutate seed_utils.SEED at start-up) propagate here.
+        from . import seed_utils
+        self.seed = seed_utils.SEED
 
     def load_data(self, in_base_features, in_ext_features, data, label):
         self.data = data
