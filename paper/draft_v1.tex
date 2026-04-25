@@ -428,7 +428,7 @@ As described in Section 4.2, the tree pruning strategy was essential for effecti
 
 To verify that our natural-missingness datasets exhibit structured (non-random) missingness, we apply two statistical tests per dataset. First, a \textit{chi-squared test} evaluates whether the target label distribution differs significantly between instances with and without extended features. Second, a \textit{logistic regression} trained to predict the missingness indicator (\texttt{has\_extended}) from base features alone, evaluated via 5-fold cross-validated AUC - an AUC significantly above 0.5 indicates that missingness is predictable from observed features, confirming structured rather than random absence. Note that the AUC reported in this subsection measures only the predictability of \texttt{has\_extended} from base features and is not the population-weighted AUC (Eq.~\ref{eq:pop-weighted-auc}) used to score our model in Sections~\ref{sec:baselines} onwards.
 
-Table~\ref{tab:missingness} summarizes the results. All ten datasets show statistically significant chi-squared tests ($p < 0.01$) and logistic regression AUC well above 0.5 (range: 0.50--0.91), confirming that missingness is structured and predictable from base features. The six natural-missingness datasets exhibit strong structure (AUC 0.63--0.86), while the four augmented datasets use conditional null injection designed to mimic real-world structured missingness patterns (AUC 0.50--0.91).
+Table~\ref{tab:missingness} summarizes the results. Nine of the ten datasets show statistically significant chi-squared tests ($p \le 5\times10^{-3}$) together with logistic-regression AUC well above 0.5 (range 0.63--0.91), confirming that missingness is structured and predictable from base features. The six natural-missingness datasets exhibit strong structure (AUC 0.63--0.86); three of the four augmented datasets reach AUC 0.80--0.91 (BankLoanSta 0.80, ClientRecord 0.82, MovieAugV2 0.91). FlightDelay is the lone exception: its missingness \emph{is} structured by design --- the null injection is conditioned on the categorical features OP\_CARRIER, DAY\_OF\_WEEK, DEP\_TIME\_BLK, and DISTANCE --- but those conditions are non-linear in their integer-coded representation and a linear logistic regression cannot recover them; the test consequently reports a non-significant p and an AUC near $0.5$ ($p=0.16$, AUC $=0.498$). We mark this dataset ``Structured$^{*}$'' in Table~\ref{tab:missingness}.
 
 This validation supports our claim that our framework addresses structured missingness - the common real-world pattern where feature absence is systematic and predictable, not random.
 
@@ -450,10 +450,17 @@ WIDS & Natural & $< 10^{-300}$ & 0.861 & Structured \\
 BankLoanSta & Augmented & $7.0 \times 10^{-34}$ & 0.802 & Structured \\
 ClientRecord & Augmented & $1.4 \times 10^{-7}$ & 0.823 & Structured \\
 MovieAugV2 & Augmented & $6.5 \times 10^{-22}$ & 0.914 & Structured \\
-FlightDelay & Augmented & $0.16$ & 0.498 & Structured$^*$ \\
+FlightDelay & Augmented & $0.16$ & 0.498 & Structured$^{*}$ \\
 \bottomrule
 \end{tabular}%
 }
+
+\footnotesize
+$^{*}$ Structured by design: the null injection conditions on
+OP\_CARRIER, DAY\_OF\_WEEK, DEP\_TIME\_BLK, and DISTANCE (all
+categorical/binned). A linear logistic regression on integer-coded
+features cannot recover these conditions, so the LogReg AUC stays near
+$0.5$ even though the missingness is non-random.
 \end{table}
 
 \section{Results}
