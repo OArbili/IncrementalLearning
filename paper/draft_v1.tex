@@ -227,7 +227,7 @@ extended cohorts, (ii) controls incremental cost through adaptive pruning and
 continued boosting, and (iii) gracefully handles heterogeneous features
 availability.
 
-\section{METHODS}
+\section{Methods}
 \label{sec:method}
 
 Our approach implements a two-phase incremental learning framework for Gradient Boosting Machines, designed for evolving feature spaces with structured missingness (Figure~\ref{fig:framework}). Rather than retraining from scratch when new features become available, we incrementally extend an existing model through warm-starting and adaptive pruning. The framework consists of two components: \textbf{Phase~1} trains a base model on commonly available features; \textbf{Phase~2} transfers knowledge from the base model and extends it with newly available features. Critically, the two phases operate independently - only the model artifact is shared - enabling both incremental updates over time and privacy-constrained collaboration across institutions.
@@ -711,7 +711,7 @@ A head-to-head comparison against five recent baselines for learning with evolvi
 
 The adaptive pruning mechanism --- which determines how much prior knowledge to retain during incremental extension --- lands at the top of the per-dataset ordering on most datasets in our experiments, and by virtue of the $k=0$ branch of the search it cannot underperform training from scratch in expectation. The seed-aware Table~\ref{tab:merged_auc_results} (5 seeds per dataset, 9 datasets) highlights one mechanism by which no performance is lost despite data separation: the two-phase design produces population-specific specialisation as an emergent benefit, with the per-dataset gap between our base model and the combined baseline on the feature-absent subpopulation bounded by $\pm 0.014$ in mean and consistent with sampling noise on every row.
 
-The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data - all 10 datasets validate that this model-level knowledge transfer achieves parity performance without cross-phase data access. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
+The practical implications are twofold. For \textit{evolving feature spaces}, the framework enables incremental model updates as new features become available, without requiring access to historical training data or full retraining. For \textit{privacy-constrained collaboration}, institutions can share model artifacts rather than raw data --- our 5-seed evaluation across the 9 multi-seed datasets is consistent with model-level knowledge transfer achieving parity with full-data training (paired Wilcoxon $p = 0.48$), and the same parity claim is supported on MovieAugV2 by the single seed where the small-stratum constraint allows the framework to run. Together, these capabilities address a growing need in healthcare, finance, and other regulated domains where both data evolution and data privacy are first-order concerns.
 
 \section*{Supplementary Materials and Code Availability}
 
@@ -725,6 +725,8 @@ To support reproducibility and facilitate further research, we provide supplemen
   \item Link: https://anonymous.4open.science/r/Learning-to-Grow-Incremental-Trees-over-Expanding-Features-818A/
 \end{itemize}
 
+
+\section*{Generative AI Usage Disclosure}
 
 In accordance with ACM's Policy on Authorship and the guidelines for disclosure of generative AI usage, the authors hereby declare the following:
 
