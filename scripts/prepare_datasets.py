@@ -311,6 +311,17 @@ def _load_credit_risk():
 
 def _wrap(loader):
     df, label, ext_features = loader()
+    # Optional env-var override of ext_features (combo-screen experiments).
+    # IL_EXT_FEATURES = comma-separated list of column names that exist in df.
+    _ext_override = os.environ.get('IL_EXT_FEATURES', None)
+    if _ext_override is not None:
+        cand = [c.strip() for c in _ext_override.split(',') if c.strip()]
+        missing = [c for c in cand if c not in df.columns]
+        if missing:
+            print(f"  IL_EXT_FEATURES override skipped — columns missing from df: {missing}")
+        else:
+            print(f"  IL_EXT_FEATURES override: {cand} (was {ext_features})")
+            ext_features = cand
     base_features = [c for c in df.columns if c != label and c not in ext_features]
     if 'has_extended' in df.columns:
         df = df.drop(columns=['has_extended'])
