@@ -1,0 +1,2 @@
+metric,base_auc,ext_auc,comb_no_auc,comb_ext_auc,weighted_imp,n_no_avg,n_ext_avg
+optuna_5seed_mean_pm_std,0.7277 ± 0.0114,0.9306 ± 0.0042,0.7276 ± 0.0072,0.9316 ± 0.0049,-0.0007 ± 0.0017,5340,17154
