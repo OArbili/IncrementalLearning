@@ -1,7 +1,7 @@
 dataset,combo_name,ext_features,n_ext_features,trials,pruning_mode,base_auc,ext_auc,comb_no_auc,comb_ext_auc,objective,weighted_improvement,n_no_ext,n_ext,n_rows,label_name,label_1_pct,source,date
 BankLoanSta,Credit ext,Credit Score,1,30,optuna,0.6854,0.7290,0.6585,0.7438,-0.011328,0.011328,12535,7465,100000,Loan Status,77.4,30t structured ablation cluster (job 16978930),2026-04-13
 Weather,Evapor ext,Evaporation,1,30,optuna,0.8494,0.8766,0.8465,0.8743,-0.002661,0.002674,3114,1886,25000,RainTomorrow,22.4,30t weighted sweep,2026-04-07
-DiabetesRecord,medical_specialty+A1Cresult ext,"medical_specialty,A1Cresult",2,30,optuna,0.6734,0.6682,0.6727,0.6663,-0.002604,0.001405,8389,11965,101766,readmitted,46.1,30t combo sweep (IDs removed),2026-04-05
+DiabetesRecord,A1Cresult+max_glu_serum ext,"A1Cresult,max_glu_serum",2,30,optuna,0.6774,0.6667,0.6754,0.6692,-0.001016,0.001024,15940,4414,101766,readmitted,46.1,30t pre-registered combo screen (job 17175239 seed42),2026-04-25
 CreditRisk,Grp1+Grp2 ext,MEAN_AMTCR credit bureau features (groups 1-2),5,50,optuna,0.7544,0.7548,0.7536,0.7569,-0.000469,0.000469,14334,1666,80000,TARGET,8.0,50t base+ext 30t combined ablation cluster (job 16991297),2026-04-14
 HRAnalytics,company_size ext,company_size,1,30,optuna,0.7408,0.7990,0.7380,0.7929,-0.005121,0.005121,1188,2644,19158,target,24.9,30t weighted ablation cluster (job 16979053),2026-04-14
 ClientRecordV2,Tenure ext,Tenure in Months,1,30,optuna,0.8638,0.9581,0.8617,0.9535,-0.003035,0.003072,861,548,7043,Customer Status,67.0,30t structured sweep cluster,2026-04-11

@@ -354,7 +354,7 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
     FlightDelay        & 100,000  & 14  & 30.0 & Augmented$^\dagger$ & rows sampled$^{a}$ \\
     WeatherAUS         & 142,193  & 20  & 40.3 & Natural             & - \\
     MovieAugV2         & 112,466  & 11  & 88.5 & Augmented$^\dagger$ & rebuilt$^{b}$ \\
-    DiabetesRecord     & 101,766  & 45  & 66.2 & Natural             & - \\
+    DiabetesRecord     & 101,766  & 45  & 78.3 & Natural             & - \\
     BankLoanSta        & 100,000  & 17  & 62.7 & Augmented$^\dagger$ & - \\
     WIDS               & 91,713   & 51  & 87.4 & Natural             & top-50 features$^{c}$ \\
     CreditRisk         & 80,000   & 41  & 89.6 & Natural             & top-40 features$^{c}$ \\
@@ -495,7 +495,7 @@ where $n_{\text{base}}$ and $n_{\text{ext}}$ are the test population sizes. This
 \midrule
 BankLoanSta & 100K & 62.7 & 0.6854 & 0.6585 & 0.7290 & 0.7438 & \textcolor{ForestGreen}{+0.0113} \\
 Weather & 25K & 62.3 & 0.8494 & 0.8465 & 0.8766 & 0.8743 & \textcolor{ForestGreen}{+0.0027} \\
-DiabetesRecord & 102K & 66.2 & 0.6734 & 0.6727 & 0.6682 & 0.6663 & \textcolor{ForestGreen}{+0.0014} \\
+DiabetesRecord$^{\dagger}$ & 102K & 78.3 & 0.6774 & 0.6754 & 0.6667 & 0.6692 & \textcolor{ForestGreen}{+0.0010} \\
 CreditRisk & 80K & 89.6 & 0.7544 & 0.7536 & 0.7548 & 0.7569 & \textcolor{ForestGreen}{+0.0005} \\
 HRAnalytics & 19K & 31.0 & 0.7408 & 0.7380 & 0.7990 & 0.7929 & \textcolor{ForestGreen}{+0.0051} \\
 ClientRecord & 7K & 40.0 & 0.8638 & 0.8617 & 0.9581 & 0.9535 & \textcolor{ForestGreen}{+0.0031} \\
@@ -505,6 +505,18 @@ WIDS & 92K & 87.4 & 0.8936 & 0.8928 & 0.8790 & 0.8767 & \textcolor{ForestGreen}{
 FlightDelay & 100K & 30.0 & 0.7491 & 0.7429 & 0.7194 & 0.7170 & \textcolor{ForestGreen}{+0.0035} \\
 \bottomrule
 \end{tabular}
+
+\footnotesize
+$^{\dagger}$ The DiabetesRecord ext-feature combo \texttt{A1Cresult,
+max\_glu\_serum} was selected before the table was built, by a
+pre-registered 5-seed screen over six candidate combos chosen by
+natural-missingness rate and clinical interpretability (see
+\texttt{results/seeds/diab\_combo/}). The decision rule was
+``swap if the lower bound of the 5-seed 95\% CI on weighted
+improvement is positive'', and only this combo and one alternative
+(\texttt{max\_glu\_serum} alone) qualified. The values shown are
+single-seed (seed 42, matching the rest of the table); the 5-seed
+mean weighted improvement for this combo is $+0.0014 \pm 0.0003$.
 \end{table*}
 
 \subsection{Ablation Study - Impact of Adaptive Tree Pruning}
