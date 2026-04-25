@@ -351,16 +351,16 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
     \toprule
     \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Null (\%)} & \textbf{Missingness} & \textbf{Partial} \\
     \midrule
-    FlightDelay        & 100,000  & 14  & 30.0 & Augmented$^\dagger$ & rows sampled$^{a}$ \\
-    WeatherAUS         & 142,193  & 20  & 40.3 & Natural             & - \\
-    MovieAugV2         & 112,466  & 11  & 88.5 & Augmented$^\dagger$ & rebuilt$^{b}$ \\
-    DiabetesRecord     & 101,766  & 45  & 66.2 & Natural             & - \\
+    FlightDelay        & 100,000  & 14  & 5.0  & Augmented$^\dagger$ & rows sampled$^{a}$ \\
+    WeatherAUS         & 142,193  & 20  & 31.0 & Natural             & - \\
+    MovieAugV2         & 112,466  & 11  & 48.1 & Augmented$^\dagger$ & rebuilt$^{b}$ \\
+    DiabetesRecord     & 101,766  & 45  & 78.3 & Natural             & - \\
     BankLoanSta        & 100,000  & 17  & 62.7 & Augmented$^\dagger$ & - \\
-    WIDS               & 91,713   & 51  & 87.4 & Natural             & top-50 features$^{c}$ \\
+    WIDS               & 91,713   & 51  & 58.2 & Natural             & top-50 features$^{c}$ \\
     CreditRisk         & 80,000   & 41  & 89.6 & Natural             & top-40 features$^{c}$ \\
     Weather            & 25,000   & 16  & 62.3 & Natural             & - \\
     HRAnalytics        & 19,158   & 14  & 31.0 & Natural             & - \\
-    ClientRecord       & 7,043    & 28  & 40.0 & Augmented$^\dagger$ & - \\
+    ClientRecord       & 7,043    & 28  & 61.1 & Augmented$^\dagger$ & - \\
   \bottomrule
   \end{tabular}%
   }
@@ -483,28 +483,40 @@ Decomposing Table~\ref{tab:merged_auc_results} into its two test populations is 
 \textbf{Stability across pruning strategies.} As a proxy for result stability we examine the spread across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). The adaptive (Optuna) strategy lands at the top of the per-dataset ordering on most datasets, with the mean range between best and worst pruning mode at $0.004$ AUC. The values are small in absolute terms --- roughly the same scale as the train/test sampling variance --- so we read this as showing that adaptive pruning is at least as good as a fixed setting in expectation, rather than as a uniform improvement.
 
 \begin{table*}[!t]
-\caption{AUROC Results Across All Datasets. Both approaches use two models evaluated on separate test populations. \textit{Baseline}: trains a base model on base features only, and a combined model on all features - requires access to all data. \textit{Our approach}: trains a base model on base features (with extended features as NaN), then warm-starts an extended model using adaptive pruning - phases can operate on separate data. Weighted Improvement is the population-weighted average AUC gain, computed as:
-$\frac{n_{\text{base}} \cdot (\text{Our}_{\text{base}} - \text{BL}_{\text{base}}) + n_{\text{ext}} \cdot (\text{Our}_{\text{ext}} - \text{BL}_{\text{ext}})}{n_{\text{base}} + n_{\text{ext}}}$,
-where $n_{\text{base}}$ and $n_{\text{ext}}$ are the test population sizes. This ensures each instance contributes equally regardless of which population it belongs to.}
+\caption{AUROC Results Across All Datasets — \textbf{mean $\pm$ std across 5 seeds} (42--46), where each seed jointly controls the train/test split, structured null injection, Optuna sampler, and XGBoost RNG. \textit{Baseline}: trains a base model on base features only, and a combined model on all features --- requires access to all data. \textit{Our approach}: trains a base model on base features (with extended features as NaN), then warm-starts an extended model using adaptive pruning --- phases can operate on separate data. Weighted Improvement is the population-weighted average AUC gain (Eq.~\ref{eq:weighted-improvement}). Green = positive mean; red = negative mean.}
 \label{tab:merged_auc_results}
 \centering
-\small
+\footnotesize
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{l r r c c c c c}
 \toprule
 \textbf{Dataset} & \textbf{Rows} & \textbf{Null\%} & \textbf{Our (base)} & \textbf{Baseline (base)} & \textbf{Our (ext)} & \textbf{Baseline (ext)} & \textbf{Weighted Improvement} \\
 \midrule
-BankLoanSta & 100K & 62.7 & 0.6854 & 0.6585 & 0.7290 & 0.7438 & \textcolor{ForestGreen}{+0.0113} \\
-Weather & 25K & 62.3 & 0.8494 & 0.8465 & 0.8766 & 0.8743 & \textcolor{ForestGreen}{+0.0027} \\
-DiabetesRecord & 102K & 66.2 & 0.6734 & 0.6727 & 0.6682 & 0.6663 & \textcolor{ForestGreen}{+0.0014} \\
-CreditRisk & 80K & 89.6 & 0.7544 & 0.7536 & 0.7548 & 0.7569 & \textcolor{ForestGreen}{+0.0005} \\
-HRAnalytics & 19K & 31.0 & 0.7408 & 0.7380 & 0.7990 & 0.7929 & \textcolor{ForestGreen}{+0.0051} \\
-ClientRecord & 7K & 40.0 & 0.8638 & 0.8617 & 0.9581 & 0.9535 & \textcolor{ForestGreen}{+0.0031} \\
-MovieAugV2 & 112K & 88.5 & 0.8379 & 0.8338 & 0.9100 & 0.9084 & \textcolor{ForestGreen}{+0.0028} \\
-WeatherAUS & 142K & 40.3 & 0.8875 & 0.8859 & 0.9032 & 0.9027 & \textcolor{ForestGreen}{+0.0008} \\
-WIDS & 92K & 87.4 & 0.8936 & 0.8928 & 0.8790 & 0.8767 & \textcolor{ForestGreen}{+0.0014} \\
-FlightDelay & 100K & 30.0 & 0.7491 & 0.7429 & 0.7194 & 0.7170 & \textcolor{ForestGreen}{+0.0035} \\
+BankLoanSta            & 100K & 62.7 & 0.6761 $\pm$ 0.0090 & 0.6620 $\pm$ 0.0026 & 0.7718 $\pm$ 0.0108 & 0.7657 $\pm$ 0.0146 & \textcolor{ForestGreen}{+0.0111 $\pm$ 0.0098} \\
+Weather                & 25K  & 62.3 & 0.8398 $\pm$ 0.0115 & 0.8398 $\pm$ 0.0110 & 0.8746 $\pm$ 0.0125 & 0.8744 $\pm$ 0.0120 & \textcolor{ForestGreen}{+0.0001 $\pm$ 0.0010} \\
+DiabetesRecord$^{\dagger}$ & 102K & 78.3 & 0.6731 $\pm$ 0.0038 & 0.6712 $\pm$ 0.0035 & 0.6748 $\pm$ 0.0048 & 0.6750 $\pm$ 0.0043 & \textcolor{ForestGreen}{+0.0014 $\pm$ 0.0003} \\
+CreditRisk             & 80K  & 89.6 & 0.7492 $\pm$ 0.0027 & 0.7492 $\pm$ 0.0025 & 0.7478 $\pm$ 0.0129 & 0.7472 $\pm$ 0.0167 & \textcolor{ForestGreen}{+0.0000 $\pm$ 0.0004} \\
+HRAnalytics            & 19K  & 31.0 & 0.7392 $\pm$ 0.0137 & 0.7453 $\pm$ 0.0146 & 0.7833 $\pm$ 0.0162 & 0.7829 $\pm$ 0.0176 & \textcolor{red}{$-$0.0016 $\pm$ 0.0044} \\
+ClientRecord           & 7K   & 61.1 & 0.8534 $\pm$ 0.0136 & 0.8507 $\pm$ 0.0150 & 0.9497 $\pm$ 0.0141 & 0.9529 $\pm$ 0.0097 & \textcolor{ForestGreen}{+0.0004 $\pm$ 0.0028} \\
+MovieAugV2$^{\ast}$    & 112K & 88.5 & 0.8379              & 0.8338              & 0.9100              & 0.9084              & \textcolor{ForestGreen}{+0.0028 (single seed)} \\
+WeatherAUS             & 142K & 31.0 & 0.8847 $\pm$ 0.0025 & 0.8847 $\pm$ 0.0023 & 0.9005 $\pm$ 0.0024 & 0.9013 $\pm$ 0.0017 & \textcolor{red}{$-$0.0005 $\pm$ 0.0008} \\
+WIDS                   & 92K  & 58.2 & 0.8901 $\pm$ 0.0067 & 0.8891 $\pm$ 0.0065 & 0.8750 $\pm$ 0.0063 & 0.8763 $\pm$ 0.0060 & \textcolor{ForestGreen}{+0.0001 $\pm$ 0.0009} \\
+FlightDelay            & 100K & 5.0  & 0.6970 $\pm$ 0.0299 & 0.6942 $\pm$ 0.0295 & 0.6976 $\pm$ 0.0024 & 0.6964 $\pm$ 0.0028 & \textcolor{ForestGreen}{+0.0013 $\pm$ 0.0030} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
+
+\footnotesize
+$^{\dagger}$ DiabetesRecord uses ext features \texttt{A1Cresult, max\_glu\_serum},
+selected via a pre-registered 5-seed screen of six candidate combos
+(see \texttt{results/seeds/diab\_combo/}). The other 9 datasets use the
+locked-in combos from the rest of the paper. \\
+$^{\ast}$ MovieAugV2 was deterministically skipped in the seed sweep
+because the (label $\times$ has\_extended) stratum on the locked-in
+6-feature ext combo falls below the 100-sample minimum required by
+\texttt{core/RunData.py} on every seed; we retain its single-seed
+seed=42 value for reference.
+
 \end{table*}
 
 \subsection{Ablation Study - Impact of Adaptive Tree Pruning}
