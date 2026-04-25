@@ -473,6 +473,17 @@ for ds_name, load_fn in DATASETS:
 
     # Load data
     df, label, ext_features = load_fn()
+    # Optional CLI/env-var override of ext_features (combo-screen experiments).
+    # IL_EXT_FEATURES = comma-separated list of column names that exist in df.
+    _ext_override = os.environ.get('IL_EXT_FEATURES', None)
+    if _ext_override is not None:
+        cand = [c.strip() for c in _ext_override.split(',') if c.strip()]
+        missing = [c for c in cand if c not in df.columns]
+        if missing:
+            print(f"  IL_EXT_FEATURES override skipped — columns missing from df: {missing}")
+        else:
+            print(f"  IL_EXT_FEATURES override: {cand} (was {ext_features})")
+            ext_features = cand
     all_features_list = [c for c in df.columns if c != label]
     base_features = [f for f in all_features_list if f not in ext_features]
 
