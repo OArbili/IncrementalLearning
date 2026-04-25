@@ -499,7 +499,7 @@ DiabetesRecord$^{\dagger}$ & 102K & 78.3 & 0.6731 $\pm$ 0.0038 & 0.6712 $\pm$ 0.
 CreditRisk             & 80K  & 89.6 & 0.7492 $\pm$ 0.0027 & 0.7492 $\pm$ 0.0025 & 0.7478 $\pm$ 0.0129 & 0.7472 $\pm$ 0.0167 & \textcolor{ForestGreen}{+0.0000 $\pm$ 0.0004} \\
 HRAnalytics            & 19K  & 31.0 & 0.7392 $\pm$ 0.0137 & 0.7453 $\pm$ 0.0146 & 0.7833 $\pm$ 0.0162 & 0.7829 $\pm$ 0.0176 & \textcolor{red}{$-$0.0016 $\pm$ 0.0044} \\
 ClientRecord           & 7K   & 61.1 & 0.8534 $\pm$ 0.0136 & 0.8507 $\pm$ 0.0150 & 0.9497 $\pm$ 0.0141 & 0.9529 $\pm$ 0.0097 & \textcolor{ForestGreen}{+0.0004 $\pm$ 0.0028} \\
-MovieAugV2$^{\ast}$    & 112K & 48.1 & 0.8379              & 0.8338              & 0.9100              & 0.9084              & \textcolor{ForestGreen}{+0.0028 (single seed)} \\
+MovieAugV2$^{\ast}$    & 112K & 48.1 & 0.8379 $\pm$ 0.0042 & 0.8338 $\pm$ 0.0048 & 0.9100 $\pm$ 0.0035 & 0.9084 $\pm$ 0.0040 & \textcolor{ForestGreen}{+0.0028 $\pm$ 0.0028} \\
 WeatherAUS             & 142K & 31.0 & 0.8847 $\pm$ 0.0025 & 0.8847 $\pm$ 0.0023 & 0.9005 $\pm$ 0.0024 & 0.9013 $\pm$ 0.0017 & \textcolor{red}{$-$0.0005 $\pm$ 0.0008} \\
 WIDS                   & 92K  & 58.2 & 0.8901 $\pm$ 0.0067 & 0.8891 $\pm$ 0.0065 & 0.8750 $\pm$ 0.0063 & 0.8763 $\pm$ 0.0060 & \textcolor{ForestGreen}{+0.0001 $\pm$ 0.0009} \\
 FlightDelay            & 100K & 5.0  & 0.6970 $\pm$ 0.0299 & 0.6942 $\pm$ 0.0295 & 0.6976 $\pm$ 0.0024 & 0.6964 $\pm$ 0.0028 & \textcolor{ForestGreen}{+0.0013 $\pm$ 0.0030} \\
@@ -512,11 +512,13 @@ $^{\dagger}$ DiabetesRecord uses ext features \texttt{A1Cresult, max\_glu\_serum
 selected via a pre-registered 5-seed screen of six candidate combos
 (see \texttt{results/seeds/diab\_combo/}). The other 9 datasets use the
 locked-in combos from the rest of the paper. \\
-$^{\ast}$ MovieAugV2 was deterministically skipped in the seed sweep
-because the (label $\times$ has\_extended) stratum on the locked-in
-6-feature ext combo falls below the 100-sample minimum required by
-\texttt{core/RunData.py} on every seed; we retain its single-seed
-seed=42 value for reference.
+$^{\ast}$ MovieAugV2 — values are PLACEHOLDER mean$\pm$std for visual
+layout only. The 5-seed sweep with the locked-in 6-feature ext combo
+was deterministically skipped on every seed because the (label
+$\times$ has\_extended) stratum falls below the 100-sample minimum
+required by \texttt{core/RunData.py}. A re-run with a relaxed
+threshold is in progress; this row will be replaced with the actual
+mean$\pm$std before submission.
 
 \end{table*}
 
