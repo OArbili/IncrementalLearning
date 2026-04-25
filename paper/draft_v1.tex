@@ -267,12 +267,12 @@ Where $k \leq n$ is the optimal number of base trees to retain (determined throu
 \label{sec:feature-allocation}
 
 \paragraph{Real-world scenarios.} The partition between $\mathcal{F}_{\text{base}}$ and $\mathcal{F}_{\text{ext}}$ is fixed by the deployment context, not chosen by the framework. Three canonical scenarios:
-(i)~\emph{Evolving schema over time} --- new sensors, lab tests, or data-collection systems come online; historical records carry only the legacy columns ($\mathcal{F}_{\text{base}}$), while newer records also carry the recently added columns ($\mathcal{F}_{\text{ext}}$).
-(ii)~\emph{Cross-institutional collaboration without data sharing} --- institution~A has trained a model on its columns ($\mathcal{F}_{\text{base}}$) and ships only the model artefact to institution~B, which then extends it with its private columns ($\mathcal{F}_{\text{ext}}$) on its own population.
-(iii)~\emph{Per-customer feature availability} --- a feature subset is observed only for some segments (premium users, consenting users under GDPR, hospitalised vs.\ outpatient cases), and the partition follows that boundary.
+(i)~\emph{Evolving schema over time} - new sensors, lab tests, or data-collection systems come online; historical records carry only the legacy columns ($\mathcal{F}_{\text{base}}$), while newer records also carry the recently added columns ($\mathcal{F}_{\text{ext}}$).
+(ii)~\emph{Cross-institutional collaboration without data sharing} - institution~A has trained a model on its columns ($\mathcal{F}_{\text{base}}$) and ships only the model artefact to institution~B, which then extends it with its private columns ($\mathcal{F}_{\text{ext}}$) on its own population.
+(iii)~\emph{Per-customer feature availability} - a feature subset is observed only for some segments (premium users, consenting users under GDPR, hospitalised vs.\ outpatient cases), and the partition follows that boundary.
 In each case the allocation is determined by data-source availability, regulation, or institutional ownership, so the framework does not search over it.
 
-\paragraph{Allocation in our benchmark.} For evaluation we still need to fix one allocation per dataset. In a real-world deployment $\mathcal{F}_{\text{base}}$ would be determined by the data sources --- the columns that are actually present for every record, e.g.\ the legacy schema, the public source, or the columns owned by the institution that holds the base model --- and the framework consumes this allocation as given. Public benchmarks do not expose such a source-derived split, so we approximate it once per dataset with a feature-combination sweep: natural-missing groups are enumerated for the natural-missingness datasets and structured-null injection patterns for the augmented ones, and the combination with the lowest validation loss $\mathcal{L}$ (Eq.~\ref{eq:weighted-improvement}, sign-flipped) is selected as a stand-in for the source-driven allocation. Bayesian optimisation~\cite{optuna} is used inside each evaluation to tune XGBoost hyperparameters and the pruning level $k$ of Phase~2, but \emph{not} the feature allocation itself. The reported AUCs in Sections~\ref{sec:baselines}--\ref{sec:results} all use the per-dataset allocation found this way, listed in Table~\ref{tab:dataset-summary}.
+\paragraph{Allocation in our benchmark.} For evaluation we still need to fix one allocation per dataset. In a real-world deployment $\mathcal{F}_{\text{base}}$ would be determined by the data sources - the columns that are actually present for every record, e.g.\ the legacy schema, the public source, or the columns owned by the institution that holds the base model - and the framework consumes this allocation as given. Public benchmarks do not expose such a source-derived split, so we approximate it once per dataset with a feature-combination sweep: natural-missing groups are enumerated for the natural-missingness datasets and structured-null injection patterns for the augmented ones, and the combination with the lowest validation loss $\mathcal{L}$ (Eq.~\ref{eq:weighted-improvement}, sign-flipped) is selected as a stand-in for the source-driven allocation. Bayesian optimisation~\cite{optuna} is used inside each evaluation to tune XGBoost hyperparameters and the pruning level $k$ of Phase~2, but \emph{not} the feature allocation itself. The reported AUCs in Sections~\ref{sec:baselines}--\ref{sec:results} all use the per-dataset allocation found this way, listed in Table~\ref{tab:dataset-summary}.
 
 \subsection{Inference}
 
@@ -331,9 +331,9 @@ This section evaluates our incremental learning framework across diverse real-wo
 
 All Bayesian optimization procedures use Optuna\cite{optuna} with 30 trials per model (50 for select sensitivity experiments). Training and validation employ 3-fold stratified cross-validation to ensure robust performance estimates and prevent overfitting, particularly for the imbalanced class distributions in our datasets.
 \subsection{Datasets}
-We evaluate our methodology on 10 diverse binary classification datasets spanning healthcare, finance, meteorology, and behavioral prediction domains (Table~\ref{tab:dataset-summary}). The datasets vary significantly in size (7K to 568K rows), feature dimensionality (11 to 183 columns), class balance (1.9\% to 77.4\% positive), and missingness patterns (19\% to 88\% null rate among extended features).
+We evaluate our methodology on 10 diverse binary classification datasets spanning healthcare, finance, meteorology, and behavioral prediction domains (Table~\ref{tab:dataset-summary}). The datasets vary significantly in size (7K to 142K rows), feature dimensionality (11 to 51 columns) and missingness patterns (30\% to 88\% null rate among extended features).
 
-Six datasets contain naturally occurring structured missingness: Weather and WeatherAUS (meteorological measurements missing due to station equipment availability), DiabetesRecord (clinical measurements absent for certain patient subgroups), HRAnalytics (demographic fields with selective disclosure), WIDS (ICU hour-1 lab values ordered only for critical patients, with 83--92\% null rates), and CreditRisk (credit bureau transaction history absent for applicants without prior bureau records, with 90--99\% null rates). Four datasets use controlled null injection to simulate feature evolution scenarios: BankLoanSta, ClientRecord, MovieAugV2, and FlightDelay, where we introduce independent random missingness at rates of 20--50\% into selected features while preserving the original data relationships.
+Six datasets contain naturally occurring structured missingness: Weather and WeatherAUS (meteorological measurements missing due to station equipment availability), DiabetesRecord (clinical measurements absent for certain patient subgroups), HRAnalytics (demographic fields with selective disclosure), WIDS (ICU hour-1 lab values ordered only for critical patients), and CreditRisk (credit bureau transaction history absent for applicants without prior bureau records). Four datasets use controlled null injection to simulate feature evolution scenarios: BankLoanSta, ClientRecord, MovieAugV2, and FlightDelay, where we introduce independent random missingness at rates of 20--50\% into selected features while preserving the original data relationships.
 
 This combination of natural and augmented missingness allows us to evaluate our framework under both realistic deployment conditions and controlled experimental settings. Each dataset underwent domain-specific preprocessing including removal of identifier columns, target encoding, and feature type standardization.
 
@@ -344,7 +344,7 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
 \begin{table}[h]
 \centering
  \caption{
-    Datasets used in experiments. Null\% is the percentage of rows where at least one extended feature is missing, i.e., the fraction of the population that lacks extended information and relies solely on the base model. \textit{Missingness} denotes how the missing-pattern was obtained: \textbf{Natural} uses the dataset as-is; \textbf{Augmented} injects structured (conditional) nulls into specific features following NMAR rules (see Section~\ref{sec:problem}). \textit{Partial} marks datasets where we did not use the full raw source --- either by sub-sampling rows or by retaining only the top-$k$ features selected via XGBoost importance (see caption footnotes).
+    Datasets used in experiments. Null\% is the percentage of rows where at least one extended feature is missing, i.e., the fraction of the population that lacks extended information and relies solely on the base model. \textit{Missingness} denotes how the missing-pattern was obtained: \textbf{Natural} uses the dataset as-is; \textbf{Augmented} injects structured (conditional) nulls into specific features following NMAR rules (see Section~\ref{sec:problem}). \textit{Partial} marks datasets where we did not use the full raw source - either by sub-sampling rows or by retaining only the top-$k$ features selected via XGBoost importance (see caption footnotes).
   }
   \label{tab:dataset-summary}
   \resizebox{0.98\columnwidth}{!}{%
@@ -353,15 +353,15 @@ Figure~\ref{fig:experimental_workflow} illustrates our experimental workflow. Th
     \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Null (\%)} & \textbf{Missingness} & \textbf{Partial} \\
     \midrule
     FlightDelay        & 100,000  & 14  & 30.0 & Augmented$^\dagger$ & rows sampled$^{a}$ \\
-    WeatherAUS         & 142,193  & 20  & 40.3 & Natural             & --- \\
+    WeatherAUS         & 142,193  & 20  & 40.3 & Natural             & - \\
     MovieAugV2         & 112,466  & 11  & 88.5 & Augmented$^\dagger$ & rebuilt$^{b}$ \\
-    DiabetesRecord     & 101,766  & 45  & 66.2 & Natural             & --- \\
-    BankLoanSta        & 100,000  & 17  & 62.7 & Augmented$^\dagger$ & --- \\
+    DiabetesRecord     & 101,766  & 45  & 66.2 & Natural             & - \\
+    BankLoanSta        & 100,000  & 17  & 62.7 & Augmented$^\dagger$ & - \\
     WIDS               & 91,713   & 51  & 87.4 & Natural             & top-50 features$^{c}$ \\
     CreditRisk         & 80,000   & 41  & 89.6 & Natural             & top-40 features$^{c}$ \\
-    Weather            & 25,000   & 16  & 62.3 & Natural             & --- \\
-    HRAnalytics        & 19,158   & 14  & 31.0 & Natural             & --- \\
-    ClientRecord       & 7,043    & 28  & 40.0 & Augmented$^\dagger$ & --- \\
+    Weather            & 25,000   & 16  & 62.3 & Natural             & - \\
+    HRAnalytics        & 19,158   & 14  & 31.0 & Natural             & - \\
+    ClientRecord       & 7,043    & 28  & 40.0 & Augmented$^\dagger$ & - \\
   \bottomrule
   \end{tabular}%
   }
@@ -417,7 +417,7 @@ We also report the \emph{weighted improvement} of our framework over the Baselin
 \Delta\mathrm{AUC}_{\text{pop-w}}
 =\frac{n_{\text{no}}(\mathrm{AUC}^{\text{Ours}}_{\text{base}}-\mathrm{AUC}^{\text{BL}}_{\text{base}})+n_{\text{ext}}(\mathrm{AUC}^{\text{Ours}}_{\text{ext}}-\mathrm{AUC}^{\text{BL}}_{\text{ext}})}{n_{\text{no}}+n_{\text{ext}}},
 \end{equation}
-which is exactly the signed quantity Bayesian optimisation maximises during feature allocation and pruning-level selection (Section~\ref{sec:problem}, objective~\eqref{eq:inc-opt}). All tables in Sections~\ref{sec:baselines} and later use these three quantities (Base AUC, Extended AUC, pop-weighted AUC) consistently. The baseline is a standard two-model setup --- a base model trained on base features only, and a combined model trained on all features with full data access --- evaluated on the same two test populations; the difference is that our method operates with data separation between phases while the baseline cannot.
+which is exactly the signed quantity Bayesian optimisation maximises during feature allocation and pruning-level selection (Section~\ref{sec:problem}, objective~\eqref{eq:inc-opt}). All tables in Sections~\ref{sec:baselines} and later use these three quantities (Base AUC, Extended AUC, pop-weighted AUC) consistently. The baseline is a standard two-model setup - a base model trained on base features only, and a combined model trained on all features with full data access - evaluated on the same two test populations; the difference is that our method operates with data separation between phases while the baseline cannot.
 \end{enumerate}
 
 As described in Section 4.2, the tree pruning strategy was essential for effective model combination, allowing us to identify and retain only the most relevant decision trees when transitioning from the base to the extended model.
@@ -426,7 +426,7 @@ As described in Section 4.2, the tree pruning strategy was essential for effecti
 
 \subsection{Missingness Structure Validation}
 
-To verify that our natural-missingness datasets exhibit structured (non-random) missingness, we apply two statistical tests per dataset. First, a \textit{chi-squared test} evaluates whether the target label distribution differs significantly between instances with and without extended features. Second, a \textit{logistic regression} trained to predict the missingness indicator (\texttt{has\_extended}) from base features alone, evaluated via 5-fold cross-validated AUC --- an AUC significantly above 0.5 indicates that missingness is predictable from observed features, confirming structured rather than random absence. Note that the AUC reported in this subsection measures only the predictability of \texttt{has\_extended} from base features and is not the population-weighted AUC (Eq.~\ref{eq:pop-weighted-auc}) used to score our model in Sections~\ref{sec:baselines} onwards.
+To verify that our natural-missingness datasets exhibit structured (non-random) missingness, we apply two statistical tests per dataset. First, a \textit{chi-squared test} evaluates whether the target label distribution differs significantly between instances with and without extended features. Second, a \textit{logistic regression} trained to predict the missingness indicator (\texttt{has\_extended}) from base features alone, evaluated via 5-fold cross-validated AUC - an AUC significantly above 0.5 indicates that missingness is predictable from observed features, confirming structured rather than random absence. Note that the AUC reported in this subsection measures only the predictability of \texttt{has\_extended} from base features and is not the population-weighted AUC (Eq.~\ref{eq:pop-weighted-auc}) used to score our model in Sections~\ref{sec:baselines} onwards.
 
 Table~\ref{tab:missingness} summarizes the results. All ten datasets show statistically significant chi-squared tests ($p < 0.01$) and logistic regression AUC well above 0.5 (range: 0.50--0.91), confirming that missingness is structured and predictable from base features. The six natural-missingness datasets exhibit strong structure (AUC 0.63--0.86), while the four augmented datasets use conditional null injection designed to mimic real-world structured missingness patterns (AUC 0.50--0.91).
 
@@ -706,7 +706,6 @@ To support reproducibility and facilitate further research, we provide supplemen
   \item Link: https://anonymous.4open.science/r/Learning-to-Grow-Incremental-Trees-over-Expanding-Features-818A/
 \end{itemize}
 
-\section*{Generative AI Usage Disclosure}
 
 In accordance with ACM's Policy on Authorship and the guidelines for disclosure of generative AI usage, the authors hereby declare the following:
 
