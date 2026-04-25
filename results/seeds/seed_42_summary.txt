@@ -1,0 +1,25 @@
+========================================================================================================================
+ABLATION STUDY: PRUNING MODE COMPARISON
+========================================================================================================================
+
+Modes:
+  optuna     — Optuna picks use_base_model (True/False) and n_trees_keep (1..N)
+  no_pruning — Always warm-start from base, keep ALL trees
+  fixed_50   — Always warm-start, keep 50% of base trees
+
+Dataset              Mode           Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no     N_ext   
+------------------------------------------------------------------------------------------------------
+DiabetesRecord       optuna         0.001666     0.6733     0.6648     0.6730     0.6678     8389     11965   
+DiabetesRecord       no_pruning     0.001883     0.6733     0.6644     0.6730     0.6678     8389     11965   
+DiabetesRecord       fixed_50       0.005075     0.6733     0.6590     0.6730     0.6678     8389     11965   
+
+
+================================================================================
+PER-DATASET COMPARISON
+================================================================================
+
+
+DiabetesRecord:
+  optuna         objective=0.001666  ext_auc=0.6648 <-- BEST
+  no_pruning     objective=0.001883  ext_auc=0.6644
+  fixed_50       objective=0.005075  ext_auc=0.6590

@@ -1,0 +1,25 @@
+========================================================================================================================
+ABLATION STUDY: PRUNING MODE COMPARISON
+========================================================================================================================
+
+Modes:
+  optuna     — Optuna picks use_base_model (True/False) and n_trees_keep (1..N)
+  no_pruning — Always warm-start from base, keep ALL trees
+  fixed_50   — Always warm-start, keep 50% of base trees
+
+Dataset              Mode           Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no     N_ext   
+------------------------------------------------------------------------------------------------------
+BankLoanSta          optuna         -0.010757    0.6724     0.7718     0.6615     0.7614     12534    7466    
+BankLoanSta          no_pruning     -0.003726    0.6724     0.7530     0.6615     0.7614     12534    7466    
+BankLoanSta          fixed_50       -0.006106    0.6724     0.7594     0.6615     0.7614     12534    7466    
+
+
+================================================================================
+PER-DATASET COMPARISON
+================================================================================
+
+
+BankLoanSta:
+  optuna         objective=-0.010757  ext_auc=0.7718 <-- BEST
+  no_pruning     objective=-0.003726  ext_auc=0.7530
+  fixed_50       objective=-0.006106  ext_auc=0.7594

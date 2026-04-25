@@ -1,0 +1,25 @@
+========================================================================================================================
+ABLATION STUDY: PRUNING MODE COMPARISON
+========================================================================================================================
+
+Modes:
+  optuna     — Optuna picks use_base_model (True/False) and n_trees_keep (1..N)
+  no_pruning — Always warm-start from base, keep ALL trees
+  fixed_50   — Always warm-start, keep 50% of base trees
+
+Dataset              Mode           Objective    Base AUC   Ext AUC    Comb-no    Comb+ext   N_no     N_ext   
+------------------------------------------------------------------------------------------------------
+WeatherAUS           optuna         0.000513     0.8867     0.9024     0.8867     0.9032     8815     19624   
+WeatherAUS           no_pruning     0.000193     0.8867     0.9029     0.8867     0.9032     8815     19624   
+WeatherAUS           fixed_50       0.001183     0.8867     0.9015     0.8867     0.9032     8815     19624   
+
+
+================================================================================
+PER-DATASET COMPARISON
+================================================================================
+
+
+WeatherAUS:
+  optuna         objective=0.000513  ext_auc=0.9024
+  no_pruning     objective=0.000193  ext_auc=0.9029 <-- BEST
+  fixed_50       objective=0.001183  ext_auc=0.9015
