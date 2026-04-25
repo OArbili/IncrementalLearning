@@ -263,20 +263,12 @@ F_{ext}(x) = \sum_{i=1}^{k} \alpha_i h_i(x_{F_{base}}) + \sum_{j=1}^{m} \beta_j 
 
 Where $k \leq n$ is the optimal number of base trees to retain (determined through pruning), and $g_j$ are additional trees trained on the combined feature space.
 
-\subsection{Feature Allocation using Bayesian Optimization}
+\subsection{Feature Allocation in Practice and in Our Experiments}
+\label{sec:feature-allocation}
 
-We optimize the allocation of features between base and extended sets by running both Phase 1 and Phase 2 with different feature allocation configurations using Bayesian optimization. This optimization process evaluates different partitioning of features between base and extended sets to determine the optimal feature allocation strategy.
+In a deployed system the partition between $\mathcal{F}_{\text{base}}$ and $\mathcal{F}_{\text{ext}}$ is dictated by the data: $\mathcal{F}_{\text{base}}$ contains the columns observed for every record (legacy schema, public sources, the columns at the institution that owns the base model), while $\mathcal{F}_{\text{ext}}$ contains the newly added columns or the private columns held by a second institution. The framework itself does not search this partition --- it is a property of the environment, not a hyperparameter to tune.
 
-The Bayesian search minimises the population-weighted loss between the data-sharing baseline and our two-phase approach, evaluated separately on the two test populations and combined by their sizes (identical to Eq.~\ref{eq:weighted-improvement} with the sign flipped so it is a \emph{loss}):
-\begin{equation}
-\label{eq:bo-objective}
-\mathcal{L}
-=\frac{n_{\text{no}}\bigl(\mathrm{AUC}^{\text{BL}}_{\text{base}}-\mathrm{AUC}^{\text{Ours}}_{\text{base}}\bigr)
-+n_{\text{ext}}\bigl(\mathrm{AUC}^{\text{BL}}_{\text{ext}}-\mathrm{AUC}^{\text{Ours}}_{\text{ext}}\bigr)}{n_{\text{no}}+n_{\text{ext}}}.
-\end{equation}
-Here $\mathrm{AUC}^{\text{BL}}_{\text{base}}$, $\mathrm{AUC}^{\text{BL}}_{\text{ext}}$ are the \emph{data-sharing baseline's} AUCs --- a single combined model trained on all rows with all features --- evaluated on the no-extended and has-extended test populations respectively; $\mathrm{AUC}^{\text{Ours}}_{\text{base}}$ is our base model's AUC on the no-extended population; $\mathrm{AUC}^{\text{Ours}}_{\text{ext}}$ is our (warm-started, adaptively-pruned) extended model's AUC on the has-extended population; and $(n_{\text{no}}, n_{\text{ext}})$ are the two population sizes on the validation set. A negative value of $\mathcal{L}$ means the incremental two-phase approach strictly dominates the data-sharing baseline on the population-weighted average. Bayesian optimisation explores feature allocations and pruning levels that drive $\mathcal{L}$ as negative as possible, i.e. that maximise the same population-weighted improvement we report in Tables~\ref{tab:baseline_base_auc}--\ref{tab:baseline_summary}.
-
-In real-world scenarios, feature allocation is subject to the availability of data sources at training time, making this optimization crucial for determining the most effective partitioning strategy given the constraints of data accessibility and acquisition timing.
+For benchmarking we still need to fix one allocation per dataset to evaluate against. We do this once per dataset with a feature-combination sweep (script: \texttt{scripts/run\_all\_experiments.py}): natural-missing groups are enumerated for the natural-missingness datasets and structured-null injection patterns for the augmented ones, and the combination with the lowest validation loss $\mathcal{L}$ (Eq.~\ref{eq:weighted-improvement}, sign-flipped) is selected. Bayesian optimisation~\cite{optuna} is used inside each evaluation to tune XGBoost hyperparameters and the pruning level $k$ of Phase~2, but \emph{not} the feature allocation itself. The reported AUCs in Sections~\ref{sec:baselines}--\ref{sec:results} all use the per-dataset allocation found this way, listed in Table~\ref{tab:dataset-summary}.
 
 \subsection{Inference}
 
@@ -461,6 +453,7 @@ FlightDelay & Augmented & $0.16$ & 0.498 & Structured$^*$ \\
 \end{table}
 
 \section{Results}
+\label{sec:results}
 
 Our incremental learning framework demonstrates consistent improvements across a diverse set of 10 real-world datasets. Table~\ref{tab:merged_auc_results} presents a detailed comparison. Both approaches serve two test populations: instances without extended features (base population) and instances with extended features (extended population). The key difference is:
 
