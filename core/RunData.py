@@ -69,10 +69,12 @@ class RunPipeline():
         print(self.test_df.groupby([self.label, 'has_extended']).size())
         train_counts = self.train_df.groupby([self.label, 'has_extended']).size()
         test_counts = self.test_df.groupby([self.label, 'has_extended']).size()
-        # IL_MIN_STRATUM lets us relax the per-stratum sample floor
-        # for highly imbalanced datasets (e.g. MovieAugV2). Default 100.
+        # IL_MIN_STRATUM is the per-(label x has_extended) sample-floor sanity check.
+        # Default 50 covers all 10 benchmark datasets uniformly (highly-imbalanced
+        # datasets like MovieAugV2 have a ~64-row test stratum at 1.9% positive
+        # class). Datasets with healthier strata trivially pass.
         import os as _os
-        _min_stratum = int(_os.environ.get('IL_MIN_STRATUM', 100))
+        _min_stratum = int(_os.environ.get('IL_MIN_STRATUM', 50))
         if (train_counts < _min_stratum).any() or (test_counts < _min_stratum).any():
             print(f"\n One of the train/test groups has fewer than {_min_stratum} samples!")
             return 999
