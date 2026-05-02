@@ -387,9 +387,9 @@ columns are discarded prior to preprocessing.
 For each dataset, we implemented a five step experimental process to evaluate our incremental feature based learning approach:
 
 \begin{enumerate}
-\item \textbf{Preprocessing and Feature Optimization}: We performed an optimization routine to determine the most effective allocation between base and extended feature sets, balancing predictive power against missing value patterns.
+\item \textbf{Preprocessing and Feature Allocation}: Following the protocol in Section~\ref{sec:feature-allocation}, the base/extended allocation is fixed per dataset from natural-missingness groups (for the natural datasets) or from pre-specified NMAR injection patterns (for the augmented datasets), \emph{not} tuned by the framework. The per-dataset allocation used in all subsequent comparisons is listed in Table~\ref{tab:dataset-summary}; Bayesian optimisation later in the pipeline tunes only XGBoost hyperparameters and the Phase~2 pruning level $k$.
 
-\item \textbf{Base Model Construction}: We trained an XGBoost model using only the optimized base feature set. Hyperparameters were tuned using Bayesian optimization, resulting in optimal configurations for each dataset.
+\item \textbf{Base Model Construction}: We trained an XGBoost model using the fixed base feature set $\mathcal{F}_{\text{base}}$ from step~1. Hyperparameters were tuned using Bayesian optimization, resulting in optimal configurations for each dataset.
 
 \item \textbf{Extended Model Development}: We constructed an extended model by:
 \begin{itemize}
@@ -419,7 +419,7 @@ We also report the \emph{weighted improvement} of our framework over the Baselin
 \Delta\mathrm{AUC}_{\text{pop-w}}
 =\frac{n_{\text{no}}(\mathrm{AUC}^{\text{Ours}}_{\text{base}}-\mathrm{AUC}^{\text{BL}}_{\text{base}})+n_{\text{ext}}(\mathrm{AUC}^{\text{Ours}}_{\text{ext}}-\mathrm{AUC}^{\text{BL}}_{\text{ext}})}{n_{\text{no}}+n_{\text{ext}}},
 \end{equation}
-which is exactly the signed quantity Bayesian optimisation maximises during feature allocation and pruning-level selection (Section~\ref{sec:problem}, objective~\eqref{eq:inc-opt}). All tables in Sections~\ref{sec:baselines} and later use these three quantities (Base AUC, Extended AUC, pop-weighted AUC) consistently. The baseline is a standard two-model setup - a base model trained on base features only, and a combined model trained on all features with full data access - evaluated on the same two test populations; the difference is that our method operates with data separation between phases while the baseline cannot.
+which is exactly the signed quantity Bayesian optimisation maximises during pruning-level and hyperparameter selection given the per-dataset allocation fixed in Section~\ref{sec:feature-allocation} (Section~\ref{sec:problem}, objective~\eqref{eq:inc-opt}). All tables in Sections~\ref{sec:baselines} and later use these three quantities (Base AUC, Extended AUC, pop-weighted AUC) consistently. The baseline is a standard two-model setup - a base model trained on base features only, and a combined model trained on all features with full data access - evaluated on the same two test populations; the difference is that our method operates with data separation between phases while the baseline cannot.
 \end{enumerate}
 
 As described in Section 4.2, the tree pruning strategy was essential for effective model combination, allowing us to identify and retain only the most relevant decision trees when transitioning from the base to the extended model.
@@ -701,7 +701,7 @@ We note that sharing model artifacts does not constitute formal privacy preserva
 
 While all datasets in our experiments focus on binary classification, the methodology naturally extends to regression and multi-class tasks. For regression, the same adaptive pruning mechanism applies with appropriate loss functions. For multi-class classification, the approach can be implemented via one-vs-rest decomposition or native multi-class boosting with minimal modification.
 
-A limitation of the current framework is that the optimal feature allocation between base and extended phases must be determined empirically through Bayesian optimization. With only 9-10 datasets to fit on, we cannot identify a measurable dataset property that predicts which allocation will succeed, suggesting that this search step cannot be easily shortcut. Additionally, run-to-run variance from the hyperparameter search process is substantial relative to the per-dataset weighted-improvement signal --- the same property that drives the parity (rather than strict-improvement) reading of Table~\ref{tab:merged_auc_results} --- so multiple seed runs are needed for stable per-dataset estimates.
+A limitation of the current framework is that we treat the base/extended allocation as an input determined by the deployment context (data-source availability, regulation, or institutional ownership; see Section~\ref{sec:feature-allocation}) rather than something the framework itself selects. With only 9-10 datasets to fit on, we cannot identify a measurable dataset property that predicts \emph{a priori} which allocation will produce the largest parity-preserving gain, so a deployment in which the allocation is genuinely free to be chosen would still need an external mechanism to pick it. Additionally, run-to-run variance from the hyperparameter search process is substantial relative to the per-dataset weighted-improvement signal --- the same property that drives the parity (rather than strict-improvement) reading of Table~\ref{tab:merged_auc_results} --- so multiple seed runs are needed for stable per-dataset estimates.
 
 \subsection{Future Work}
 
