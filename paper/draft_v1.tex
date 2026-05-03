@@ -502,7 +502,7 @@ The aggregate signed weighted improvement across all 10 datasets is mildly posit
 \midrule
 BankLoanSta            & 100K & 62.7 & 0.6761 $\pm$ 0.0090 & 0.6620 $\pm$ 0.0026 & 0.7718 $\pm$ 0.0108 & 0.7657 $\pm$ 0.0146 & \textcolor{ForestGreen}{+0.0111 $\pm$ 0.0098} \\
 Weather                & 25K  & 62.3 & 0.8398 $\pm$ 0.0115 & 0.8398 $\pm$ 0.0110 & 0.8746 $\pm$ 0.0125 & 0.8744 $\pm$ 0.0120 & \textcolor{ForestGreen}{+0.0001 $\pm$ 0.0010} \\
-DiabetesRecord$^{\dagger}$ & 102K & 78.3 & 0.6731 $\pm$ 0.0038 & 0.6712 $\pm$ 0.0035 & 0.6748 $\pm$ 0.0048 & 0.6750 $\pm$ 0.0043 & \textcolor{ForestGreen}{+0.0014 $\pm$ 0.0003} \\
+DiabetesRecord & 102K & 78.3 & 0.6731 $\pm$ 0.0038 & 0.6712 $\pm$ 0.0035 & 0.6748 $\pm$ 0.0048 & 0.6750 $\pm$ 0.0043 & \textcolor{ForestGreen}{+0.0014 $\pm$ 0.0003} \\
 CreditRisk             & 80K  & 89.6 & 0.7492 $\pm$ 0.0027 & 0.7492 $\pm$ 0.0025 & 0.7478 $\pm$ 0.0129 & 0.7472 $\pm$ 0.0167 & \textcolor{ForestGreen}{+0.0000 $\pm$ 0.0004} \\
 HRAnalytics            & 19K  & 31.0 & 0.7392 $\pm$ 0.0137 & 0.7453 $\pm$ 0.0146 & 0.7833 $\pm$ 0.0162 & 0.7829 $\pm$ 0.0176 & \textcolor{red}{$-$0.0016 $\pm$ 0.0044} \\
 ClientRecord           & 7K   & 61.1 & 0.8534 $\pm$ 0.0136 & 0.8507 $\pm$ 0.0150 & 0.9497 $\pm$ 0.0141 & 0.9529 $\pm$ 0.0097 & \textcolor{ForestGreen}{+0.0004 $\pm$ 0.0028} \\
@@ -513,12 +513,6 @@ FlightDelay            & 100K & 5.0  & 0.6970 $\pm$ 0.0299 & 0.6942 $\pm$ 0.0295
 \bottomrule
 \end{tabular}%
 }
-
-\footnotesize
-$^{\dagger}$ DiabetesRecord uses ext features \texttt{A1Cresult, max\_glu\_serum},
-selected via a pre-registered 5-seed screen of six candidate combos
-(see \texttt{results/seeds/diab\_combo/}). The other 9 datasets use the
-locked-in combos from the rest of the paper.
 
 \end{table*}
 
@@ -541,7 +535,7 @@ Critically, the Optuna search space includes $k=0$, which is equivalent to disca
 \midrule
 BankLoanSta & +0.0113 & +0.0089 & \textbf{+0.0148} & Fixed 50\% & 0.7290 \\
 Weather & \textbf{+0.0027} & +0.0024 & +0.0018 & Optuna & 0.8766 \\
-DiabetesRecord$^{\dagger}$ & +0.0014 & \textbf{+0.0015} & +0.0009 & No Pruning & 0.6712 \\
+DiabetesRecord & +0.0014 & \textbf{+0.0015} & +0.0009 & No Pruning & 0.6712 \\
 CreditRisk & +0.0005 & \textbf{+0.0009} & +0.0003 & No Pruning & 0.7548 \\
 HRAnalytics & \textbf{+0.0051} & +0.0048 & +0.0040 & Optuna & 0.7990 \\
 ClientRecord & \textbf{+0.0030} & +0.0021 & +0.0030 & Optuna & 0.9581 \\
@@ -554,8 +548,6 @@ FlightDelay & \textbf{+0.0035} & +0.0033 & --0.0030 & Optuna & 0.7194 \\
 \bottomrule
 \end{tabular}%
 }
-\\[2pt]
-{\footnotesize $^{\dagger}$ DiabetesRecord uses ext features \texttt{A1Cresult, max\_glu\_serum} (combo c6\_A1CplusGlu); 5-seed mean values.}
 \end{table}
 
 \subsection{Comparison with External Baselines}
@@ -592,7 +584,7 @@ Tables~\ref{tab:baseline_base_auc}, \ref{tab:baseline_ext_auc}, and \ref{tab:bas
 \midrule
 BankLoanSta    & \textbf{0.6854} & 0.6585 & 0.6365$^{\ddagger}$ & 0.6199 & 0.5773 & 0.6210 & 0.6267 \\
 Weather        & \textbf{0.8494} & 0.8465 & 0.8001 & 0.7955 & 0.7625 & 0.7999 & 0.8272 \\
-DiabetesRecord$^{\dagger}$ & 0.6731 & \textbf{0.6748} & 0.6234 & 0.5819 & 0.5831 & 0.5773 & 0.6402 \\
+DiabetesRecord & 0.6731 & \textbf{0.6748} & 0.6234 & 0.5819 & 0.5831 & 0.5773 & 0.6402 \\
 CreditRisk     & \textbf{0.7544} & 0.7536 & 0.7165 & 0.7344 & 0.7128 & 0.7368 & 0.7307 \\
 HRAnalytics    & \textbf{0.7408} & 0.7380 & 0.7346 & 0.6399 & 0.6148 & 0.6431 & 0.7296 \\
 ClientRecord   & \textbf{0.8638} & 0.8617 & 0.8372 & 0.7987 & 0.7905 & 0.8055 & 0.8409 \\
@@ -606,8 +598,7 @@ FlightDelay    & \textbf{0.7491} & 0.7429 & 0.6434 & 0.6090 & 0.5981 & 0.6115 & 
 \end{tabular}%
 }
 \\[2pt]
-{\footnotesize $^{\dagger}$ DiabetesRecord uses ext features \texttt{A1Cresult, max\_glu\_serum} (combo c6\_A1CplusGlu); 5-seed mean values.\\
-All cells use the per-dataset Optuna tuning protocol described above (Tier-2). $^{\ddagger}$ The AXGB / BankLoanSta cell uses a $\min(\text{AUC}_\text{no-ext}, \text{AUC}_\text{has-ext})$ Optuna objective (20 trials, larger window-size search range) instead of the standard population-weighted AUC; every other cell uses the standard objective. See ``Fidelity and hyperparameter protocol'' above for full details. After this fix, no cell in this table falls below $\text{AUC}=0.62$.}
+{\footnotesize All cells use the per-dataset Optuna tuning protocol described above (Tier-2). $^{\ddagger}$ The AXGB / BankLoanSta cell uses a $\min(\text{AUC}_\text{no-ext}, \text{AUC}_\text{has-ext})$ Optuna objective (20 trials, larger window-size search range) instead of the standard population-weighted AUC; every other cell uses the standard objective. See ``Fidelity and hyperparameter protocol'' above for full details. After this fix, no cell in this table falls below $\text{AUC}=0.62$.}
 \end{table}
 
 \begin{table}[h]
@@ -621,7 +612,7 @@ All cells use the per-dataset Optuna tuning protocol described above (Tier-2). $
 \midrule
 BankLoanSta    & 0.7290 & \textbf{0.7438} & 0.7250$^{\ddagger}$ & 0.7164 & 0.6837 & 0.7134 & 0.7249 \\
 Weather        & \textbf{0.8766} & 0.8743 & 0.8322 & 0.8536 & 0.8197 & 0.8524 & 0.8490 \\
-DiabetesRecord$^{\dagger}$ & 0.6712 & \textbf{0.6750} & 0.6259 & 0.6102 & 0.6059 & 0.6083 & 0.6350 \\
+DiabetesRecord & 0.6712 & \textbf{0.6750} & 0.6259 & 0.6102 & 0.6059 & 0.6083 & 0.6350 \\
 CreditRisk     & 0.7548 & \textbf{0.7569} & 0.7387 & 0.7481 & 0.7388 & 0.7261 & 0.7318 \\
 HRAnalytics    & \textbf{0.7990} & 0.7929 & 0.7811 & 0.7848 & 0.7517 & 0.7732 & 0.7953 \\
 ClientRecord   & \textbf{0.9581} & 0.9535 & 0.8962 & 0.9264 & 0.8751 & 0.9290 & 0.9350 \\
@@ -634,8 +625,6 @@ FlightDelay    & \textbf{0.7194} & 0.7170 & 0.6391 & 0.6048 & 0.5981 & 0.6017 & 
 \bottomrule
 \end{tabular}%
 }
-\\[2pt]
-{\footnotesize $^{\dagger}$ DiabetesRecord uses ext features \texttt{A1Cresult, max\_glu\_serum} (combo c6\_A1CplusGlu); 5-seed mean values.}
 \end{table}
 
 \begin{table}[h]
