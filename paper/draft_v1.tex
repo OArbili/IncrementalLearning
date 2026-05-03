@@ -261,10 +261,10 @@ The pruning level determining exactly how many trees $k$ to preserve from the ba
 The extended model builds upon this foundation through transfer learning:
 
 \begin{equation}
-F_{ext}(x) = \sum_{i=1}^{k} \alpha_i h_i(x_{F_{base}}) + \sum_{j=1}^{m} \beta_j g_j(x_{F_{base} \cup F_{ext}})
+F_{ext}(x) = \sum_{i=1}^{k} \alpha_i \, h_i(x) + \sum_{j=1}^{m} \beta_j \, g_j(x)
 \end{equation}
 
-Where $k \leq n$ is the optimal number of base trees to retain (determined through pruning), and $g_j$ are additional trees trained on the combined feature space.
+where $\{h_1, \dots, h_k\} \subseteq \{h_1, \dots, h_n\}$ are the first $k\!\le\!n$ base trees retained after pruning (each still operating only on its trained base-feature splits), and $\{g_1, \dots, g_m\}$ are additional trees trained on the combined feature space $F_{base} \cup F_{ext}$. We write $h_i(x)$ and $g_j(x)$ in terms of the full input vector $x$ for compactness; each tree internally evaluates only the features it was trained on, so notation conflicts with~Eq.~1 (where the tree set is the unpruned $n$) are resolved by the explicit $i\in\{1,\dots,k\}$ summation index above.
 
 \subsection{Feature Allocation in Practice and in Our Experiments}
 \label{sec:feature-allocation}
@@ -307,9 +307,10 @@ In practice this gives the framework a built-in floor: when the base model trans
     \State $\mathcal{K} \gets \{0, 1, \dots, |T_{base}|\}$ \Comment{discrete search space, $k=0$ retrains from scratch}
     \State $study \gets$ TPESampler($n_\text{trials}$) \Comment{Bayesian search}
     \For{trial $= 1$ \textbf{to} $n_\text{trials}$}
-        \State $k \gets study.\text{suggest}(\mathcal{K})$
+        \State $k \gets study.\textproc{suggest}(\mathcal{K})$
         \State $M_k \gets$ Initialize with first $k$ trees (empty if $k=0$)
-        \State $study.\text{report}\big($Evaluate($M_k$, $D_{val}$)$\big)$
+        \State $score \gets$ Evaluate($M_k$, $D_{val}$)
+        \State $study.\textproc{report}(score)$
     \EndFor
     \State \Return $study.\text{best}_k$
 \EndFunction
@@ -491,7 +492,7 @@ The aggregate signed weighted improvement across all 10 datasets is mildly posit
 \textbf{Stability across pruning strategies.} As a proxy for further stability we examine the spread across the three pruning strategies tested in our ablation study (Table~\ref{tab:pruning}). The adaptive (Optuna) strategy lands at the top of the per-dataset ordering on most datasets, with a mean range between best and worst pruning mode of $0.004$ AUC --- the same scale as the train/test sampling variance. We therefore read this as showing that adaptive pruning is at least as good as a fixed setting in expectation, rather than as a uniform improvement.
 
 \begin{table*}[!t]
-\caption{AUROC Results Across All Datasets — \textbf{mean $\pm$ std across 5 seeds} (42--46), where each seed jointly controls the train/test split, structured null injection, Optuna sampler, and XGBoost RNG. \textit{Baseline (BL)}: a \emph{single} XGBoost model trained on the full training set, with extended features stored as \texttt{NaN} on no-extended rows and observed on has-extended rows --- the ``Baseline (base)'' and ``Baseline (ext)'' columns are this same model evaluated on the no-extended and has-extended test populations respectively; the baseline has full data access (no privacy constraint). \textit{Our approach}: trains a base model on all rows with extended features as NaN, then warm-starts an extended model on has-extended rows only using adaptive pruning --- the two phases can operate on separate data. Weighted Improvement is the population-weighted average AUC gain (Eq.~\ref{eq:weighted-improvement}). Green = positive mean; red = negative mean.}
+\caption{AUROC Results Across All Datasets — \textbf{mean $\pm$ std across 5 seeds} (42--46), where each seed jointly controls the train/test split, structured null injection, Optuna sampler, and XGBoost RNG. The \textbf{Null\%} column is the fraction of rows with at least one extended feature missing (same definition as Table~\ref{tab:dataset-summary}). \textit{Baseline (BL)}: a \emph{single} XGBoost model trained on the full training set, with extended features stored as \texttt{NaN} on no-extended rows and observed on has-extended rows --- the ``Baseline (base)'' and ``Baseline (ext)'' columns are this same model evaluated on the no-extended and has-extended test populations respectively; the baseline has full data access (no privacy constraint). \textit{Our approach}: trains a base model on all rows with extended features as NaN, then warm-starts an extended model on has-extended rows only using adaptive pruning --- the two phases can operate on separate data. Weighted Improvement is the population-weighted average AUC gain (Eq.~\ref{eq:weighted-improvement}). Green = positive mean; red = negative mean.}
 \label{tab:merged_auc_results}
 \centering
 \footnotesize
